@@ -1,8 +1,8 @@
-export interface IResponse {
+export interface IMockResponse {
   status: number;
   response?: Record<string, any> | string;
   delay?: number;
-  actions: (req: {
+  action?: (req: {
     body: Record<string, any>;
     params: Record<string, any>;
     queryParams: Record<string, any>;
@@ -11,7 +11,7 @@ export interface IResponse {
 
 export interface IMock {
   [url: string]: {
-    [method: string]: IResponse;
+    [method: string]: IMockResponse;
   };
 }
 
@@ -25,6 +25,19 @@ export interface IStore {
       active: boolean;
     }
   >;
+}
+
+export interface ILog {
+  request?: {
+    url: string;
+    method: string;
+  };
+  response?: {
+    status: number;
+    response: string;
+  };
+  mockResponse?: IMockResponse;
+  id?: number;
 }
 
 export type IDB = Record<string, IStore>;

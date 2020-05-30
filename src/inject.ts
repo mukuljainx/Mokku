@@ -23,7 +23,11 @@ window.addEventListener("message", function (event) {
  * ackRequired, if false, no id will be assigned hence, no method will be added in message
  * message id was not the problem but function in message bus was
  */
-const postMessage = (message, type: IEventMessage["type"], ackRequired) => {
+const postMessage = (
+  message: IEventMessage["message"],
+  type: IEventMessage["type"],
+  ackRequired
+) => {
   const messageId = ackRequired ? messageIdFactory.getId() : null;
 
   const messageObject: IEventMessage = {
@@ -49,17 +53,15 @@ xhook.before(function (request, callback) {
   };
 
   const data: IEventMessage["message"] = {
-    url: request.url,
-    method: request.method,
+    request: {
+      url: request.url,
+      method: request.method,
+    },
     id: request.moku.id,
   };
   postMessage(data, "XHOOK_AFTER", false);
 
-  postMessage(
-    { url: request.url, method: request.method },
-    "XHOOK_BEFORE",
-    true
-  )
+  postMessage(data, "XHOOK_BEFORE", true)
     .then((data) => {
       if (data && (data as any).response) {
         callback((data as any).response);
@@ -74,11 +76,12 @@ xhook.before(function (request, callback) {
 
 xhook.after(function (request, response) {
   const data: IEventMessage["message"] = {
-    url: request.url,
+    request: {
+      url: request.url,
+      method: request.method,
+    },
+    response: { status: response.status, response: response.text },
     id: request.moku?.id,
-    method: request.method,
-    status: response.status,
-    text: response.text,
   };
   postMessage(data, "XHOOK_AFTER", false);
 });

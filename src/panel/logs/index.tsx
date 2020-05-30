@@ -1,15 +1,10 @@
 import * as React from "react";
 
 import "./index.scss";
+import { ILog } from "../../interface/mock";
 
 interface IProps {
-  logs: Array<{
-    url: string;
-    method: string;
-    status: number;
-    text: string;
-    id: number;
-  }>;
+  logs: ILog[];
 }
 
 const Logs = (props: IProps) => {
@@ -19,7 +14,7 @@ const Logs = (props: IProps) => {
       {log && (
         <div className="log-response">
           <button onClick={() => setLog(undefined)}>close</button>
-          <pre>{log.text}</pre>
+          <pre>{log.response?.response}</pre>
         </div>
       )}
       <table>
@@ -41,11 +36,15 @@ const Logs = (props: IProps) => {
               }}
             >
               <td>--</td>
-              <td>{log.url}</td>
-              <td>{log.method}</td>
-              <td>{log.status}</td>
+              <td>{log.request?.url}</td>
+              <td>{log.request?.method}</td>
+              <td>{log.response?.status}</td>
               <td>
-                {log.text ? <button>View Response</button> : "Pending..."}
+                {log.response?.response ? (
+                  <button>View Response</button>
+                ) : (
+                  "Pending..."
+                )}
               </td>
             </tr>
           ))}

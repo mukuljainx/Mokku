@@ -1,4 +1,4 @@
-import { IMock, IResponse } from "./mock";
+import { ILog } from "./mock";
 
 export interface IEventMessage {
   to: "HOOK_SCRIPT" | "CONTENT_SCRIPT";
@@ -6,14 +6,7 @@ export interface IEventMessage {
   extenstionName: "MOKU";
   id?: number;
   type: "XHOOK_AFTER" | "XHOOK_BEFORE";
-  message?: {
-    method: string;
-    url: string;
-    response?: IResponse;
-    text?: string;
-    status?: number;
-    id?: number;
-  };
+  message: ILog;
 }
 
 export interface IPortMessage {

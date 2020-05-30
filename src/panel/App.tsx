@@ -3,9 +3,10 @@ import * as React from "react";
 import "./app.scss";
 import Logs from "./logs";
 import Header from "./header";
+import { ILog } from "../interface/mock";
 
 interface IState {
-  logs: any[];
+  logs: ILog[];
 }
 
 class App extends React.Component<{}, IState> {
@@ -18,13 +19,12 @@ class App extends React.Component<{}, IState> {
       if (message.to !== "PANEL") return;
       if (message.type === "LOG") {
         this.setState((prevState) => {
+          const newLog: ILog = message.message;
           let logs = prevState.logs;
-          if (!message.message.status) {
-            logs = [...logs, message.message];
-          } else if (message.message.id) {
-            logs = logs.map((item) =>
-              item.id === message.message.id ? message.message : item
-            );
+          if (!newLog.response) {
+            logs = [...logs, newLog];
+          } else if (newLog.id) {
+            logs = logs.map((item) => (item.id === newLog.id ? newLog : item));
           }
 
           return {

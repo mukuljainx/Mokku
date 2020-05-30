@@ -38,12 +38,14 @@ window.addEventListener("message", function (event) {
     from: "CONTENT_SCRIPT",
     to: "HOOK_SCRIPT",
     extenstionName: "MOKU",
+    message: {},
   };
 
-  if (store.mocks[data.message?.url]) {
-    if (store.mocks[data.message?.url][data.message?.method]) {
-      response.message.response =
-        store.mocks[data.message?.url][data.message?.method];
+  const request = data.message.request;
+
+  if (store.mocks[request.url]) {
+    if (store.mocks[request.url][request.url]) {
+      response.message.mockResponse = store.mocks[request.url][request.url];
     }
   }
 
