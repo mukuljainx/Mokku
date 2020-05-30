@@ -1,4 +1,4 @@
-export interface IMock {
+export interface IResponse {
   status: number;
   response?: Record<string, any> | string;
   delay?: number;
@@ -9,22 +9,28 @@ export interface IMock {
   }) => IMock["response"];
 }
 
-export interface ICollection {
-  url: {
-    active: boolean;
-    mocks: IMock[];
-    collections: Record<
-      string,
-      {
-        mocks: IMock[];
-        active: boolean;
-      }
-    >;
+export interface IMock {
+  [url: string]: {
+    [method: string]: IResponse;
   };
 }
 
+export interface IStore {
+  active: boolean;
+  mocks: IMock;
+  collections: Record<
+    string,
+    {
+      mocks: IMock;
+      active: boolean;
+    }
+  >;
+}
+
+export type IDB = Record<string, IStore>;
+
 /**
- * url -> {
+ * host -> {
  *  mocks: IMOCK[]
  *  collections: {
  *      app1: {
