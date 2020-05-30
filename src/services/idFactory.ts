@@ -1,7 +1,7 @@
 class IdFactory {
   private _id: number;
   constructor() {
-    this._id = -1;
+    this._id = 0;
   }
 
   getId() {

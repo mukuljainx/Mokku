@@ -13,21 +13,33 @@ interface IProps {
 }
 
 const Logs = (props: IProps) => {
+  const [log, setLog] = React.useState<IProps["logs"][0]>();
   return (
     <div className="log">
+      {log && (
+        <div className="log-response">
+          <button onClick={() => setLog(undefined)}>close</button>
+          <pre>{log.text}</pre>
+        </div>
+      )}
       <table>
         <thead>
           <tr>
-            <th></th>
+            <th className="small-width"></th>
             <th>URL</th>
-            <th>Method</th>
-            <th>Status</th>
-            <th>Response</th>
+            <th className="small-width">Method</th>
+            <th className="small-width">Status</th>
+            <th className="table-button">Response</th>
           </tr>
         </thead>
         <tbody>
           {props.logs.map((log) => (
-            <tr key={log.id}>
+            <tr
+              key={log.id}
+              onClick={() => {
+                setLog(log);
+              }}
+            >
               <td>--</td>
               <td>{log.url}</td>
               <td>{log.method}</td>

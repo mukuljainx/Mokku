@@ -1,8 +1,30 @@
 .log {
+  position: relative;
   table {
     width: 100%;
     th {
       text-align: left;
     }
+    td,
+    th {
+      padding-right: 8px;
+      &.small-width {
+        width: 80px;
+      }
+    }
+    .table-button {
+      width: 160px;
+    }
+  }
+
+  .log-response {
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    max-width: 80%;
+    width: 1200px;
+    background: white;
+    overflow: auto;
   }
 }
