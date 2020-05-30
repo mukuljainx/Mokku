@@ -3,11 +3,9 @@ import IdFactory from "./services/idFactory";
 import MessageBus from "./services/messageBus";
 import { IEventMessage } from "./interface/message";
 
-console.log("INJECTED FILE");
-
 const messageBus = new MessageBus();
-
 const messageIdFactory = new IdFactory();
+const logIdFactory = new IdFactory();
 
 window.addEventListener("message", function (event) {
   // We only accept messages from ourselves
@@ -20,23 +18,48 @@ window.addEventListener("message", function (event) {
   messageBus.dispatch(data.id, data.message);
 });
 
-const postMessage = (message) => {
-  const messageId = messageIdFactory.getId();
+/**
+ * Promisfy post message from window to window
+ * ackRequired, if false, no id will be assigned hence, no method will be added in message
+ * message id was not the problem but function in message bus was
+ */
+const postMessage = (message, type: IEventMessage["type"], ackRequired) => {
+  const messageId = ackRequired ? messageIdFactory.getId() : null;
+
   const messageObject: IEventMessage = {
     id: messageId,
     message,
     to: "CONTENT_SCRIPT",
     from: "HOOK_SCRIPT",
     extenstionName: "MOKU",
+    type,
   };
   window.postMessage(messageObject, "*");
-  return new Promise((reslove) => {
-    messageBus.addLister(messageId, reslove);
-  });
+
+  if (messageId !== null) {
+    return new Promise((reslove) => {
+      messageBus.addLister(messageId, reslove);
+    });
+  }
 };
 
 xhook.before(function (request, callback) {
-  postMessage({ url: request.url, method: request.method })
+  request.moku = {
+    id: logIdFactory.getId(),
+  };
+
+  const data: IEventMessage["message"] = {
+    url: request.url,
+    method: request.method,
+    id: request.moku.id,
+  };
+  postMessage(data, "XHOOK_AFTER", false);
+
+  postMessage(
+    { url: request.url, method: request.method },
+    "XHOOK_BEFORE",
+    true
+  )
     .then((data) => {
       if (data && (data as any).response) {
         callback((data as any).response);
@@ -47,4 +70,15 @@ xhook.before(function (request, callback) {
     .catch(() => {
       console.log("something went wrong!");
     });
+});
+
+xhook.after(function (request, response) {
+  const data: IEventMessage["message"] = {
+    url: request.url,
+    id: request.moku?.id,
+    method: request.method,
+    status: response.status,
+    text: response.text,
+  };
+  postMessage(data, "XHOOK_AFTER", false);
 });

@@ -1,7 +1,5 @@
-chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener((message) => {
-    console.log(message);
-  });
+chrome.runtime.onMessage.addListener((msg, sender, response) => {
+  console.log("BACKGROUND:onMessage", msg);
 });
 
 chrome.storage.local.set({

@@ -1,31 +1,46 @@
 import * as React from "react";
-// import * as xhook from "xhook";
 
-// console.log(xhook);
+import "./index.scss";
 
-const Logs = () => {
-  const [log, updateLog] = React.useState("");
-  // xhook.before(function (request, callback) {
-  //   //asynchronously...
-  //   console.log(request.url);
-  //   updateLog(request.url);
-  //   setTimeout(function () {
-  //     //callback with a fake response
-  //     callback({
-  //       status: 200,
-  //       text: "this is the third text file example (example3.txt)",
-  //       headers: {
-  //         Foo: "Bar",
-  //       },
-  //     });
-  //   }, 500);
-  // });
+interface IProps {
+  logs: Array<{
+    url: string;
+    method: string;
+    status: number;
+    text: string;
+    id: number;
+  }>;
+}
 
-  // chrome.devtools.network.onRequestFinished.addListener(function (request) {
-  //   console.log(request);
-  // });
-
-  return <div>Log : {log}</div>;
+const Logs = (props: IProps) => {
+  return (
+    <div className="log">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>URL</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Response</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.logs.map((log) => (
+            <tr key={log.id}>
+              <td>--</td>
+              <td>{log.url}</td>
+              <td>{log.method}</td>
+              <td>{log.status}</td>
+              <td>
+                {log.text ? <button>View Response</button> : "Pending..."}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default Logs;

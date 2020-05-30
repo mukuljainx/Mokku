@@ -6,8 +6,6 @@ import { IStore } from "./interface/mock";
 // injects script to page's DOM
 inject();
 
-// background script to content script
-const port = chrome.runtime.connect({ name: "extension:moku" });
 const url = location.host;
 
 let store: IStore;
@@ -25,14 +23,23 @@ window.addEventListener("message", function (event) {
 
   if (data.to !== "CONTENT_SCRIPT") return;
 
-  const response: IEventMessage = {
+  if (data.type === "XHOOK_AFTER") {
+    chrome.runtime.sendMessage({
+      message: data.message,
+      type: "LOG",
+      from: "CONTENT",
+      to: "PANEL",
+    });
+    return;
+  }
+
+  const response: Omit<IEventMessage, "type"> = {
     id: data.id,
     from: "CONTENT_SCRIPT",
     to: "HOOK_SCRIPT",
     extenstionName: "MOKU",
   };
 
-  console.log(data.message);
   if (store.mocks[data.message?.url]) {
     if (store.mocks[data.message?.url][data.message?.method]) {
       response.message.response =
@@ -41,16 +48,6 @@ window.addEventListener("message", function (event) {
   }
 
   window.postMessage(response, "*");
-});
-
-// background script to content script end
-port.postMessage({
-  message: { joke: "Knock knock" },
-  from: "CONTENT",
-  to: "BACKROUND",
-} as IPortMessage);
-port.onMessage.addListener((message: IPortMessage) => {
-  console.log(message);
 });
 
 console.log("Current tab: ", location.host);

@@ -5,10 +5,14 @@ export interface IEventMessage {
   from: IEventMessage["to"];
   extenstionName: "MOKU";
   id?: number;
+  type: "XHOOK_AFTER" | "XHOOK_BEFORE";
   message?: {
     method: string;
     url: string;
     response?: IResponse;
+    text?: string;
+    status?: number;
+    id?: number;
   };
 }
 
