@@ -1,22 +1,46 @@
 import * as React from "react";
+import styled, { ThemeProvider } from "styled-components";
 
 import "./app.scss";
 import Logs from "./logs";
 import Header from "./header";
 import { ILog } from "../interface/mock";
+import theme from "./theme";
+
+const Wrapper = styled("div")`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Content = styled("div")`
+  overflow: hidden;
+`;
 
 interface IState {
   logs: ILog[];
+  route: string;
 }
 
-class App extends React.Component<{}, IState> {
+interface IProps {
+  domain: string;
+  tab: chrome.tabs.Tab;
+}
+
+class App extends React.Component<IProps, IState> {
   state = {
     logs: [],
+    route: "logs",
+  };
+
+  checkIfSameTab = (sender: IProps["tab"]) => {
+    const { tab } = this.props;
+    return sender.index === tab.index && sender.windowId === tab.windowId;
   };
 
   componentDidMount() {
     chrome.runtime.onMessage.addListener((message, sender, response) => {
-      if (message.to !== "PANEL") return;
+      if (message.to !== "PANEL" || !this.checkIfSameTab(sender.tab)) return;
       if (message.type === "LOG") {
         this.setState((prevState) => {
           const newLog: ILog = message.message;
@@ -36,12 +60,14 @@ class App extends React.Component<{}, IState> {
   }
 
   render() {
-    console.log(this.state.logs);
+    const { route, logs } = this.state;
     return (
-      <>
-        <Header />
-        <Logs logs={this.state.logs} />
-      </>
+      <ThemeProvider theme={theme}>
+        <Wrapper>
+          <Header />
+          <Content>{route === "logs" && <Logs logs={logs} />}</Content>
+        </Wrapper>
+      </ThemeProvider>
     );
   }
 }
