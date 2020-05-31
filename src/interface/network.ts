@@ -1,1 +1,1 @@
-type IMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+export type IMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";

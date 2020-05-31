@@ -6,6 +6,7 @@ import Detail from "./detail";
 
 interface IProps {
   logs: ILog[];
+  changeRoute: (route: string) => void;
 }
 
 const Wrapper = styled("div")`
@@ -51,8 +52,31 @@ const Wrapper = styled("div")`
   }
 `;
 
+const EmptyWrapper = styled("div")`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
 const Logs = (props: IProps) => {
   const [log, setLog] = React.useState<IProps["logs"][0]>();
+
+  if (props.logs.length === 0) {
+    return (
+      <EmptyWrapper>
+        <p>Network Logs will appear here.</p>
+        <button
+          className="button link"
+          onClick={() => props.changeRoute("mock.create")}
+        >
+          Create a Mock
+        </button>
+      </EmptyWrapper>
+    );
+  }
+
   return (
     <Wrapper>
       {log && <Detail log={log} onClose={() => setLog(undefined)} />}

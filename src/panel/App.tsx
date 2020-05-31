@@ -3,6 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 
 import "./app.scss";
 import Logs from "./logs";
+import Mock from "./mocks";
 import Header from "./header";
 import { ILog } from "../interface/mock";
 import theme from "./theme";
@@ -15,11 +16,12 @@ const Wrapper = styled("div")`
 
 const Content = styled("div")`
   overflow: hidden;
+  flex-grow: 2;
 `;
 
 interface IState {
   logs: ILog[];
-  route: string;
+  route: "logs" | "mock.create";
 }
 
 interface IProps {
@@ -28,14 +30,18 @@ interface IProps {
 }
 
 class App extends React.Component<IProps, IState> {
-  state = {
+  state: IState = {
     logs: [],
-    route: "logs",
+    route: "mock.create",
   };
 
   checkIfSameTab = (sender: IProps["tab"]) => {
     const { tab } = this.props;
     return sender.index === tab.index && sender.windowId === tab.windowId;
+  };
+
+  changeRoute = (route: IState["route"]) => {
+    this.setState({ route });
   };
 
   componentDidMount() {
@@ -57,6 +63,10 @@ class App extends React.Component<IProps, IState> {
         });
       }
     });
+
+    chrome.storage.local.get(["key"], function (result) {
+      console.log("Value currently is " + result.key);
+    });
   }
 
   render() {
@@ -64,8 +74,13 @@ class App extends React.Component<IProps, IState> {
     return (
       <ThemeProvider theme={theme}>
         <Wrapper>
-          <Header />
-          <Content>{route === "logs" && <Logs logs={logs} />}</Content>
+          <Header route={route} changeRoute={this.changeRoute} />
+          <Content>
+            {route === "logs" && (
+              <Logs changeRoute={this.changeRoute} logs={logs} />
+            )}
+            {route.indexOf("mock") === 0 && <Mock route={route} />}
+          </Content>
         </Wrapper>
       </ThemeProvider>
     );

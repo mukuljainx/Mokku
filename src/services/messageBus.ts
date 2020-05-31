@@ -2,7 +2,7 @@ class MessageBus {
   _defaultListner: (data: any) => void;
   _collector = {};
 
-  dispatch(id, eventData) {
+  dispatch(id: number, eventData: any) {
     if (this._collector[id]) {
       this._collector[id](eventData);
     } else {
@@ -10,11 +10,11 @@ class MessageBus {
     }
   }
 
-  addLister(id, func) {
+  addLister(id: number, func: any) {
     this._collector[id] = func;
   }
 
-  createDefaultListener(func) {
+  createDefaultListener(func: any) {
     this._defaultListner = func;
   }
 }

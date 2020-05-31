@@ -1,6 +1,23 @@
+import { IMethod } from "./network";
+
+export interface ILog {
+  request?: {
+    url: string;
+    method: string;
+  };
+  response?: {
+    status: number;
+    response: string;
+  };
+  mockResponse?: IMockResponse;
+  id?: number;
+}
+
 export interface IMockResponse {
+  method: IMethod;
+  url: string;
   status: number;
-  response?: Record<string, any> | string;
+  response?: string;
   delay?: number;
   action?: (req: {
     body: Record<string, any>;
@@ -27,29 +44,4 @@ export interface IStore {
   >;
 }
 
-export interface ILog {
-  request?: {
-    url: string;
-    method: string;
-  };
-  response?: {
-    status: number;
-    response: string;
-  };
-  mockResponse?: IMockResponse;
-  id?: number;
-}
-
 export type IDB = Record<string, IStore>;
-
-/**
- * host -> {
- *  mocks: IMOCK[]
- *  collections: {
- *      app1: {
- *          mocks: IMOCK[]
- *      },
- *      app2: IMOCK[],
- *   }
- * }
- */

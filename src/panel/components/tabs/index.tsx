@@ -29,7 +29,11 @@ const TabWrapper = styled("div")<{ active?: boolean }>`
 const Tabs = ({ selected, tabs, tabWidth, className }: IProps) => (
   <Wrapper className={`tabs ${className ? className : ""}`}>
     {tabs.map((tab, index) => (
-      <TabWrapper style={{ width: tabWidth }} active={selected === index}>
+      <TabWrapper
+        key={index}
+        style={{ width: tabWidth }}
+        active={selected === index}
+      >
         {tab}
       </TabWrapper>
     ))}
