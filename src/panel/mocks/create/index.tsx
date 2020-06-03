@@ -11,6 +11,7 @@ import { isValidJSON, getError } from "../../../services/helper";
 const Wrapper = styled("div")`
   border-left: ${({ theme }) => `1px solid ${theme.colors.border}`};
   height: 100%;
+  overflow: auto;
 `;
 
 const Label = styled("label")`
@@ -61,25 +62,36 @@ const Error = styled("p")`
 
 interface IProps {
   mock?: IMockResponse;
+  changeRoute: (route: string) => void;
+  onAction: (action: "add" | "delete" | "edit", mock: IMockResponse) => void;
 }
 
 const Create = (props: IProps) => {
   const methods = getNetworkMethodList();
+  const componentProps = props;
   return (
     <Wrapper>
       <Formik
+        enableReinitialize
         initialValues={{
-          method: "GET",
-          url: "",
-          status: 200,
-          delay: 500,
-          response: "",
+          method: componentProps.mock?.method || "GET",
+          url: componentProps.mock?.url || "",
+          status: componentProps.mock?.status || 200,
+          delay: componentProps.mock?.delay || 500,
+          response: componentProps.mock?.response || "",
         }}
-        onSubmit={async (values) => {}}
+        onSubmit={async (values) => {
+          componentProps.onAction(componentProps.mock ? "edit" : "add", {
+            id: -1,
+            createdOn: new Date().getTime(),
+            ...(componentProps.mock ? componentProps.mock : {}),
+            ...values,
+          });
+          componentProps.changeRoute("mock");
+        }}
         validateOnBlur
         validate={(values) => {
           const errors: Record<string, string> = {};
-          debugger;
 
           if (values.response && !isValidJSON(values.response)) {
             errors.response = "Invalid Response JSON";
@@ -102,8 +114,6 @@ const Create = (props: IProps) => {
             isValid,
             setFieldValue,
           } = props;
-          console.log(errors);
-          console.log(values);
           return (
             <StyledForm>
               <Group>
@@ -145,7 +155,19 @@ const Create = (props: IProps) => {
                 </FieldWrapper>
               </Group>
               <Error>{getError(errors) || " "}</Error>
-              <Button disabled={!isValid}>Save</Button>
+              <Button
+                style={{ marginRight: 16 }}
+                disabled={!isValid}
+                type="submit"
+              >
+                Save
+              </Button>
+              <Button
+                onClick={() => componentProps.changeRoute("mock")}
+                type="button"
+              >
+                Cancel
+              </Button>
             </StyledForm>
           );
         }}

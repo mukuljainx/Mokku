@@ -1,17 +1,15 @@
 import inject from "./contentScript/injectToDom";
 import { IEventMessage, IPortMessage } from "./interface/message";
 import { getDefultStore } from "./services/collection";
-import { IStore } from "./interface/mock";
+import { IStore, DBNameType } from "./interface/mock";
 
 // injects script to page's DOM
 inject();
 
-const url = location.host;
-
 let store: IStore;
-
-chrome.storage.local.get([url], function (result) {
-  store = result.url || getDefultStore();
+const DBName: DBNameType = "moku.extension.main.db";
+chrome.storage.local.get([DBName], function (result) {
+  store = result["moku.extension.main.db"] || getDefultStore();
 });
 
 // From xhook to content Script
@@ -43,13 +41,30 @@ window.addEventListener("message", function (event) {
 
   const request = data.message.request;
 
-  if (store.mocks[request.url]) {
-    if (store.mocks[request.url][request.url]) {
-      response.message.mockResponse = store.mocks[request.url][request.url];
-    }
+  const mock = store.mocks.find(
+    (item) =>
+      request.url === item.url && request.method === item.method && item.active
+  );
+  if (mock) {
+    response.message.mockResponse = mock;
   }
+
+  // if (store.mocks[request.url]) {
+  //   if (store.mocks[request.url][request.url]) {
+  //     response.message.mockResponse = store.mocks[request.url][request.url];
+  //   }
+  // }
 
   window.postMessage(response, "*");
 });
 
-console.log("Current tab: ", location.host);
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+  //!this.checkIfSameTab(sender.tab)) return;
+  if (message.to !== "CONTENT") return;
+
+  if (message.type === "UPDATE_STORE") {
+    chrome.storage.local.get([DBName], function (result) {
+      store = result["moku.extension.main.db"] || getDefultStore();
+    });
+  }
+});

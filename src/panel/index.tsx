@@ -27,7 +27,7 @@ const getDomain = (url: string) => {
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
   ReactDOM.render(
-    <App domain={getDomain(tab.url)} tab={tab} />,
+    <App host={getDomain(tab.url)} tab={tab} />,
     document.getElementById("root")
   );
 });

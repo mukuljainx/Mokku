@@ -48,7 +48,13 @@ const Detail = ({ log, onClose }: IProps) => {
         >
           <i className="material-icons">close</i>
         </button>
-        <StyledTab selected={0} tabs={["Response"]} />
+        <StyledTab
+          onChange={(selected) => {
+            selected;
+          }}
+          selected={0}
+          tabs={["Response"]}
+        />
       </Header>
       <Content>
         <pre>

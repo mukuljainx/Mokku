@@ -11,37 +11,39 @@ export interface ILog {
   };
   mockResponse?: IMockResponse;
   id?: number;
+  isMocked?: boolean;
 }
 
 export interface IMockResponse {
   method: IMethod;
+  createdOn: number;
   url: string;
   status: number;
   response?: string;
   delay?: number;
+  id: number;
+  active: boolean;
   action?: (req: {
     body: Record<string, any>;
     params: Record<string, any>;
     queryParams: Record<string, any>;
-  }) => IMock["response"];
-}
-
-export interface IMock {
-  [url: string]: {
-    [method: string]: IMockResponse;
-  };
+  }) => IMockResponse["response"];
 }
 
 export interface IStore {
   active: boolean;
-  mocks: IMock;
+  mocks: IMockResponse[];
+  id: number;
   collections: Record<
     string,
     {
-      mocks: IMock;
+      mocks: IMockResponse[];
+      id: number;
       active: boolean;
     }
   >;
 }
 
-export type IDB = Record<string, IStore>;
+export type DBNameType = "moku.extension.main.db";
+
+export type IDB = Record<DBNameType, IStore>;

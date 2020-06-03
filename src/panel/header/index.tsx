@@ -40,6 +40,13 @@ const Header = (props: IProps) => {
       <StyledTabs
         selected={getSelected(props.route)}
         tabs={["Logs", "Mocks"]}
+        onChange={(selected) => {
+          if (selected === 0) {
+            props.changeRoute("logs");
+          } else {
+            props.changeRoute("mock");
+          }
+        }}
       />
       <AddMockButton
         onClick={() => props.changeRoute("mock.create")}

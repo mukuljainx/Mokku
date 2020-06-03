@@ -2,6 +2,7 @@ import * as xhook from "xhook";
 import IdFactory from "./services/idFactory";
 import MessageBus from "./services/messageBus";
 import { IEventMessage } from "./interface/message";
+import { IMockResponse } from "./interface/mock";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
@@ -14,7 +15,6 @@ window.addEventListener("message", function (event) {
   const data: IEventMessage = event.data;
   if (data.to !== "HOOK_SCRIPT") return;
 
-  console.log("INJECTED FILE: " + data.id + "\n");
   messageBus.dispatch(data.id, data.message);
 });
 
@@ -50,6 +50,7 @@ const postMessage = (
 xhook.before(function (request, callback) {
   request.moku = {
     id: logIdFactory.getId(),
+    isMocked: false,
   };
 
   const data: IEventMessage["message"] = {
@@ -62,9 +63,26 @@ xhook.before(function (request, callback) {
   postMessage(data, "XHOOK_AFTER", false);
 
   postMessage(data, "XHOOK_BEFORE", true)
-    .then((data) => {
-      if (data && (data as any).response) {
-        callback((data as any).response);
+    .then((data: { mockResponse: IMockResponse }) => {
+      if (data && data.mockResponse) {
+        request.moku.isMocked = true;
+        const mock = data.mockResponse;
+        const finalResponse = {
+          status: mock.status,
+          text: mock.response ? mock.response : "",
+          type: "json",
+          headers: {
+            "content-type": "application/json; charset=UTF-8",
+          },
+        };
+
+        if (mock.delay) {
+          setTimeout(() => {
+            callback(finalResponse);
+          }, mock.delay);
+        } else {
+          callback(finalResponse);
+        }
       } else {
         callback();
       }
@@ -82,6 +100,7 @@ xhook.after(function (request, response) {
     },
     response: { status: response.status, response: response.text },
     id: request.moku?.id,
+    isMocked: request.moku?.isMocked,
   };
   postMessage(data, "XHOOK_AFTER", false);
 });

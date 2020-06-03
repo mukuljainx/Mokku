@@ -3,6 +3,16 @@ import styled from "styled-components";
 
 import { ILog } from "../../interface/mock";
 import Detail from "./detail";
+import {
+  Table,
+  Cell,
+  HeaderCell,
+  TableBody,
+  TableHead,
+  TableBodyWrapper,
+  TableHeadWrapper,
+  TableRow,
+} from "../components/table";
 
 interface IProps {
   logs: ILog[];
@@ -15,41 +25,6 @@ const Wrapper = styled("div")`
   flex-direction: column;
   overflow: hidden;
   height: 100%;
-  .table-header {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  }
-
-  .table-body {
-    overflow: auto;
-    tr {
-      cursor: pointer;
-      &:hover {
-        background: ${({ theme }) => theme.colors.primaryLight};
-      }
-    }
-  }
-  table {
-    width: 100%;
-    table-layout: fixed;
-    overflow-wrap: break-word;
-    border-spacing: 0;
-    th {
-      text-align: left;
-    }
-    td,
-    th {
-      padding-right: 8px;
-      &.small-width {
-        width: 80px;
-      }
-      div {
-        padding: 8px 0;
-      }
-    }
-    .table-button {
-      width: 160px;
-    }
-  }
 `;
 
 const EmptyWrapper = styled("div")`
@@ -80,52 +55,54 @@ const Logs = (props: IProps) => {
   return (
     <Wrapper>
       {log && <Detail log={log} onClose={() => setLog(undefined)} />}
-      <div className="table-header">
-        <table>
-          <thead>
-            <tr>
-              <th className="small-width">
+      <TableHeadWrapper>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <HeaderCell width={80}>
                 <div></div>
-              </th>
-              <th>
+              </HeaderCell>
+              <HeaderCell>
                 <div>URL</div>
-              </th>
-              <th className="small-width">
+              </HeaderCell>
+              <HeaderCell width={80}>
                 <div>Method</div>
-              </th>
-              <th className="small-width">
+              </HeaderCell>
+              <HeaderCell width={80}>
                 <div>Status</div>
-              </th>
-              <th className="table-button">
+              </HeaderCell>
+              <HeaderCell width={120}>
                 <div></div>
-              </th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-      <div className="table-body">
-        <table>
-          <tbody>
+              </HeaderCell>
+            </TableRow>
+          </TableHead>
+        </Table>
+      </TableHeadWrapper>
+      <TableBodyWrapper>
+        <Table>
+          <TableBody>
             {props.logs.map((log) => (
-              <tr
+              <TableRow
                 key={log.id}
                 onClick={() => {
                   setLog(log);
                 }}
               >
-                <td className="small-width">--</td>
-                <td>
+                <Cell width={80}>
+                  <div>{log.isMocked ? "M" : "N"}</div>
+                </Cell>
+                <Cell>
                   <div>
                     <p className="ellipsis">{log.request?.url}</p>
                   </div>
-                </td>
-                <td className="small-width">
+                </Cell>
+                <Cell width={80}>
                   <div>{log.request?.method}</div>
-                </td>
-                <td className="small-width">
+                </Cell>
+                <Cell width={80}>
                   <div>{log.response?.status}</div>
-                </td>
-                <td className="table-button">
+                </Cell>
+                <Cell width={120}>
                   {log.response?.response ? (
                     log.response?.status ? (
                       <button className="link">Mock</button>
@@ -135,12 +112,12 @@ const Logs = (props: IProps) => {
                   ) : (
                     "Pending..."
                   )}
-                </td>
-              </tr>
+                </Cell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+      </TableBodyWrapper>
     </Wrapper>
   );
 };
