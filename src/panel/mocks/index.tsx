@@ -11,11 +11,12 @@ const Wrapper = styled("div")`
 `;
 
 const ListWrapper = styled("div")`
-  min-width: 400px;
+  flex-grow: 2;
   height: 100%;
 `;
 const CreateWrapper = styled("div")`
-  flex-grow: 2;
+  width: 50%;
+  min-width: 656px;
 `;
 
 interface IProps {
@@ -64,15 +65,15 @@ class Mocks extends React.Component<IProps, IState> {
             />
           )}
         </ListWrapper>
-        <CreateWrapper>
-          {route === "mock.create" && (
+        {route === "mock.create" && (
+          <CreateWrapper>
             <Create
               mock={this.state.mock}
               onAction={this.handleAction}
               changeRoute={changeRoute}
             />
-          )}
-        </CreateWrapper>
+          </CreateWrapper>
+        )}
       </Wrapper>
     );
   }
