@@ -13,3 +13,7 @@ export default {
     alert: "#F73F52",
   },
 };
+
+import theme from "./theme";
+
+export type ThemeType = typeof theme;

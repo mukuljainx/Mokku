@@ -1,9 +1,7 @@
 // import original module declarations
 import "styled-components";
 
-import theme from "./theme";
-
-type ThemeType = typeof theme;
+import { ThemeType } from "./theme";
 
 // and extend them!
 declare module "styled-components" {

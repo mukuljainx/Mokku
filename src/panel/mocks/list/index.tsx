@@ -10,6 +10,8 @@ import {
   TableBodyWrapper,
   TableHeadWrapper,
   TableRow,
+  Icon,
+  Button,
 } from "../../components/table";
 import { IStore, IMockResponse } from "../../../interface/mock";
 
@@ -42,6 +44,7 @@ interface IProps {
   changeRoute: (route: string) => void;
   onAction: (action: "add" | "delete" | "edit", mock: IMockResponse) => void;
   editMock: (mock: IMockResponse) => void;
+  toggleMock: (mock: IMockResponse) => void;
 }
 
 const List = (props: IProps) => {
@@ -65,23 +68,21 @@ const List = (props: IProps) => {
         <Table>
           <TableHead>
             <TableRow>
-              <HeaderCell width={80}>
-                <div>Id</div>
-              </HeaderCell>
+              <HeaderCell width={40}></HeaderCell>
               <HeaderCell>
-                <div>URL</div>
+                <CellWrapper>URL</CellWrapper>
               </HeaderCell>
-              <HeaderCell width={80}>
-                <div>Method</div>
+              <HeaderCell width={60}>
+                <CellWrapper>Method</CellWrapper>
               </HeaderCell>
-              <HeaderCell width={80}>
-                <div>Status</div>
+              <HeaderCell width={60}>
+                <CellWrapper>Status</CellWrapper>
               </HeaderCell>
-              <HeaderCell width={80}>
-                <div>Delay</div>
+              <HeaderCell width={60}>
+                <CellWrapper>Delay</CellWrapper>
               </HeaderCell>
-              <HeaderCell width={120}></HeaderCell>
-              <HeaderCell width={120}></HeaderCell>
+              <HeaderCell width={40}></HeaderCell>
+              <HeaderCell width={40}></HeaderCell>
             </TableRow>
           </TableHead>
         </Table>
@@ -91,37 +92,44 @@ const List = (props: IProps) => {
           <TableBody>
             {store.mocks.map((mock, index) => (
               <TableRow key={index}>
-                <Cell width={80}>
-                  <CellWrapper>{mock.id}</CellWrapper>
-                </Cell>
-                <Cell>
-                  <CellWrapper>{mock.url}</CellWrapper>
-                </Cell>
-                <Cell width={80}>
-                  <CellWrapper>{mock.method}</CellWrapper>
-                </Cell>
-                <Cell width={80}>
-                  <CellWrapper>{mock.status}</CellWrapper>
-                </Cell>
-                <Cell width={80}>
-                  <CellWrapper>{mock.delay}</CellWrapper>
-                </Cell>
-                <Cell width={120}>
+                <Cell width={40}>
                   <CellWrapper>
-                    <button
-                      onClick={() => {
-                        props.editMock(mock);
-                      }}
+                    <Icon
+                      onClick={() => props.toggleMock(mock)}
+                      style={{ transform: "scale(1.8)", cursor: "pointer" }}
+                      color={mock.active ? "primary" : "background"}
                     >
-                      Edit
-                    </button>
+                      {mock.active ? "toggle_on" : "toggle_off"}
+                    </Icon>
                   </CellWrapper>
                 </Cell>
-                <Cell width={120}>
+                <Cell>
+                  <CellWrapper className="ellipsis">{mock.url}</CellWrapper>
+                </Cell>
+                <Cell width={60}>
+                  <CellWrapper>{mock.method}</CellWrapper>
+                </Cell>
+                <Cell width={60}>
+                  <CellWrapper>{mock.status}</CellWrapper>
+                </Cell>
+                <Cell width={60}>
+                  <CellWrapper>{mock.delay}</CellWrapper>
+                </Cell>
+                <Cell width={40}>
                   <CellWrapper>
-                    <button onClick={() => props.onAction("delete", mock)}>
-                      Delete
-                    </button>
+                    <Button transparent onClick={() => props.editMock(mock)}>
+                      <Icon color="primary">edit</Icon>
+                    </Button>
+                  </CellWrapper>
+                </Cell>
+                <Cell width={40}>
+                  <CellWrapper>
+                    <Button
+                      transparent
+                      onClick={() => props.onAction("delete", mock)}
+                    >
+                      <Icon color="alert">delete_forever</Icon>
+                    </Button>
                   </CellWrapper>
                 </Cell>
               </TableRow>

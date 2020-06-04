@@ -43,6 +43,11 @@ class Mocks extends React.Component<IProps, IState> {
     });
   };
 
+  toggleMock = (mock: IMockResponse) => {
+    const newMock: IMockResponse = { ...mock, active: !mock.active };
+    this.props.onAction("edit", newMock);
+  };
+
   render() {
     const { route, store, changeRoute } = this.props;
 
@@ -55,6 +60,7 @@ class Mocks extends React.Component<IProps, IState> {
               editMock={this.editMock}
               changeRoute={changeRoute}
               store={store}
+              toggleMock={this.toggleMock}
             />
           )}
         </ListWrapper>

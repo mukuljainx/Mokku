@@ -69,6 +69,7 @@ interface IProps {
 const Create = (props: IProps) => {
   const methods = getNetworkMethodList();
   const componentProps = props;
+  console.log(componentProps.mock);
   return (
     <Wrapper>
       <Formik
@@ -84,6 +85,7 @@ const Create = (props: IProps) => {
           componentProps.onAction(componentProps.mock ? "edit" : "add", {
             id: -1,
             createdOn: new Date().getTime(),
+            active: true,
             ...(componentProps.mock ? componentProps.mock : {}),
             ...values,
           });
@@ -147,6 +149,7 @@ const Create = (props: IProps) => {
                   <Label>Response:</Label>
                   <Textarea
                     error={!!errors.response}
+                    value={values.response}
                     rows={6}
                     name="response"
                     onChange={handleChange}
