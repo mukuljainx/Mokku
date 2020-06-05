@@ -96,7 +96,10 @@ const List = (props: IProps) => {
                 <Cell width={40}>
                   <CellWrapper>
                     <Icon
-                      onClick={() => props.toggleMock(mock)}
+                      onClick={(event) => {
+                        props.toggleMock(mock);
+                        event.stopPropagation();
+                      }}
                       style={{ transform: "scale(1.8)", cursor: "pointer" }}
                       color={mock.active ? "primary" : "background"}
                     >
@@ -132,7 +135,10 @@ const List = (props: IProps) => {
                     <Button
                       transparent
                       icon
-                      onClick={() => props.onAction("delete", mock)}
+                      onClick={(event) => {
+                        props.onAction("delete", mock);
+                        event.stopPropagation();
+                      }}
                     >
                       <Icon color="alert">delete_forever</Icon>
                     </Button>

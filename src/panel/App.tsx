@@ -62,7 +62,6 @@ class App extends React.Component<IProps, IState> {
       this.setState({ rawMock: undefined });
       this.changeRoute("mock");
     }
-    debugger;
 
     if (!newMock) {
       return;

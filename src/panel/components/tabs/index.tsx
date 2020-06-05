@@ -18,6 +18,7 @@ const TabWrapper = styled("div")<{ active?: boolean }>`
   padding: 8px;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
+  cursor: pointer;
   ${({ theme, active }) =>
     active &&
     `
