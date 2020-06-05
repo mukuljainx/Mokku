@@ -1,9 +1,9 @@
 export default {
   colors: {
-    border: "#a9a9aa",
+    border: "#BCBABE",
     background: "#cfcfd0",
     primaryLight: "#d4ddfa",
-    primary: "#6a88fb",
+    primary: "#0043e8",
     primaryDark: " #3f549d",
     dark: "#3d3e3e",
     light: "#fdfdfd",

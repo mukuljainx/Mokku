@@ -2,11 +2,12 @@ import * as React from "react";
 import { Formik, Form, Field } from "formik";
 import styled from "styled-components";
 
-import { IMockResponse } from "../../../interface/mock";
+import { IMockResponse, IMockResponseRaw } from "../../../interface/mock";
 import { IMethod } from "../../../interface/network";
 import MultiSelect from "../../components/multiselect";
 import { getNetworkMethodList } from "../../../services/collection";
 import { isValidJSON, getError } from "../../../services/helper";
+import { Button } from "../../components/table";
 
 const Wrapper = styled("div")`
   border-left: ${({ theme }) => `1px solid ${theme.colors.border}`};
@@ -21,9 +22,15 @@ const Label = styled("label")`
 
 const Input = styled(Field)`
   height: 25px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 4px;
+  border-style: solid;
 `;
 
 const Textarea = styled("textarea")<{ error?: boolean }>`
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 4px;
+  border-style: solid;
   ${({ error, theme }) => error && `border: 1px solid ${theme.colors.alert};`};
 `;
 
@@ -35,23 +42,18 @@ const FieldWrapper = styled("div")`
 
 const Group = styled.div`
   display: flex;
-  margin-bottom: 16px;
+  align-items: center;
+  margin-bottom: 8px;
   ${FieldWrapper}:not(:last-child) {
     margin-right: 16px;
   }
 `;
 
-const StyledForm = styled(Form)`
-  padding: 16px;
-  width: 656px;
-`;
+const Actions = styled.div``;
 
-const Button = styled("button")`
-  background: ${({ theme }) => theme.colors.primary};
-  border: none;
-  height: 32px;
-  color: white;
-  padding: 0 16px;
+const StyledForm = styled(Form)`
+  padding: 8px 16px;
+  width: 656px;
 `;
 
 const Error = styled("p")`
@@ -61,15 +63,17 @@ const Error = styled("p")`
 `;
 
 interface IProps {
-  mock?: IMockResponse;
+  mock?: IMockResponseRaw;
   changeRoute: (route: string) => void;
-  onAction: (action: "add" | "delete" | "edit", mock: IMockResponse) => void;
+  onAction: (
+    action: "add" | "delete" | "edit" | "clear",
+    mock: IMockResponse | void
+  ) => void;
 }
 
 const Create = (props: IProps) => {
   const methods = getNetworkMethodList();
   const componentProps = props;
-  console.log(componentProps.mock);
   return (
     <Wrapper>
       <Formik
@@ -82,7 +86,7 @@ const Create = (props: IProps) => {
           response: componentProps.mock?.response || "",
         }}
         onSubmit={async (values) => {
-          componentProps.onAction(componentProps.mock ? "edit" : "add", {
+          componentProps.onAction(componentProps.mock.id ? "edit" : "add", {
             id: -1,
             createdOn: new Date().getTime(),
             active: true,
@@ -140,7 +144,7 @@ const Create = (props: IProps) => {
                   <Input required name="status" type="number"></Input>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Delay:</Label>
+                  <Label>Delay (in ms):</Label>
                   <Input required name="delay" type="number"></Input>
                 </FieldWrapper>
               </Group>
@@ -157,20 +161,26 @@ const Create = (props: IProps) => {
                   ></Textarea>
                 </FieldWrapper>
               </Group>
-              <Error>{getError(errors) || " "}</Error>
-              <Button
-                style={{ marginRight: 16 }}
-                disabled={!isValid}
-                type="submit"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => componentProps.changeRoute("mock")}
-                type="button"
-              >
-                Cancel
-              </Button>
+              <Group style={{ justifyContent: "space-between" }}>
+                <Error>{getError(errors) || " "}</Error>
+                <Actions>
+                  <Button
+                    style={{ marginRight: 16 }}
+                    disabled={!isValid}
+                    type="submit"
+                    background="primary"
+                    color="white"
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    onClick={() => componentProps.onAction("clear")}
+                    type="button"
+                  >
+                    Cancel
+                  </Button>
+                </Actions>
+              </Group>
             </StyledForm>
           );
         }}

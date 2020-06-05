@@ -1,7 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
 
+import { ThemeType } from "../theme";
 import { ILog } from "../../interface/mock";
+import { Button, Icon } from "../components/table";
+import Tooltip from "../components/tooltip";
 import Detail from "./detail";
 import {
   Table,
@@ -17,6 +20,7 @@ import {
 interface IProps {
   logs: ILog[];
   changeRoute: (route: string) => void;
+  mockNetworkCall: (log: ILog) => void;
 }
 
 const Wrapper = styled("div")`
@@ -42,12 +46,13 @@ const Logs = (props: IProps) => {
     return (
       <EmptyWrapper>
         <p>Network Logs will appear here.</p>
-        <button
-          className="button link"
+        <Button
+          transparent
+          link
           onClick={() => props.changeRoute("mock.create")}
         >
           Create a Mock
-        </button>
+        </Button>
       </EmptyWrapper>
     );
   }
@@ -59,14 +64,14 @@ const Logs = (props: IProps) => {
         <Table>
           <TableHead>
             <TableRow>
-              <HeaderCell width={80}>
+              <HeaderCell width={40}>
                 <div></div>
-              </HeaderCell>
-              <HeaderCell>
-                <div>URL</div>
               </HeaderCell>
               <HeaderCell width={80}>
                 <div>Method</div>
+              </HeaderCell>
+              <HeaderCell>
+                <div>URL</div>
               </HeaderCell>
               <HeaderCell width={80}>
                 <div>Status</div>
@@ -88,8 +93,24 @@ const Logs = (props: IProps) => {
                   setLog(log);
                 }}
               >
+                <Cell width={40}>
+                  <div>
+                    {log.response && (
+                      <Tooltip
+                        tooltipStyle={{ left: 32, top: -7, width: 132 }}
+                        tooltip={
+                          log.isMocked ? "Mocked Response" : "Network Response"
+                        }
+                      >
+                        <Icon color="primary">
+                          {log.isMocked ? "memory" : "wifi"}
+                        </Icon>
+                      </Tooltip>
+                    )}
+                  </div>
+                </Cell>
                 <Cell width={80}>
-                  <div>{log.isMocked ? "M" : "N"}</div>
+                  <div>{log.request?.method}</div>
                 </Cell>
                 <Cell>
                   <div>
@@ -97,21 +118,24 @@ const Logs = (props: IProps) => {
                   </div>
                 </Cell>
                 <Cell width={80}>
-                  <div>{log.request?.method}</div>
-                </Cell>
-                <Cell width={80}>
                   <div>{log.response?.status}</div>
                 </Cell>
                 <Cell width={120}>
-                  {log.response?.response ? (
-                    log.response?.status ? (
-                      <button className="link">Mock</button>
-                    ) : (
-                      "-"
-                    )
-                  ) : (
-                    "Pending..."
-                  )}
+                  <div>
+                    {log.response &&
+                      (log.isMocked ? (
+                        "Mocked"
+                      ) : (
+                        <Button
+                          icon
+                          transparent
+                          link
+                          onClick={() => props.mockNetworkCall(log)}
+                        >
+                          Mock
+                        </Button>
+                      ))}
+                  </div>
                 </Cell>
               </TableRow>
             ))}

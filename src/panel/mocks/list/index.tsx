@@ -53,12 +53,13 @@ const List = (props: IProps) => {
     return (
       <EmptyWrapper>
         <p>No Mocks Yet.</p>
-        <button
-          className="button link"
+        <Button
+          transparent
+          link
           onClick={() => props.changeRoute("mock.create")}
         >
           Create a Mock
-        </button>
+        </Button>
       </EmptyWrapper>
     );
   }
@@ -69,11 +70,11 @@ const List = (props: IProps) => {
           <TableHead>
             <TableRow>
               <HeaderCell width={40}></HeaderCell>
+              <HeaderCell width={80}>
+                <CellWrapper>Method</CellWrapper>
+              </HeaderCell>
               <HeaderCell>
                 <CellWrapper>URL</CellWrapper>
-              </HeaderCell>
-              <HeaderCell width={60}>
-                <CellWrapper>Method</CellWrapper>
               </HeaderCell>
               <HeaderCell width={60}>
                 <CellWrapper>Status</CellWrapper>
@@ -91,7 +92,7 @@ const List = (props: IProps) => {
         <Table>
           <TableBody>
             {store.mocks.map((mock, index) => (
-              <TableRow key={index}>
+              <TableRow key={index} onClick={() => props.editMock(mock)}>
                 <Cell width={40}>
                   <CellWrapper>
                     <Icon
@@ -103,11 +104,11 @@ const List = (props: IProps) => {
                     </Icon>
                   </CellWrapper>
                 </Cell>
+                <Cell width={80}>
+                  <CellWrapper>{mock.method}</CellWrapper>
+                </Cell>
                 <Cell>
                   <CellWrapper className="ellipsis">{mock.url}</CellWrapper>
-                </Cell>
-                <Cell width={60}>
-                  <CellWrapper>{mock.method}</CellWrapper>
                 </Cell>
                 <Cell width={60}>
                   <CellWrapper>{mock.status}</CellWrapper>
@@ -117,7 +118,11 @@ const List = (props: IProps) => {
                 </Cell>
                 <Cell width={40}>
                   <CellWrapper>
-                    <Button transparent onClick={() => props.editMock(mock)}>
+                    <Button
+                      transparent
+                      icon
+                      onClick={() => props.editMock(mock)}
+                    >
                       <Icon color="primary">edit</Icon>
                     </Button>
                   </CellWrapper>
@@ -126,6 +131,7 @@ const List = (props: IProps) => {
                   <CellWrapper>
                     <Button
                       transparent
+                      icon
                       onClick={() => props.onAction("delete", mock)}
                     >
                       <Icon color="alert">delete_forever</Icon>

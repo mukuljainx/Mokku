@@ -30,6 +30,8 @@ export interface IMockResponse {
   }) => IMockResponse["response"];
 }
 
+export type IMockResponseRaw = Partial<IMockResponse>;
+
 export interface IStore {
   active: boolean;
   mocks: IMockResponse[];

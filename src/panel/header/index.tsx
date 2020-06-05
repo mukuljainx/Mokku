@@ -27,10 +27,10 @@ interface IProps {
 
 const getSelected = (route: string) => {
   if (route.indexOf("logs") === 0) {
-    return 0;
+    return 1;
   }
   if (route.indexOf("mock") === 0) {
-    return 1;
+    return 0;
   }
 };
 
@@ -39,9 +39,9 @@ const Header = (props: IProps) => {
     <Wrapper>
       <StyledTabs
         selected={getSelected(props.route)}
-        tabs={["Logs", "Mocks"]}
+        tabs={["Mocks", "Logs"]}
         onChange={(selected) => {
-          if (selected === 0) {
+          if (selected === 1) {
             props.changeRoute("logs");
           } else {
             props.changeRoute("mock");

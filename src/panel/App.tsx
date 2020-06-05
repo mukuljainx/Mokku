@@ -5,7 +5,13 @@ import "./app.scss";
 import Logs from "./logs";
 import Mock from "./mocks";
 import Header from "./header";
-import { ILog, IStore, DBNameType, IMockResponse } from "../interface/mock";
+import {
+  ILog,
+  IStore,
+  DBNameType,
+  IMockResponse,
+  IMockResponseRaw,
+} from "../interface/mock";
 import theme from "./theme";
 import { getDefultStore, updateStore } from "../services/collection";
 
@@ -24,6 +30,7 @@ interface IState {
   logs: ILog[];
   route: "logs" | "mock.create" | "mock";
   store: IStore;
+  rawMock?: IMockResponseRaw;
 }
 
 interface IProps {
@@ -34,7 +41,7 @@ interface IProps {
 class App extends React.Component<IProps, IState> {
   state: IState = {
     logs: [],
-    route: "mock.create",
+    route: "mock",
     store: getDefultStore(),
   };
 
@@ -48,9 +55,19 @@ class App extends React.Component<IProps, IState> {
   };
 
   handleAction = (
-    action: "add" | "delete" | "edit",
-    newMock: IMockResponse
+    action: "add" | "delete" | "edit" | "clear",
+    newMock: IMockResponse | void
   ) => {
+    if (action === "clear") {
+      this.setState({ rawMock: undefined });
+      this.changeRoute("mock");
+    }
+    debugger;
+
+    if (!newMock) {
+      return;
+    }
+
     const store = {
       ...this.state.store,
     };
@@ -107,6 +124,22 @@ class App extends React.Component<IProps, IState> {
       });
   };
 
+  editMock = (rawMock: IMockResponseRaw) => {
+    this.setState({ rawMock }, () => {
+      this.changeRoute("mock.create");
+    });
+  };
+
+  mockNetworkCall = (log: ILog) => {
+    this.editMock({
+      active: true,
+      method: log.request?.method as IMockResponse["method"],
+      url: log.request?.url,
+      status: log.response?.status,
+      response: log.response?.response,
+    });
+  };
+
   componentDidMount() {
     chrome.runtime.onMessage.addListener((message, sender, response) => {
       if (message.to !== "PANEL" || !this.checkIfSameTab(sender.tab)) return;
@@ -137,21 +170,27 @@ class App extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { route, logs, store } = this.state;
+    const { route, logs, store, rawMock } = this.state;
     return (
       <ThemeProvider theme={theme}>
         <Wrapper>
           <Header route={route} changeRoute={this.changeRoute} />
           <Content>
             {route === "logs" && (
-              <Logs changeRoute={this.changeRoute} logs={logs} />
+              <Logs
+                mockNetworkCall={this.mockNetworkCall}
+                changeRoute={this.changeRoute}
+                logs={logs}
+              />
             )}
             {route.indexOf("mock") === 0 && (
               <Mock
+                rawMock={rawMock}
                 onAction={this.handleAction}
                 changeRoute={this.changeRoute}
                 store={store}
                 route={route}
+                editMock={this.editMock}
               />
             )}
           </Content>

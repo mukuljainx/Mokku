@@ -8,7 +8,7 @@ export const Cell = styled.td<{ width?: number }>`
   &:first-child {
     padding-left: 8px;
   }
-  div {
+  > div {
     padding: 8px 0;
   }
 `;
@@ -19,7 +19,7 @@ export const HeaderCell = styled.th<{ width?: number }>`
   &:first-child {
     padding-left: 8px;
   }
-  div {
+  > div {
     padding: 8px 0;
   }
 `;
@@ -60,11 +60,24 @@ export const Icon = styled.i.attrs({ className: "material-icons" })<{
   ${({ theme, color }) => color && `color: ${theme.colors[color]};`};
 `;
 
-export const Button = styled.button<{ transparent?: boolean; link?: boolean }>`
+export const Button = styled.button<{
+  transparent?: boolean;
+  link?: boolean;
+  background?: keyof ThemeType["colors"];
+  color?: keyof ThemeType["colors"];
+  icon?: boolean;
+}>`
   border: none;
   border-radius: 4px;
   line-height: 1;
-  padding: 2px 4px;
+  ${({ icon }) =>
+    icon
+      ? `padding: 2px 4px;`
+      : `height: 32px;
+  padding: 0 16px;`};
   ${({ transparent }) => transparent && `background: transparent;`};
   ${({ link, theme }) => link && `color: ${theme.colors.primary};`};
+  ${({ background, theme }) =>
+    background && `background: ${theme.colors[background]};`};
+  ${({ color, theme }) => color && `color: ${theme.colors[color]};`};
 `;
