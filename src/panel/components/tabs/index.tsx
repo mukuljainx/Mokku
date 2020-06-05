@@ -15,14 +15,14 @@ const Wrapper = styled("div")`
 `;
 
 const TabWrapper = styled("div")<{ active?: boolean }>`
-  padding: 8px;
+  padding: 8px 16px;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   cursor: pointer;
   ${({ theme, active }) =>
     active &&
     `
-      border-bottom: 2px solid ${theme.colors.primaryDark};
+      border-bottom: 2px solid ${theme.colors.primary};
       background: white;
     
     `};

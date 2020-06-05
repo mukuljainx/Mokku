@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Tabs from "../components/tabs";
+import { Button } from "../components/table";
 
 const Wrapper = styled("div")`
   display: flex;
@@ -15,9 +16,10 @@ const StyledTabs = styled(Tabs)`
   margin-bottom: -1px;
 `;
 
-const AddMockButton = styled("button")`
+const AddMockButton = styled(Button)`
   font-size: 12px;
   font-weight: 600;
+  margin-bottom: -3px;
 `;
 
 interface IProps {
@@ -49,6 +51,8 @@ const Header = (props: IProps) => {
         }}
       />
       <AddMockButton
+        transparent
+        link
         onClick={() => props.changeRoute("mock.create")}
         className="button-icon transparent no-hover"
       >
