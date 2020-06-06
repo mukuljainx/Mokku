@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { debounce } from "lodash";
+import { debounce, get } from "lodash";
 
 import "./app.scss";
 import Logs from "./logs";
@@ -40,7 +40,7 @@ const CreateWrapper = styled("div")`
 
 interface IState {
   logs: ILog[];
-  route: "logs" | "mock.create" | "mock";
+  route: "logs" | "logs.create" | "mock.create" | "mock";
   store: IStore;
   rawMock?: IMockResponseRaw;
   filter: {
@@ -76,7 +76,9 @@ class App extends React.Component<IProps, IState> {
   ) => {
     if (action === "clear") {
       this.setState({ rawMock: undefined });
-      this.changeRoute("mock");
+      this.changeRoute(
+        this.state.route.replace(".create", "") as IState["route"]
+      );
     }
 
     if (!newMock) {
@@ -200,6 +202,15 @@ class App extends React.Component<IProps, IState> {
     return store;
   };
 
+  editMockFromLog = (path: string) => {
+    if (!path) {
+      console.log("Cant mock this");
+      // TODO
+    }
+    this.changeRoute("logs.create");
+    this.setState({ rawMock: get(this.state.store, path) });
+  };
+
   render() {
     const {
       route,
@@ -232,6 +243,7 @@ class App extends React.Component<IProps, IState> {
                   mockNetworkCall={this.mockNetworkCall}
                   changeRoute={this.changeRoute}
                   logs={filterdLogs}
+                  editMock={this.editMockFromLog}
                 />
               </ListWrapper>
             )}
