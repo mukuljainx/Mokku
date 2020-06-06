@@ -11,7 +11,10 @@ export interface ILog {
   };
   mockResponse?: IMockResponse;
   id?: number;
+  // if the API response is mocked
   isMocked?: boolean;
+  // will be used to fetch mock from store
+  mockPath?: string;
 }
 
 export interface IMockResponse {
@@ -49,3 +52,9 @@ export interface IStore {
 export type DBNameType = "moku.extension.main.db";
 
 export type IDB = Record<DBNameType, IStore>;
+
+export interface IURLMap {
+  [url: string]: {
+    [method: string]: string;
+  };
+}

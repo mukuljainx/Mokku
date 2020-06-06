@@ -1,4 +1,4 @@
-import { IStore, DBNameType } from "../interface/mock";
+import { IStore, DBNameType, IURLMap } from "../interface/mock";
 import { IMethod } from "../interface/network";
 
 export const getDefultStore = (): IStore => ({
@@ -28,3 +28,39 @@ export const getNetworkMethodList = (): IMethod[] => [
   "PUT",
   "DELETE",
 ];
+
+export const getNetworkMethodMap = () => ({
+  GET: null,
+  POST: null,
+  PATCH: null,
+  PUT: null,
+  DELETE: null,
+});
+
+export const getURLMap = (store: IStore) => {
+  const urlMap: IURLMap = {};
+  store.mocks.forEach((mock, index) => {
+    if (!urlMap[mock.url]) {
+      urlMap[mock.url] = getNetworkMethodMap();
+    }
+
+    if (urlMap[mock.url]) {
+      urlMap[mock.url][mock.method] = `mocks[${index}]`;
+    }
+  });
+
+  Object.keys(store.collections).forEach((collection) => {
+    const mocks = store.collections[collection].mocks;
+    mocks.forEach((mock, index) => {
+      if (!urlMap[mock.url]) {
+        urlMap[mock.url] = getNetworkMethodMap();
+      }
+
+      if (urlMap[mock.url]) {
+        urlMap[mock.url][mock.method] = `${collection}.mocks[${index}]`;
+      }
+    });
+  });
+
+  return urlMap;
+};

@@ -5,7 +5,7 @@ export interface IEventMessage {
   from: IEventMessage["to"];
   extenstionName: "MOKU";
   id?: number;
-  type: "XHOOK_AFTER" | "XHOOK_BEFORE";
+  type: "LOG" | "QUERY";
   message: ILog;
 }
 

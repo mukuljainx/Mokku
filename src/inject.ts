@@ -60,9 +60,9 @@ xhook.before(function (request, callback) {
     },
     id: request.moku.id,
   };
-  postMessage(data, "XHOOK_AFTER", false);
+  postMessage(data, "LOG", false);
 
-  postMessage(data, "XHOOK_BEFORE", true)
+  postMessage(data, "QUERY", true)
     .then((data: { mockResponse: IMockResponse }) => {
       if (data && data.mockResponse) {
         request.moku.isMocked = true;
@@ -102,5 +102,5 @@ xhook.after(function (request, response) {
     id: request.moku?.id,
     isMocked: request.moku?.isMocked,
   };
-  postMessage(data, "XHOOK_AFTER", false);
+  postMessage(data, "LOG", false);
 });

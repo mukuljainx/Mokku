@@ -1,16 +1,38 @@
+import { get } from "lodash";
+
 import inject from "./contentScript/injectToDom";
-import { IEventMessage, IPortMessage } from "./interface/message";
-import { getDefultStore } from "./services/collection";
-import { IStore, DBNameType } from "./interface/mock";
+import { IEventMessage } from "./interface/message";
+import { getDefultStore, getURLMap } from "./services/collection";
+import { IStore, DBNameType, IMockResponse, IURLMap } from "./interface/mock";
 
 // injects script to page's DOM
 inject();
 
 let store: IStore;
-const DBName: DBNameType = "moku.extension.main.db";
-chrome.storage.local.get([DBName], function (result) {
-  store = result["moku.extension.main.db"] || getDefultStore();
-});
+let urlMap: IURLMap = {};
+
+const setStore = () => {
+  const DBName: DBNameType = "moku.extension.main.db";
+  chrome.storage.local.get([DBName], function (result) {
+    store = result["moku.extension.main.db"] || getDefultStore();
+    urlMap = getURLMap(store);
+  });
+};
+
+const getMockPath = (url: string, method: string) => {
+  if (urlMap[url]) {
+    if (urlMap[url][method]) {
+      return urlMap[url][method];
+    }
+  }
+};
+
+const getMock = (path: string) => {
+  return get(store, path, null);
+};
+
+// get initial store
+setStore();
 
 // From xhook to content Script
 window.addEventListener("message", function (event) {
@@ -21,9 +43,18 @@ window.addEventListener("message", function (event) {
 
   if (data.to !== "CONTENT_SCRIPT") return;
 
-  if (data.type === "XHOOK_AFTER") {
+  if (data.type === "LOG") {
+    const message = data.message;
+    const mockPath = getMockPath(message.request.url, message.request.method);
+    const mock = getMock(mockPath) as IMockResponse;
+
+    if (mock) {
+      message.isMocked = mock.active;
+      message.mockPath = mockPath;
+    }
+
     chrome.runtime.sendMessage({
-      message: data.message,
+      message,
       type: "LOG",
       from: "CONTENT",
       to: "PANEL",
@@ -40,20 +71,12 @@ window.addEventListener("message", function (event) {
   };
 
   const request = data.message.request;
+  const mockPath = getMockPath(request.url, request.method);
+  const mock = getMock(mockPath) as IMockResponse;
 
-  const mock = store.mocks.find(
-    (item) =>
-      request.url === item.url && request.method === item.method && item.active
-  );
   if (mock) {
     response.message.mockResponse = mock;
   }
-
-  // if (store.mocks[request.url]) {
-  //   if (store.mocks[request.url][request.url]) {
-  //     response.message.mockResponse = store.mocks[request.url][request.url];
-  //   }
-  // }
 
   window.postMessage(response, "*");
 });
@@ -63,8 +86,6 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
   if (message.to !== "CONTENT") return;
 
   if (message.type === "UPDATE_STORE") {
-    chrome.storage.local.get([DBName], function (result) {
-      store = result["moku.extension.main.db"] || getDefultStore();
-    });
+    setStore();
   }
 });
