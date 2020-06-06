@@ -16,11 +16,14 @@ import {
 } from "../interface/mock";
 import theme from "./theme";
 import { getDefultStore, updateStore } from "../services/collection";
+import { Button, Icon } from "./components/table";
 
-const Wrapper = styled("div")`
+const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   height: 100%;
   display: flex;
   flex-direction: column;
+  ${({ alignCenter }) =>
+    alignCenter && `justify-content: center; align-items:center;`};
 `;
 
 const Content = styled("div")`
@@ -38,6 +41,10 @@ const CreateWrapper = styled("div")`
   min-width: 656px;
 `;
 
+const Text = styled.p<{ large?: boolean }>`
+  ${({ large }) => large && `font-size: 16px;`}
+`;
+
 interface IState {
   logs: ILog[];
   route: "logs" | "logs.create" | "mock.create" | "mock";
@@ -46,6 +53,7 @@ interface IState {
   filter: {
     search: string;
   };
+  storeLoading: boolean;
 }
 
 interface IProps {
@@ -59,6 +67,7 @@ class App extends React.Component<IProps, IState> {
     route: "mock",
     store: getDefultStore(),
     filter: { search: "" },
+    storeLoading: true,
   };
 
   checkIfSameTab = (sender: IProps["tab"]) => {
@@ -181,8 +190,7 @@ class App extends React.Component<IProps, IState> {
     const DBName: DBNameType = "moku.extension.main.db";
     chrome.storage.local.get([DBName], (result) => {
       store = result["moku.extension.main.db"] || getDefultStore();
-      console.log(store);
-      this.setState({ store });
+      this.setState({ store, storeLoading: false });
     });
   }
 
@@ -211,7 +219,30 @@ class App extends React.Component<IProps, IState> {
     this.setState({ rawMock: get(this.state.store, path) });
   };
 
-  render() {
+  getContent = () => {
+    if (!this.props.host || !this.props.tab) {
+      return (
+        <Wrapper alignCenter>
+          <Text>
+            Unable to load the Panel. Please focus on the current tab and retry.
+          </Text>
+          <Button transparent link onClick={() => location.reload()}>
+            Refresh
+          </Button>
+        </Wrapper>
+      );
+    }
+
+    if (this.state.storeLoading) {
+      return (
+        <Wrapper alignCenter>
+          <Icon color="primary" style={{ marginBottom: 16, fontSize: 40 }}>
+            system_update_alt
+          </Icon>
+          <Text large>Getting App Data...</Text>
+        </Wrapper>
+      );
+    }
     const {
       route,
       logs,
@@ -229,48 +260,50 @@ class App extends React.Component<IProps, IState> {
       !search || route === "logs" ? store : this.filterStore(store, search);
 
     return (
-      <ThemeProvider theme={theme}>
-        <Wrapper>
-          <Header
-            onSearchChange={this.handleSearchChange}
-            route={route}
-            changeRoute={this.changeRoute}
-          />
-          <Content>
-            {route.includes("logs") && (
-              <ListWrapper>
-                <Logs
-                  mockNetworkCall={this.mockNetworkCall}
-                  changeRoute={this.changeRoute}
-                  logs={filterdLogs}
-                  editMock={this.editMockFromLog}
-                />
-              </ListWrapper>
-            )}
-            {route.includes("mock") && (
-              <ListWrapper>
-                <Mock
-                  onAction={this.handleAction}
-                  changeRoute={this.changeRoute}
-                  store={filterdStore}
-                  route={route}
-                  editMock={this.editMock}
-                />
-              </ListWrapper>
-            )}
-            {route.includes("create") && (
-              <CreateWrapper>
-                <Create
-                  mock={rawMock}
-                  onAction={this.handleAction}
-                  changeRoute={this.changeRoute}
-                />
-              </CreateWrapper>
-            )}
-          </Content>
-        </Wrapper>
-      </ThemeProvider>
+      <Wrapper>
+        <Header
+          onSearchChange={this.handleSearchChange}
+          route={route}
+          changeRoute={this.changeRoute}
+        />
+        <Content>
+          {route.includes("logs") && (
+            <ListWrapper>
+              <Logs
+                mockNetworkCall={this.mockNetworkCall}
+                changeRoute={this.changeRoute}
+                logs={filterdLogs}
+                editMock={this.editMockFromLog}
+              />
+            </ListWrapper>
+          )}
+          {route.includes("mock") && (
+            <ListWrapper>
+              <Mock
+                onAction={this.handleAction}
+                changeRoute={this.changeRoute}
+                store={filterdStore}
+                route={route}
+                editMock={this.editMock}
+              />
+            </ListWrapper>
+          )}
+          {route.includes("create") && (
+            <CreateWrapper>
+              <Create
+                mock={rawMock}
+                onAction={this.handleAction}
+                changeRoute={this.changeRoute}
+              />
+            </CreateWrapper>
+          )}
+        </Content>
+      </Wrapper>
     );
+  };
+
+  render() {
+    return <ThemeProvider theme={theme}>{this.getContent()}</ThemeProvider>;
   }
 }
 
