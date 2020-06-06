@@ -5,6 +5,7 @@ import { debounce } from "lodash";
 import "./app.scss";
 import Logs from "./logs";
 import Mock from "./mocks";
+import Create from "./mocks/create";
 import Header from "./header";
 import {
   ILog,
@@ -25,6 +26,16 @@ const Wrapper = styled("div")`
 const Content = styled("div")`
   overflow: hidden;
   flex-grow: 2;
+  display: flex;
+`;
+
+const ListWrapper = styled("div")`
+  flex-grow: 2;
+  height: 100%;
+`;
+const CreateWrapper = styled("div")`
+  width: 50%;
+  min-width: 656px;
 `;
 
 interface IState {
@@ -215,22 +226,34 @@ class App extends React.Component<IProps, IState> {
             changeRoute={this.changeRoute}
           />
           <Content>
-            {route.indexOf("logs") === 0 && (
-              <Logs
-                mockNetworkCall={this.mockNetworkCall}
-                changeRoute={this.changeRoute}
-                logs={filterdLogs}
-              />
+            {route.includes("logs") && (
+              <ListWrapper>
+                <Logs
+                  mockNetworkCall={this.mockNetworkCall}
+                  changeRoute={this.changeRoute}
+                  logs={filterdLogs}
+                />
+              </ListWrapper>
             )}
-            {route.indexOf("mock") === 0 && (
-              <Mock
-                rawMock={rawMock}
-                onAction={this.handleAction}
-                changeRoute={this.changeRoute}
-                store={filterdStore}
-                route={route}
-                editMock={this.editMock}
-              />
+            {route.includes("mock") && (
+              <ListWrapper>
+                <Mock
+                  onAction={this.handleAction}
+                  changeRoute={this.changeRoute}
+                  store={filterdStore}
+                  route={route}
+                  editMock={this.editMock}
+                />
+              </ListWrapper>
+            )}
+            {route.includes("create") && (
+              <CreateWrapper>
+                <Create
+                  mock={rawMock}
+                  onAction={this.handleAction}
+                  changeRoute={this.changeRoute}
+                />
+              </CreateWrapper>
             )}
           </Content>
         </Wrapper>

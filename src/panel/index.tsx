@@ -13,6 +13,9 @@ import App from "./App";
  * then till next /
  */
 const getDomain = (url: string) => {
+  if (!url) {
+    return "";
+  }
   let domain = url;
   domain = domain.replace("https://www.", "");
   domain = domain.replace("http://www.", "");
