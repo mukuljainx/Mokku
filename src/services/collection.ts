@@ -1,7 +1,7 @@
 import { IStore, DBNameType, IURLMap } from "../interface/mock";
 import { IMethod } from "../interface/network";
 
-export const getDefultStore = (): IStore => ({
+export const getDefaultStore = (): IStore => ({
   active: false,
   mocks: [],
   id: 0,

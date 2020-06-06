@@ -15,8 +15,9 @@ import {
   IMockResponseRaw,
 } from "../interface/mock";
 import theme from "./theme";
-import { getDefultStore, updateStore } from "../services/collection";
+import { getDefaultStore, updateStore } from "../services/collection";
 import { Button, Icon } from "./components/table";
+import Notification from "./components/notification";
 
 const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   height: 100%;
@@ -54,6 +55,7 @@ interface IState {
     search: string;
   };
   storeLoading: boolean;
+  notification: { text?: string; show: boolean };
 }
 
 interface IProps {
@@ -62,12 +64,28 @@ interface IProps {
 }
 
 class App extends React.Component<IProps, IState> {
+  notificationTimer: number;
   state: IState = {
     logs: [],
     route: "mock",
-    store: getDefultStore(),
+    store: getDefaultStore(),
     filter: { search: "" },
     storeLoading: true,
+    notification: {
+      show: false,
+    },
+  };
+
+  showNotification = (text: string) => {
+    if (this.notificationTimer) {
+      clearTimeout(this.notificationTimer);
+    }
+    this.setState({ notification: { text, show: true } });
+    this.notificationTimer = setTimeout(() => {
+      this.setState((prevState) => ({
+        notification: { text: prevState.notification.text, show: false },
+      }));
+    }, 3000);
   };
 
   checkIfSameTab = (sender: IProps["tab"]) => {
@@ -104,8 +122,7 @@ class App extends React.Component<IProps, IState> {
           (mock) => mock.url === newMock.url && mock.method === newMock.method
         );
         if (sameMock) {
-          console.log("Mock already exist");
-          // TODO: show alert
+          this.showNotification("Mock already exist");
           return;
         }
         const id = store.id;
@@ -127,17 +144,23 @@ class App extends React.Component<IProps, IState> {
       }
 
       case "delete": {
-        // TODO: show alert
         store.mocks = store.mocks.filter((item) => item.id !== newMock.id);
         break;
       }
     }
+
+    const notificationMessage = {
+      add: "Mock added Successfully.",
+      edit: "Mock edited Successfully.",
+      delete: "Mock deleted Successfully.",
+    };
 
     updateStore(store)
       .then((store: IStore) => {
         this.setState({ store });
         // Alert the content script
         // so it can refresh store
+        this.showNotification(notificationMessage[action]);
         chrome.tabs.sendMessage(this.props.tab.id, {
           type: "UPDATE_STORE",
           from: "PANEL",
@@ -145,7 +168,9 @@ class App extends React.Component<IProps, IState> {
         });
       })
       .catch((error) => {
-        console.log("Unable to update store: ");
+        this.showNotification(
+          "Something went wrong, please reopen the panel then try."
+        );
         console.log(error);
       });
   };
@@ -189,7 +214,7 @@ class App extends React.Component<IProps, IState> {
     let store: IStore;
     const DBName: DBNameType = "moku.extension.main.db";
     chrome.storage.local.get([DBName], (result) => {
-      store = result["moku.extension.main.db"] || getDefultStore();
+      store = result["moku.extension.main.db"] || getDefaultStore();
       this.setState({ store, storeLoading: false });
     });
   }
@@ -212,8 +237,7 @@ class App extends React.Component<IProps, IState> {
 
   editMockFromLog = (path: string) => {
     if (!path) {
-      console.log("Cant mock this");
-      // TODO
+      this.showNotification("Can't Edit this mock, try reopening the panel.");
     }
     this.changeRoute("logs.create");
     this.setState({ rawMock: get(this.state.store, path) });
@@ -251,12 +275,12 @@ class App extends React.Component<IProps, IState> {
       filter: { search },
     } = this.state;
 
-    const filterdLogs =
+    const filteredLogs =
       !search || route === "mock"
         ? logs
         : logs.filter((item) => (item.request?.url || "").includes(search));
 
-    const filterdStore =
+    const filteredStore =
       !search || route === "logs" ? store : this.filterStore(store, search);
 
     return (
@@ -272,7 +296,7 @@ class App extends React.Component<IProps, IState> {
               <Logs
                 mockNetworkCall={this.mockNetworkCall}
                 changeRoute={this.changeRoute}
-                logs={filterdLogs}
+                logs={filteredLogs}
                 editMock={this.editMockFromLog}
               />
             </ListWrapper>
@@ -282,7 +306,7 @@ class App extends React.Component<IProps, IState> {
               <Mock
                 onAction={this.handleAction}
                 changeRoute={this.changeRoute}
-                store={filterdStore}
+                store={filteredStore}
                 route={route}
                 editMock={this.editMock}
               />
@@ -303,7 +327,17 @@ class App extends React.Component<IProps, IState> {
   };
 
   render() {
-    return <ThemeProvider theme={theme}>{this.getContent()}</ThemeProvider>;
+    return (
+      <ThemeProvider theme={theme}>
+        {this.getContent()}
+        {this.state.notification && (
+          <Notification
+            show={this.state.notification.show}
+            text={this.state.notification.text}
+          ></Notification>
+        )}
+      </ThemeProvider>
+    );
   }
 }
 

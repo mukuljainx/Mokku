@@ -60,8 +60,6 @@ const Logs = (props: IProps) => {
     );
   }
 
-  console.log(props.logs);
-
   return (
     <Wrapper>
       {log && <Detail log={log} onClose={() => setLog(undefined)} />}

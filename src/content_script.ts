@@ -2,7 +2,7 @@ import { get } from "lodash";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
-import { getDefultStore, getURLMap } from "./services/collection";
+import { getDefaultStore, getURLMap } from "./services/collection";
 import { IStore, DBNameType, IMockResponse, IURLMap } from "./interface/mock";
 
 // injects script to page's DOM
@@ -14,7 +14,7 @@ let urlMap: IURLMap = {};
 const setStore = () => {
   const DBName: DBNameType = "moku.extension.main.db";
   chrome.storage.local.get([DBName], function (result) {
-    store = result["moku.extension.main.db"] || getDefultStore();
+    store = result["moku.extension.main.db"] || getDefaultStore();
     urlMap = getURLMap(store);
   });
 };
