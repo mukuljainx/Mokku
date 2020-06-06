@@ -22,9 +22,26 @@ const AddMockButton = styled(Button)`
   margin-bottom: -3px;
 `;
 
+const Filters = styled.div`
+  border-left: 1px solid #bcbabe;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+`;
+
+const Input = styled.input`
+  height: 23px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 4px;
+  border-style: solid;
+  width: 200px;
+`;
+
 interface IProps {
   changeRoute: (route: string) => void;
   route: string;
+  onSearchChange: (search: string) => void;
 }
 
 const getSelected = (route: string) => {
@@ -37,6 +54,13 @@ const getSelected = (route: string) => {
 };
 
 const Header = (props: IProps) => {
+  const [search, setSearch] = React.useState("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+    props.onSearchChange(event.target.value);
+  };
+
   return (
     <Wrapper>
       <StyledTabs
@@ -58,6 +82,13 @@ const Header = (props: IProps) => {
       >
         <i className="material-icons icon">add</i> Create Mock
       </AddMockButton>
+      <Filters>
+        <Input
+          placeholder="Search logs/mocks"
+          value={search}
+          onChange={handleSearchChange}
+        ></Input>
+      </Filters>
     </Wrapper>
   );
 };

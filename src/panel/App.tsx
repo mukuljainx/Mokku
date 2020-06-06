@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled, { ThemeProvider } from "styled-components";
+import { debounce } from "lodash";
 
 import "./app.scss";
 import Logs from "./logs";
@@ -31,6 +32,9 @@ interface IState {
   route: "logs" | "mock.create" | "mock";
   store: IStore;
   rawMock?: IMockResponseRaw;
+  filter: {
+    search: string;
+  };
 }
 
 interface IProps {
@@ -43,6 +47,7 @@ class App extends React.Component<IProps, IState> {
     logs: [],
     route: "mock",
     store: getDefultStore(),
+    filter: { search: "" },
   };
 
   checkIfSameTab = (sender: IProps["tab"]) => {
@@ -168,18 +173,53 @@ class App extends React.Component<IProps, IState> {
     });
   }
 
+  handleSearchChange = debounce((search: string) => {
+    this.setState({ filter: { search } });
+  }, 1000);
+
+  filterStore = (oldStore: IStore, search) => {
+    const store = { ...oldStore };
+    store.mocks = store.mocks.filter((item) => item.url.includes(search));
+    Object.keys(store.collections).forEach((collection) => {
+      store[collection].mocks = store[collection].mocks.filter((item) =>
+        item.url.includes(search)
+      );
+    });
+
+    return store;
+  };
+
   render() {
-    const { route, logs, store, rawMock } = this.state;
+    const {
+      route,
+      logs,
+      store,
+      rawMock,
+      filter: { search },
+    } = this.state;
+
+    const filterdLogs =
+      !search || route === "mock"
+        ? logs
+        : logs.filter((item) => (item.request?.url || "").includes(search));
+
+    const filterdStore =
+      !search || route === "logs" ? store : this.filterStore(store, search);
+
     return (
       <ThemeProvider theme={theme}>
         <Wrapper>
-          <Header route={route} changeRoute={this.changeRoute} />
+          <Header
+            onSearchChange={this.handleSearchChange}
+            route={route}
+            changeRoute={this.changeRoute}
+          />
           <Content>
-            {route === "logs" && (
+            {route.indexOf("logs") === 0 && (
               <Logs
                 mockNetworkCall={this.mockNetworkCall}
                 changeRoute={this.changeRoute}
-                logs={logs}
+                logs={filterdLogs}
               />
             )}
             {route.indexOf("mock") === 0 && (
@@ -187,7 +227,7 @@ class App extends React.Component<IProps, IState> {
                 rawMock={rawMock}
                 onAction={this.handleAction}
                 changeRoute={this.changeRoute}
-                store={store}
+                store={filterdStore}
                 route={route}
                 editMock={this.editMock}
               />

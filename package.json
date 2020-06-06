@@ -16,11 +16,13 @@
     "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.155",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.0",
     "formik": "^2.1.4",
     "jquery": "^3.5.0",
+    "lodash": "^4.17.15",
     "moment": "~2.24.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
