@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      h2{
+        margin: 0;
+      }
+      #wrapper{
+        width: 200px;
+        padding: 8px;
+      }
+      img{
+        height: 40px;
+      }
+      .primary-text{
+        color: #0043e8;
+      }
+      button{
+        border: none;
+        border-radius: 4px;
+        line-height: 1;
+        color: white;
+        background-color: #0043e8;
+        padding: 8px 16px;
+      }
+      #refresh-container{
+        text-align: center;
+        display: none;
+      }
+      #toggle{
+        cursor: pointer;
+      }
+      #toggle-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+    </style>
+    <title>Mokku</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <h2 style="text-align: center;margin-bottom: 24px;">Mokku</h2>
+      <div style="display:flex;align-items: center;justify-content: center; flex-direction: column;">
+        <img src="mokku.svg" style="filter:grayscale(1)" id="logo"></img>
+        <div id="toggle-container">
+          <i style="font-size: 40px;" id="toggle" class="material-icons">toggle_off</i>
+          <span>Mocking Enabled</span>
+        </div>
+      </div>
+      <div id="refresh-container">
+          <p>To Reflect the changes Refresh Page.</p>
+          <button>Refresh</button>
+      </div>
+    </div>
+  </body>
+  <script src="js/popup.js"></script>
+</html>
