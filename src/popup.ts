@@ -1,35 +1,80 @@
-import * as moment from "moment";
-import * as $ from "jquery";
+const getDomain = (url: string) => {
+  if (!url) {
+    return "";
+  }
+  let domain = url;
+  domain = domain.replace("https://www.", "");
+  domain = domain.replace("http://www.", "");
+  domain = domain.replace("https://", "");
+  domain = domain.replace("http://", "");
+  const domainLastIndex = domain.indexOf("/");
+  if (domainLastIndex !== -1) {
+    domain = domain.substr(0, domainLastIndex);
+  }
+  return domain;
+};
 
-let count = 0;
+let notAValidUrl = false;
+let storeKey = "";
+let initialActiveStatus = false;
+const toggleBtn = document.querySelector("#toggle") as HTMLElement;
+const logo = document.querySelector("#logo") as HTMLElement;
+const refreshContainer = document.querySelector(
+  "#refresh-container"
+) as HTMLElement;
 
-$(function () {
-  const queryInfo = {
-    active: true,
-    currentWindow: true,
-  };
+chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+  const host = getDomain(tab?.url);
+  if (!host) {
+    notAValidUrl = true;
+    return;
+  }
 
-  chrome.tabs.query(queryInfo, function (tabs) {
-    $("#url").text(tabs[0].url);
-    $("#time").text(moment().format("YYYY-MM-DD HH:mm:ss"));
+  const isLocalhost = tab.url.includes("http://localhost");
+  storeKey = `moku.extension.active.${host}`;
+  chrome.storage.local.get([storeKey], function (result) {
+    let active = result[storeKey];
+    if (isLocalhost && active === undefined) {
+      active = true;
+    }
+    initialActiveStatus = active;
+    if (active) {
+      toggleBtn.innerText = "toggle_on";
+      toggleBtn.classList.add("primary-text");
+      logo.style.filter = "";
+    }
   });
+});
 
-  chrome.browserAction.setBadgeText({ text: count.toString() });
-  $("#countUp").click(() => {
-    chrome.browserAction.setBadgeText({ text: (++count).toString() });
-  });
+const toggleActive = () => {
+  const current = toggleBtn.innerText === "toggle_on";
 
-  $("#changeBackground").click(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        {
-          color: "#555555",
-        },
-        function (msg) {
-          console.log("result message:", msg);
-        }
-      );
-    });
-  });
+  const newStatus = !current;
+  toggleBtn.innerText = newStatus ? "toggle_on" : "toggle_off";
+  if (!newStatus) {
+    toggleBtn.classList.remove("primary-text");
+    logo.style.filter = "grayscale(1)";
+  } else {
+    toggleBtn.classList.add("primary-text");
+    logo.style.filter = "";
+  }
+
+  refreshContainer.style.display =
+    initialActiveStatus === newStatus ? "none" : "block";
+};
+
+toggleBtn.addEventListener("click", toggleActive);
+
+(document.querySelector(
+  "#refresh-container button"
+) as HTMLElement).addEventListener("click", () => {
+  chrome.storage.local.set(
+    { [storeKey]: toggleBtn.innerText === "toggle_on" },
+    () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.update(tabs[0].id, { url: tabs[0].url });
+        window.close();
+      });
+    }
+  );
 });

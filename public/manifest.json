@@ -1,16 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "name": "Moku: Mock API calls seamlessly",
+  "description": "Adds the API mocker Moku to Chrome Developer Tools for seamless integration & testing.",
   "version": "1.0",
   "devtools_page": "devtool.html",
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": true
+  "icons": {
+    "16": "moku-16.png",
+    "48": "moku-48.png",
+    "128": "moku-128.png",
+    "512": "moku-512.png"
   },
-
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "moku-16.png",
     "default_popup": "popup.html"
   },
 
@@ -22,12 +23,5 @@
     }
   ],
   "web_accessible_resources": ["js/inject.js"],
-  "background": {
-    "scripts": ["js/background.js"]
-  },
-
-  "permissions": ["storage", "<all_urls>"],
-  "externally_connectable": {
-    "matches": ["https://developer.mozilla.org/en-US/"]
-  }
+  "permissions": ["storage", "<all_urls>"]
 }
