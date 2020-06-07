@@ -1,7 +1,7 @@
 {
-  "name": "chrome-extension-typescript-starter",
+  "name": "moku",
   "version": "1.0.0",
-  "description": "chrome-extension-typescript-starter",
+  "description": "Adds the API mocker Moku to Chrome Developer Tools for seamless integration & testing.",
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",
