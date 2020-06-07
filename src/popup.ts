@@ -31,7 +31,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
   }
 
   const isLocalhost = tab.url.includes("http://localhost");
-  storeKey = `moku.extension.active.${host}`;
+  storeKey = `mokku.extension.active.${host}`;
   chrome.storage.local.get([storeKey], function (result) {
     let active = result[storeKey];
     if (isLocalhost && active === undefined) {

@@ -212,9 +212,9 @@ class App extends React.Component<IProps, IState> {
     });
 
     let store: IStore;
-    const DBName: DBNameType = "moku.extension.main.db";
+    const DBName: DBNameType = "mokku.extension.main.db";
     chrome.storage.local.get([DBName], (result) => {
-      store = result["moku.extension.main.db"] || getDefaultStore();
+      store = result["mokku.extension.main.db"] || getDefaultStore();
       this.setState({ store, storeLoading: false });
     });
   }

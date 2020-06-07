@@ -10,7 +10,7 @@ export const getDefaultStore = (): IStore => ({
 
 export const updateStore = (store: IStore) => {
   return new Promise((reslove, reject) => {
-    const key: DBNameType = "moku.extension.main.db";
+    const key: DBNameType = "mokku.extension.main.db";
     try {
       chrome.storage.local.set({ [key]: store }, () => {
         reslove(store);

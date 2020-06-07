@@ -35,7 +35,7 @@ const postMessage = (
     message,
     to: "CONTENT_SCRIPT",
     from: "HOOK_SCRIPT",
-    extenstionName: "MOKU",
+    extenstionName: "MOKKU",
     type,
   };
   window.postMessage(messageObject, "*");
@@ -48,7 +48,7 @@ const postMessage = (
 };
 
 xhook.before(function (request, callback) {
-  request.moku = {
+  request.mokku = {
     id: logIdFactory.getId(),
     isMocked: false,
   };
@@ -58,14 +58,14 @@ xhook.before(function (request, callback) {
       url: request.url,
       method: request.method,
     },
-    id: request.moku.id,
+    id: request.mokku.id,
   };
   postMessage(data, "LOG", false);
 
   postMessage(data, "QUERY", true)
     .then((data: { mockResponse: IMockResponse }) => {
       if (data && data.mockResponse) {
-        request.moku.isMocked = true;
+        request.mokku.isMocked = true;
         const mock = data.mockResponse;
         const finalResponse = {
           status: mock.status,
@@ -99,8 +99,8 @@ xhook.after(function (request, response) {
       method: request.method,
     },
     response: { status: response.status, response: response.text },
-    id: request.moku?.id,
-    isMocked: request.moku?.isMocked,
+    id: request.mokku?.id,
+    isMocked: request.mokku?.isMocked,
   };
   postMessage(data, "LOG", false);
 });

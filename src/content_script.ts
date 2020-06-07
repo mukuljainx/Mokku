@@ -10,9 +10,9 @@ const init = () => {
   let urlMap: IURLMap = {};
 
   const setStore = () => {
-    const DBName: DBNameType = "moku.extension.main.db";
+    const DBName: DBNameType = "mokku.extension.main.db";
     chrome.storage.local.get([DBName], function (result) {
-      store = result["moku.extension.main.db"] || getDefaultStore();
+      store = result["mokku.extension.main.db"] || getDefaultStore();
       urlMap = getURLMap(store);
     });
   };
@@ -64,7 +64,7 @@ const init = () => {
       id: data.id,
       from: "CONTENT_SCRIPT",
       to: "HOOK_SCRIPT",
-      extenstionName: "MOKU",
+      extenstionName: "MOKKU",
       message: {},
     };
 
@@ -92,8 +92,8 @@ const init = () => {
 const host = location.host;
 const isLocalhost = location.href.includes("http://localhost");
 
-chrome.storage.local.get([`moku.extension.active.${host}`], function (result) {
-  let active = result[`moku.extension.active.${host}`];
+chrome.storage.local.get([`mokku.extension.active.${host}`], function (result) {
+  let active = result[`mokku.extension.active.${host}`];
   if (isLocalhost && active === undefined) {
     active = true;
   }

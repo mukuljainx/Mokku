@@ -49,7 +49,7 @@ export interface IStore {
   >;
 }
 
-export type DBNameType = "moku.extension.main.db";
+export type DBNameType = "mokku.extension.main.db";
 
 export type IDB = Record<DBNameType, IStore>;
 

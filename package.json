@@ -1,7 +1,7 @@
 {
-  "name": "moku",
+  "name": "Mokku",
   "version": "1.0.0",
-  "description": "Adds the API mocker Moku to Chrome Developer Tools for seamless integration & testing.",
+  "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
   "main": "index.js",
   "scripts": {
     "watch": "rm -rf ./dist && webpack --config webpack/webpack.dev.js --watch",

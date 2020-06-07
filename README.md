@@ -1,4 +1,4 @@
-# Moku
+# Mokku
 
 ## Built with
 
