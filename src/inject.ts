@@ -92,15 +92,31 @@ xhook.before(function (request, callback) {
     });
 });
 
-xhook.after(function (request, response) {
-  const data: IEventMessage["message"] = {
-    request: {
-      url: request.url,
-      method: request.method,
-    },
-    response: { status: response.status, response: response.text },
-    id: request.mokku?.id,
-    isMocked: request.mokku?.isMocked,
-  };
-  postMessage(data, "LOG", false);
+xhook.after(function (request, originalResponse) {
+  const response = originalResponse.clone();
+  if (typeof response.text === "string") {
+    const data: IEventMessage["message"] = {
+      request: {
+        url: request.url,
+        method: request.method,
+      },
+      response: { status: response.status, response: response.text },
+      id: request.mokku?.id,
+      isMocked: request.mokku?.isMocked,
+    };
+    postMessage(data, "LOG", false);
+  } else {
+    response.text().then((streamedResponse) => {
+      const data: IEventMessage["message"] = {
+        request: {
+          url: request.url,
+          method: request.method,
+        },
+        response: { status: response.status, response: streamedResponse },
+        id: request.mokku?.id,
+        isMocked: request.mokku?.isMocked,
+      };
+      postMessage(data, "LOG", false);
+    });
+  }
 });
