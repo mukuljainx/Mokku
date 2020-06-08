@@ -97,6 +97,20 @@ object-assign
   display: flex;
   flex-direction: column;
   ${({alignCenter:e})=>e&&"justify-content: center; align-items:center;"};
+
+  p,
+  table,
+  tr,
+  td,
+  th,
+  div,
+  span,
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: ${({theme:e})=>e.colors.black};
+  }
 `,v=i.default("div")`
   overflow: hidden;
   flex-grow: 2;
