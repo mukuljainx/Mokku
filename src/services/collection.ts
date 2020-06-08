@@ -4,7 +4,7 @@ import { IMethod } from "../interface/network";
 export const getDefaultStore = (): IStore => ({
   active: false,
   mocks: [],
-  id: 0,
+  id: 1,
   collections: {},
 });
 
