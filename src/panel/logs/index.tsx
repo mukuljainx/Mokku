@@ -123,7 +123,7 @@ const Logs = (props: IProps) => {
                 </Cell>
                 <Cell width={120}>
                   <CellWrapper>
-                    {log.isMocked && (
+                    {log.mockPath && (
                       <Button
                         icon
                         transparent
@@ -136,7 +136,7 @@ const Logs = (props: IProps) => {
                         Edit
                       </Button>
                     )}
-                    {!log.isMocked && log.response && (
+                    {!log.mockPath && log.response && (
                       <Button
                         icon
                         transparent

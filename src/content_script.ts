@@ -72,7 +72,7 @@ const init = () => {
     const mockPath = getMockPath(request.url, request.method);
     const mock = getMock(mockPath) as IMockResponse;
 
-    if (mock) {
+    if (mock && mock.active) {
       response.message.mockResponse = mock;
     }
 
