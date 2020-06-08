@@ -25,6 +25,20 @@ const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   flex-direction: column;
   ${({ alignCenter }) =>
     alignCenter && `justify-content: center; align-items:center;`};
+
+  p,
+  table,
+  tr,
+  td,
+  th,
+  div,
+  span,
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: ${({ theme }) => theme.colors.black};
+  }
 `;
 
 const Content = styled("div")`
