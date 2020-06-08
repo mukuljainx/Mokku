@@ -38,6 +38,16 @@ const Content = styled("div")`
   flex-grow: 2;
 `;
 
+const getResponse = (response) => {
+  let data = "";
+  try {
+    data = JSON.stringify(JSON.parse(response), undefined, 2);
+  } catch {
+    data = response;
+  }
+  return data;
+};
+
 const Detail = ({ log, onClose }: IProps) => {
   return (
     <Wrapper>
@@ -59,7 +69,7 @@ const Detail = ({ log, onClose }: IProps) => {
       <Content>
         <pre>
           {log.response?.response
-            ? JSON.stringify(JSON.parse(log.response?.response), undefined, 2)
+            ? getResponse(log.response.response)
             : "Pending"}
         </pre>
       </Content>

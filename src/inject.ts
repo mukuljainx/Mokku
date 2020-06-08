@@ -2,7 +2,7 @@ import * as xhook from "xhook";
 import IdFactory from "./services/idFactory";
 import MessageBus from "./services/messageBus";
 import { IEventMessage } from "./interface/message";
-import { IMockResponse } from "./interface/mock";
+import { IMockResponse, ILog } from "./interface/mock";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
@@ -92,31 +92,56 @@ xhook.before(function (request, callback) {
     });
 });
 
-xhook.after(function (request, originalResponse) {
-  const response = originalResponse.clone();
-  if (typeof response.text === "string") {
-    const data: IEventMessage["message"] = {
-      request: {
-        url: request.url,
-        method: request.method,
-      },
-      response: { status: response.status, response: response.text },
-      id: request.mokku?.id,
-      isMocked: request.mokku?.isMocked,
+const getLog = (
+  request: ILog["request"] & {
+    mokku?: {
+      id: number;
+      isMocked: boolean;
     };
-    postMessage(data, "LOG", false);
-  } else {
-    response.text().then((streamedResponse) => {
-      const data: IEventMessage["message"] = {
-        request: {
-          url: request.url,
-          method: request.method,
-        },
-        response: { status: response.status, response: streamedResponse },
-        id: request.mokku?.id,
-        isMocked: request.mokku?.isMocked,
-      };
+  },
+  response: ILog["response"]
+): IEventMessage["message"] => {
+  return {
+    request: {
+      url: request.url,
+      method: request.method,
+    },
+    response,
+    id: request.mokku?.id,
+    isMocked: request.mokku?.isMocked,
+  };
+};
+
+xhook.after(function (request, originalResponse) {
+  try {
+    if (typeof originalResponse.clone === "function") {
+      const response = originalResponse.clone();
+      if (typeof response.text === "string") {
+        const data: IEventMessage["message"] = getLog(request, {
+          status: response.status,
+          response: response.text,
+        });
+        postMessage(data, "LOG", false);
+      } else {
+        response.text().then((streamedResponse) => {
+          const data: IEventMessage["message"] = getLog(request, {
+            status: response.status,
+            response: streamedResponse,
+          });
+          postMessage(data, "LOG", false);
+        });
+      }
+    } else {
+      const data: IEventMessage["message"] = getLog(request, {
+        status: originalResponse.status,
+        response:
+          typeof originalResponse.text === "string"
+            ? originalResponse.text
+            : "Cannot parse response, logging libraries can cause this.",
+      });
       postMessage(data, "LOG", false);
-    });
+    }
+  } catch (error) {
+    console.log("INJECT_ERROR", error);
   }
 });
