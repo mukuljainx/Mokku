@@ -32,10 +32,23 @@ const StyledTab = styled(Tab)`
   border-bottom: none;
 `;
 
-const Content = styled("div")`
+const Content = styled("div")<{ center?: boolean }>`
   padding: 8px;
   overflow: auto;
   flex-grow: 2;
+  ${({ center }) =>
+    center &&
+    `
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `}
+`;
+
+const Label = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const getResponse = (response) => {
@@ -46,6 +59,31 @@ const getResponse = (response) => {
     data = response;
   }
   return data;
+};
+
+const getResponseContent = (log: IProps["log"]) => {
+  if (!log.response) {
+    return (
+      <Content center>
+        <Label>Request pending</Label>
+      </Content>
+    );
+  }
+
+  const response = getResponse(log.response?.response || "");
+  if (!response) {
+    return (
+      <Content center>
+        <Label>Nothing to preview</Label>
+      </Content>
+    );
+  } else {
+    return (
+      <Content>
+        <pre>{response}</pre>
+      </Content>
+    );
+  }
 };
 
 const Detail = ({ log, onClose }: IProps) => {
@@ -66,13 +104,7 @@ const Detail = ({ log, onClose }: IProps) => {
           tabs={["Response"]}
         />
       </Header>
-      <Content>
-        <pre>
-          {log.response?.response
-            ? getResponse(log.response.response)
-            : "Pending"}
-        </pre>
-      </Content>
+      {getResponseContent(log)}
     </Wrapper>
   );
 };
