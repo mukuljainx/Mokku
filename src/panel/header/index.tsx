@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Tabs from "../components/tabs";
-import { Button } from "../components/table";
+import { Button, Icon } from "../components/table";
 
 const Wrapper = styled("div")`
   display: flex;
@@ -42,6 +42,7 @@ interface IProps {
   changeRoute: (route: string) => void;
   route: string;
   onSearchChange: (search: string) => void;
+  clearLogs: () => void;
 }
 
 const getSelected = (route: string) => {
@@ -84,10 +85,21 @@ const Header = (props: IProps) => {
       </AddMockButton>
       <Filters>
         <Input
+          title="Clear Logs"
           placeholder="Search logs/mocks"
           value={search}
           onChange={handleSearchChange}
         ></Input>
+        {props.route.includes("logs") && (
+          <Button
+            style={{ marginLeft: 12 }}
+            transparent
+            icon
+            title="Clear Logs"
+          >
+            <Icon onClick={() => props.clearLogs()}>block</Icon>
+          </Button>
+        )}
       </Filters>
     </Wrapper>
   );

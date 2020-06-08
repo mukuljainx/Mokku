@@ -243,6 +243,10 @@ class App extends React.Component<IProps, IState> {
     this.setState({ rawMock: get(this.state.store, path) });
   };
 
+  clearLogs = () => {
+    this.setState({ logs: [] });
+  };
+
   getContent = () => {
     if (!this.props.host || !this.props.tab) {
       return (
@@ -286,6 +290,7 @@ class App extends React.Component<IProps, IState> {
     return (
       <Wrapper>
         <Header
+          clearLogs={this.clearLogs}
           onSearchChange={this.handleSearchChange}
           route={route}
           changeRoute={this.changeRoute}
