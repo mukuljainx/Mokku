@@ -20,6 +20,7 @@ import { Button, Icon } from "./components/table";
 import Notification from "./components/notification";
 
 const Wrapper = styled("div")<{ alignCenter?: boolean }>`
+  background-color: ${({ theme }) => theme.colors.white};
   height: 100%;
   display: flex;
   flex-direction: column;
