@@ -4,6 +4,8 @@ export interface ILog {
   request?: {
     url: string;
     method: string;
+    body?: string;
+    queryParams?: string;
   };
   response?: {
     status: number;

@@ -1,4 +1,6 @@
 import * as xhook from "xhook";
+import { parse } from "query-string";
+
 import IdFactory from "./services/idFactory";
 import MessageBus from "./services/messageBus";
 import { IEventMessage } from "./interface/message";
@@ -48,24 +50,23 @@ const postMessage = (
 };
 
 xhook.before(function (request, callback) {
+  const separator = request.url.indexOf("?");
+  const url = separator !== -1 ? request.url.substr(0, separator) : request.url;
+  const queryParams =
+    separator !== -1
+      ? JSON.stringify(parse(request.url.substr(separator)))
+      : undefined;
+
   request.mokku = {
     id: logIdFactory.getId(),
-    isMocked: false,
   };
 
-  const data: IEventMessage["message"] = {
-    request: {
-      url: request.url,
-      method: request.method,
-    },
-    id: request.mokku.id,
-  };
+  const data: IEventMessage["message"] = getLog(request);
   postMessage(data, "LOG", false);
 
   postMessage(data, "QUERY", true)
     .then((data: { mockResponse: IMockResponse }) => {
       if (data && data.mockResponse) {
-        request.mokku.isMocked = true;
         const mock = data.mockResponse;
         const finalResponse = {
           status: mock.status,
@@ -96,19 +97,26 @@ const getLog = (
   request: ILog["request"] & {
     mokku?: {
       id: number;
-      isMocked: boolean;
     };
   },
-  response: ILog["response"]
+  response?: ILog["response"]
 ): IEventMessage["message"] => {
+  const separator = request.url.indexOf("?");
+  const url = separator !== -1 ? request.url.substr(0, separator) : request.url;
+  const queryParams =
+    separator !== -1
+      ? JSON.stringify(parse(request.url.substr(separator)))
+      : undefined;
+
   return {
     request: {
-      url: request.url,
+      url,
+      body: request.body,
+      queryParams,
       method: request.method,
     },
     response,
     id: request.mokku?.id,
-    isMocked: request.mokku?.isMocked,
   };
 };
 

@@ -11,3 +11,21 @@ function sendAPI2() {
     console.log(data);
   });
 }
+
+function queryParam() {
+  axios
+    .get("https://demo5468585.mockable.io/events?name=mokku")
+    .then(({ data }) => {
+      console.log(data);
+    });
+}
+
+function postReq() {
+  axios
+    .post("https://demo5468585.mockable.io/events", {
+      message: "hello world",
+    })
+    .then(({ data }) => {
+      console.log(data);
+    });
+}

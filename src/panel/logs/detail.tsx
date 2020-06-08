@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { ILog } from "../../interface/mock";
 import Tab from "../components/tabs";
+import { Button, Icon } from "../components/table";
 
 interface IProps {
   log: ILog;
@@ -15,8 +16,8 @@ const Wrapper = styled("div")`
   bottom: 0;
   top: 0;
   right: 0;
-  max-width: 40%;
-  width: 600px;
+  max-width: 60%;
+  width: 800px;
   background: white;
   display: flex;
   flex-direction: column;
@@ -51,14 +52,18 @@ const Label = styled.label`
   color: ${({ theme }) => theme.colors.black};
 `;
 
+const JSONWrapper = styled.pre`
+  font-size: 12px;
+`;
+
 const getResponse = (response) => {
-  let data = "";
+  let result = "";
   try {
-    data = JSON.stringify(JSON.parse(response), undefined, 2);
+    result = JSON.stringify(JSON.parse(response), undefined, 2);
   } catch {
-    data = response;
+    result = response;
   }
-  return data;
+  return result;
 };
 
 const getResponseContent = (log: IProps["log"]) => {
@@ -80,31 +85,66 @@ const getResponseContent = (log: IProps["log"]) => {
   } else {
     return (
       <Content>
-        <pre>{response}</pre>
+        <JSONWrapper>{response}</JSONWrapper>
       </Content>
     );
   }
 };
 
+const getRequestBodyContent = (log: IProps["log"]) => {
+  const requestBody = getResponse(log.request?.body || "");
+  if (!log.request?.body || !requestBody) {
+    return (
+      <Content center>
+        <Label>Nothing to preview</Label>
+      </Content>
+    );
+  }
+
+  return (
+    <Content>
+      <JSONWrapper>{requestBody}</JSONWrapper>
+    </Content>
+  );
+};
+
+const getQueryParamsContent = (log: IProps["log"]) => {
+  const queryParams = getResponse(log.request?.queryParams || "");
+  if (!log.request?.queryParams || !queryParams) {
+    return (
+      <Content center>
+        <Label>Nothing to preview</Label>
+      </Content>
+    );
+  }
+
+  return (
+    <Content>
+      <JSONWrapper>{queryParams}</JSONWrapper>
+    </Content>
+  );
+};
+
 const Detail = ({ log, onClose }: IProps) => {
+  const [tab, setTab] = React.useState(0);
+
   return (
     <Wrapper>
       <Header>
-        <button
-          className="button-icon button transparent no-hover"
-          onClick={onClose}
-        >
-          <i className="material-icons">close</i>
-        </button>
+        <Button transparent icon onClick={onClose}>
+          <Icon>close</Icon>
+        </Button>
         <StyledTab
           onChange={(selected) => {
-            selected;
+            setTab(selected);
           }}
-          selected={0}
-          tabs={["Response"]}
+          selected={tab}
+          tabs={["Response", "Request Body", "Query Params"]}
         />
       </Header>
-      {getResponseContent(log)}
+      {tab === 0 && getResponseContent(log)}
+      {tab === 1 && getRequestBodyContent(log)}
+      {tab === 2 && getQueryParamsContent(log)}
     </Wrapper>
   );
 };
