@@ -141,6 +141,7 @@ class App extends React.Component<IProps, IState> {
           return;
         }
         const id = store.id;
+
         store.mocks = [...store.mocks, { ...newMock, id }];
         store.id++;
         break;
@@ -172,7 +173,35 @@ class App extends React.Component<IProps, IState> {
 
     updateStore(store)
       .then((store: IStore) => {
-        this.setState({ store });
+        this.setState((prevState: IState) => {
+          let logs = prevState.logs;
+          if (action === "add") {
+            const mockIndex = store.mocks.findIndex((mock) => mock);
+            logs = logs.map((log) => {
+              if (
+                log.request?.url === newMock.url &&
+                log.request?.method === newMock.method
+              ) {
+                return { ...log, mockPath: `mocks[${mockIndex}]` };
+              }
+              return log;
+            });
+          }
+
+          if (action === "delete") {
+            logs = logs.map((log) => {
+              if (
+                log.request?.url === newMock.url &&
+                log.request?.method === newMock.method
+              ) {
+                return { ...log, mockPath: undefined };
+              }
+              return log;
+            });
+          }
+
+          return { store, logs };
+        });
         // Alert the content script
         // so it can refresh store
         this.showNotification(notificationMessage[action]);
@@ -197,12 +226,15 @@ class App extends React.Component<IProps, IState> {
   };
 
   mockNetworkCall = (log: ILog) => {
-    this.editMock({
+    this.handleAction("add", {
       active: true,
-      method: log.request?.method as IMockResponse["method"],
-      url: log.request?.url,
-      status: log.response?.status,
-      response: log.response?.response,
+      method: log.request?.method || "GET",
+      createdOn: new Date().getTime(),
+      url: log.request?.url || "/some-url",
+      status: log.response?.status || 200,
+      response: log.response?.response || "",
+      delay: 500,
+      id: -1,
     });
   };
 

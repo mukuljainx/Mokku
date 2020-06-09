@@ -146,7 +146,10 @@ const Logs = (props: IProps) => {
                         icon
                         transparent
                         link
-                        onClick={() => props.mockNetworkCall(log)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          props.mockNetworkCall(log);
+                        }}
                       >
                         Mock
                       </Button>

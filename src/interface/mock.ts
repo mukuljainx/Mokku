@@ -3,7 +3,7 @@ import { IMethod } from "./network";
 export interface ILog {
   request?: {
     url: string;
-    method: string;
+    method: IMethod;
     body?: string;
     queryParams?: string;
   };
