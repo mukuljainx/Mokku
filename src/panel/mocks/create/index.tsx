@@ -20,11 +20,12 @@ const Label = styled("label")`
   font-weight: 700;
 `;
 
-const Input = styled(Field)`
+const Input = styled(Field)<{ small?: boolean }>`
   height: 25px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   border-style: solid;
+  ${({ small }) => small && `width: 124px;`};
 `;
 
 const Textarea = styled("textarea")<{ error?: boolean }>`
@@ -84,6 +85,7 @@ const Create = (props: IProps) => {
           status: componentProps.mock?.status || 200,
           delay: componentProps.mock?.delay || 500,
           response: componentProps.mock?.response || "",
+          active: componentProps.mock?.active || true,
         }}
         onSubmit={async (values) => {
           componentProps.onAction(componentProps.mock.id ? "edit" : "add", {
@@ -123,7 +125,17 @@ const Create = (props: IProps) => {
           return (
             <StyledForm>
               <Group>
-                <FieldWrapper>
+                <FieldWrapper style={{ flexGrow: 0 }}>
+                  <Label>Active:</Label>
+                  <MultiSelect
+                    onSelect={(index) => {
+                      setFieldValue("active", index ? false : true);
+                    }}
+                    options={["Active", "Inactive"]}
+                    selected={values.active ? 0 : 1}
+                  />
+                </FieldWrapper>
+                <FieldWrapper style={{ flexGrow: 3 }}>
                   <Label>URL:</Label>
                   <Input required name="url"></Input>
                 </FieldWrapper>
@@ -141,11 +153,11 @@ const Create = (props: IProps) => {
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Status:</Label>
-                  <Input required name="status" type="number"></Input>
+                  <Input small required name="status" type="number"></Input>
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Delay (in ms):</Label>
-                  <Input required name="delay" type="number"></Input>
+                  <Input small required name="delay" type="number"></Input>
                 </FieldWrapper>
               </Group>
               <Group>
