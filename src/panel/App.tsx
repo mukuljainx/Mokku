@@ -270,7 +270,7 @@ class App extends React.Component<IProps, IState> {
 
   handleSearchChange = debounce((search: string) => {
     this.setState({ filter: { search } });
-  }, 1000);
+  }, 700);
 
   filterStore = (oldStore: IStore, search) => {
     const store = { ...oldStore };

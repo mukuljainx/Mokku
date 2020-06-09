@@ -28,6 +28,7 @@ const Filters = styled.div`
   display: flex;
   align-items: center;
   padding-left: 12px;
+  margin-left: 8px;
 `;
 
 const Input = styled.input`
