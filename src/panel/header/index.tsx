@@ -81,7 +81,7 @@ const Header = (props: IProps) => {
         onClick={() => props.changeRoute("mock.create")}
         className="button-icon transparent no-hover"
       >
-        <i className="material-icons icon">add</i> Create Mock
+        <Icon>add</Icon> Create Mock
       </AddMockButton>
       <Filters>
         <Input

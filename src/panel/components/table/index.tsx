@@ -31,7 +31,9 @@ export const Table = styled.table`
   border-spacing: 0;
 `;
 
-export const TableRow = styled.tr``;
+export const TableRow = styled.tr`
+  cursor: pointer;
+`;
 
 export const TableBodyWrapper = styled.div`
   overflow: auto;
@@ -39,7 +41,6 @@ export const TableBodyWrapper = styled.div`
 
 export const TableBody = styled.tbody<{ mouseCursor?: boolean }>`
   ${TableRow} {
-    ${({ mouseCursor }) => mouseCursor && `cursor: pointer;`};
     &:nth-child(2n) {
       background-color: ${({ theme }) => theme.colors.light};
     }
@@ -78,8 +79,22 @@ export const Button = styled.button<{
       ? `padding: 2px 4px;`
       : `height: 32px;
   padding: 0 16px;`};
-  ${({ transparent }) => transparent && `background: transparent;`};
-  ${({ link, theme }) => link && `color: ${theme.colors.primary};`};
+  ${({ transparent }) =>
+    transparent &&
+    `
+      background: transparent;
+      &:hover{
+        background: rgba(0,0,0,0.1);
+      }
+  
+  `};
+  ${({ link, theme }) =>
+    link &&
+    `
+  color: ${theme.colors.primary};
+  padding: 4px;
+  margin: -2px 0;
+  `};
   ${({ background, theme }) =>
     background && `background: ${theme.colors[background]};`};
   ${({ color, theme }) => color && `color: ${theme.colors[color]};`};
