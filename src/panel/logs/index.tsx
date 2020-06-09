@@ -21,6 +21,7 @@ interface IProps {
   changeRoute: (route: string) => void;
   mockNetworkCall: (log: ILog) => void;
   editMock: (path: string) => void;
+  active: boolean;
 }
 
 const Wrapper = styled("div")`
@@ -50,17 +51,24 @@ const Logs = (props: IProps) => {
     }
   });
 
+  if (!props.active) {
+    return (
+      <EmptyWrapper>
+        <p>
+          Mocking is inactive, network calls can only be logged when mocking is
+          enabled. Please enable mocking form extension popup & click Refresh.
+        </p>
+        <Button transparent link onClick={() => location.reload()}>
+          Refresh
+        </Button>
+      </EmptyWrapper>
+    );
+  }
+
   if (props.logs.length === 0) {
     return (
       <EmptyWrapper>
-        <p>Network Logs will appear here.</p>
-        <Button
-          transparent
-          link
-          onClick={() => props.changeRoute("mock.create")}
-        >
-          Create a Mock
-        </Button>
+        <p>No Network calls logged yet.</p>
       </EmptyWrapper>
     );
   }

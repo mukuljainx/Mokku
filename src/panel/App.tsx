@@ -76,6 +76,7 @@ interface IState {
 interface IProps {
   host: string;
   tab: chrome.tabs.Tab;
+  active: boolean;
 }
 
 class App extends React.Component<IProps, IState> {
@@ -348,6 +349,7 @@ class App extends React.Component<IProps, IState> {
           {route.includes("logs") && (
             <ListWrapper>
               <Logs
+                active={this.props.active}
                 mockNetworkCall={this.mockNetworkCall}
                 changeRoute={this.changeRoute}
                 logs={filteredLogs}

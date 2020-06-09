@@ -29,10 +29,21 @@ const getDomain = (url: string) => {
 };
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-  ReactDOM.render(
-    <App host={getDomain(tab?.url)} tab={tab} />,
-    document.getElementById("root")
-  );
+  const host = getDomain(tab?.url) || "invalid";
+  const isLocalhost = tab?.url.includes("http://localhost");
+  const storeKey = `mokku.extension.active.${host}`;
+
+  chrome.storage.local.get([storeKey], (result) => {
+    let active = result[storeKey];
+    if (isLocalhost && active === undefined) {
+      active = true;
+    }
+
+    ReactDOM.render(
+      <App host={host} tab={tab} active={active} />,
+      document.getElementById("root")
+    );
+  });
 });
 
 export default App;
