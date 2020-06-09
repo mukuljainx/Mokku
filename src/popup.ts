@@ -18,6 +18,10 @@ let notAValidUrl = false;
 let storeKey = "";
 let initialActiveStatus = false;
 const toggleBtn = document.querySelector("#toggle") as HTMLElement;
+const statusText = document.querySelector(
+  "#toggle-container span"
+) as HTMLElement;
+const infoText = document.querySelector("#toggle-container div") as HTMLElement;
 const logo = document.querySelector("#logo") as HTMLElement;
 const refreshContainer = document.querySelector(
   "#refresh-container"
@@ -41,6 +45,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (active) {
       toggleBtn.innerText = "toggle_on";
       toggleBtn.classList.add("primary-text");
+      statusText.innerText = "Mocking Enabled";
+      infoText.style.display = "block";
       logo.style.filter = "";
     }
   });
