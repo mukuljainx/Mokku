@@ -7,14 +7,22 @@ interface IProps {
   route: string;
   store: IStore;
   changeRoute: (route: string) => void;
-  onAction: (action: "add" | "delete" | "edit", mock: IMockResponse) => void;
+  onAction: (
+    action: "add" | "delete" | "edit",
+    mock: IMockResponse,
+    tooltip?: string
+  ) => void;
   editMock: (mock: IMockResponseRaw) => void;
 }
 
 class Mocks extends React.Component<IProps> {
   toggleMock = (mock: IMockResponse) => {
     const newMock: IMockResponse = { ...mock, active: !mock.active };
-    this.props.onAction("edit", newMock);
+    this.props.onAction(
+      "edit",
+      newMock,
+      mock.active ? "Mock disabled." : "Mock enabled."
+    );
   };
 
   render() {

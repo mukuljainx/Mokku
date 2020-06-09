@@ -114,13 +114,15 @@ class App extends React.Component<IProps, IState> {
 
   handleAction = (
     action: "add" | "delete" | "edit" | "clear",
-    newMock: IMockResponse | void
+    newMock: IMockResponse | void,
+    tooltip?: string
   ) => {
     if (action === "clear") {
       this.setState({ rawMock: undefined });
       this.changeRoute(
         this.state.route.replace(".create", "") as IState["route"]
       );
+      return;
     }
 
     if (!newMock) {
@@ -204,7 +206,7 @@ class App extends React.Component<IProps, IState> {
         });
         // Alert the content script
         // so it can refresh store
-        this.showNotification(notificationMessage[action]);
+        this.showNotification(tooltip || notificationMessage[action]);
         chrome.tabs.sendMessage(this.props.tab.id, {
           type: "UPDATE_STORE",
           from: "PANEL",
