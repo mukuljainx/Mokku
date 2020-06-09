@@ -8,7 +8,7 @@ const Wrapper = styled("div")`
   display: flex;
   align-items: center;
   border-bottom: 2px solid ${({ theme }) => theme.colors.border};
-  background: ${({ theme }) => theme.colors.light};
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 const StyledTabs = styled(Tabs)`
@@ -96,8 +96,9 @@ const Header = (props: IProps) => {
             transparent
             icon
             title="Clear Logs"
+            onClick={() => props.clearLogs()}
           >
-            <Icon onClick={() => props.clearLogs()}>block</Icon>
+            <Icon>block</Icon>
           </Button>
         )}
       </Filters>

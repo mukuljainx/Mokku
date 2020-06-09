@@ -40,6 +40,9 @@ export const TableBodyWrapper = styled.div`
 export const TableBody = styled.tbody<{ mouseCursor?: boolean }>`
   ${TableRow} {
     ${({ mouseCursor }) => mouseCursor && `cursor: pointer;`};
+    &:nth-child(2n) {
+      background-color: ${({ theme }) => theme.colors.light};
+    }
     &:hover {
       background: ${({ theme }) => theme.colors.primaryLight};
     }

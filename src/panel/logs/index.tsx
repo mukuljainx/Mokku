@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { ThemeType } from "../theme";
 import { ILog } from "../../interface/mock";
 import { Button, Icon } from "../components/table";
 import Tooltip from "../components/tooltip";
@@ -43,7 +42,13 @@ const EmptyWrapper = styled("div")`
 const CellWrapper = styled("div")``;
 
 const Logs = (props: IProps) => {
+  const containerRef = React.useRef(null);
   const [log, setLog] = React.useState<IProps["logs"][0]>();
+  React.useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  });
 
   if (props.logs.length === 0) {
     return (
@@ -86,7 +91,7 @@ const Logs = (props: IProps) => {
           </TableHead>
         </Table>
       </TableHeadWrapper>
-      <TableBodyWrapper>
+      <TableBodyWrapper ref={containerRef}>
         <Table>
           <TableBody>
             {props.logs.map((log) => (

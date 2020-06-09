@@ -11,7 +11,7 @@ interface IProps {
 
 const Wrapper = styled("div")`
   display: flex;
-  background: ${({ theme }) => theme.colors.light};
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 const TabWrapper = styled("div")<{ active?: boolean }>`

@@ -6,7 +6,7 @@ export default {
     primary: "#0043e8",
     primaryDark: " #3f549d",
     dark: "#3d3e3e",
-    light: "#fdfdfd",
+    light: "#E8E8E6",
     white: "#fff",
     black: "#000",
     pink: "#d59a96",
