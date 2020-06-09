@@ -7,11 +7,14 @@
       rel="stylesheet"
     />
     <style>
+      body{
+        font-size: 14px;
+      }
       h2{
         margin: 0;
       }
       #wrapper{
-        width: 200px;
+        width: 228px;
         padding: 8px;
       }
       img{
@@ -41,6 +44,23 @@
         align-items: center;
         margin-bottom: 12px;
       }
+      pre{
+        background-color: #eee;
+        border-radius: 3px;
+        border: 1px solid #b4b4b4;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;
+        color: #333;
+        display: inline-block;
+        font-weight: 700;
+        line-height: 1;
+        padding: 2px 4px;
+        white-space: nowrap;
+        font-size: 12px;
+        margin: 0;
+      }
+      p{
+        margin: 4px 0;
+      }
     </style>
     <title>Mokku</title>
   </head>
@@ -51,7 +71,12 @@
         <img src="mokku.svg" style="filter:grayscale(1)" id="logo"></img>
         <div id="toggle-container">
           <i style="font-size: 40px;" id="toggle" class="material-icons">toggle_off</i>
-          <span>Mocking Enabled</span>
+          <span>Mocking Disabled</span>
+          <div style="text-align:center; display: none; margin-top: 20px;">
+          <p style="margin: 0">Check the dev tools for Mokku tab.</p>
+          <p>Mac: <pre>Command</pre> + <pre>Option</pre> + <pre>J</pre></p>
+          <p>Windows/Linux/Chrome OS: <pre>Control</pre> + <pre>Shift</pre> + <pre>J</pre></p>
+          </div>
         </div>
       </div>
       <div id="refresh-container">
