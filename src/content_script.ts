@@ -4,7 +4,6 @@ import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
 import { getDefaultStore, getURLMap } from "./services/collection";
 import { IStore, DBNameType, IMockResponse, IURLMap } from "./interface/mock";
-
 const init = () => {
   let store: IStore;
   let urlMap: IURLMap = {};

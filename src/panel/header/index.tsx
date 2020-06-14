@@ -29,6 +29,7 @@ const Filters = styled.div`
   align-items: center;
   padding-left: 12px;
   margin-left: 8px;
+  flex-grow: 2;
 `;
 
 const Input = styled.input`
@@ -44,6 +45,7 @@ interface IProps {
   route: string;
   onSearchChange: (search: string) => void;
   clearLogs: () => void;
+  disableMocking: () => void;
 }
 
 const getSelected = (route: string) => {
@@ -103,6 +105,9 @@ const Header = (props: IProps) => {
           </Button>
         )}
       </Filters>
+      <AddMockButton transparent link onClick={() => props.disableMocking()}>
+        Disable Mocking
+      </AddMockButton>
     </Wrapper>
   );
 };

@@ -77,6 +77,7 @@ interface IProps {
   host: string;
   tab: chrome.tabs.Tab;
   active: boolean;
+  storeKey: string;
 }
 
 class App extends React.Component<IProps, IState> {
@@ -297,6 +298,16 @@ class App extends React.Component<IProps, IState> {
     this.setState({ logs: [] });
   };
 
+  toggleMokku = () => {
+    const next = !this.props.active;
+    chrome.storage.local.set({ [this.props.storeKey]: next }, () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.update(tabs[0].id, { url: tabs[0].url });
+        location.reload();
+      });
+    });
+  };
+
   getContent = () => {
     if (!this.props.host || !this.props.tab) {
       return (
@@ -306,6 +317,25 @@ class App extends React.Component<IProps, IState> {
           </Text>
           <Button transparent link onClick={() => location.reload()}>
             Refresh
+          </Button>
+        </Wrapper>
+      );
+    }
+
+    if (!this.props.active) {
+      return (
+        <Wrapper alignCenter>
+          <Text>
+            Mocking is disabled by default on non-localhost urls. Enabling will
+            refresh the current page.
+          </Text>
+          <Button
+            style={{ marginTop: 8 }}
+            background="primary"
+            color="white"
+            onClick={this.toggleMokku}
+          >
+            Enable
           </Button>
         </Wrapper>
       );
@@ -344,6 +374,7 @@ class App extends React.Component<IProps, IState> {
           onSearchChange={this.handleSearchChange}
           route={route}
           changeRoute={this.changeRoute}
+          disableMocking={this.toggleMokku}
         />
         <Content>
           {route.includes("logs") && (

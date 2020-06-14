@@ -7,9 +7,6 @@ import App from "./App";
  * case:
  * http://
  * https://
- * http://www.
- * https://www.
- *
  * then till next /
  */
 const getDomain = (url: string) => {
@@ -17,8 +14,8 @@ const getDomain = (url: string) => {
     return "";
   }
   let domain = url;
-  domain = domain.replace("https://www.", "");
-  domain = domain.replace("http://www.", "");
+  domain = domain.replace("https://", "");
+  domain = domain.replace("http://", "");
   domain = domain.replace("https://", "");
   domain = domain.replace("http://", "");
   const domainLastIndex = domain.indexOf("/");
@@ -40,7 +37,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     }
 
     ReactDOM.render(
-      <App host={host} tab={tab} active={active} />,
+      <App host={host} tab={tab} active={active} storeKey={storeKey} />,
       document.getElementById("root")
     );
   });
