@@ -5,7 +5,7 @@ const TooltipWrapper = styled.div`
   position: absolute;
   padding: 8px 12px;
   background: ${({ theme }) => theme.colors.black};
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white} !important;
   display: none;
   border-radius: 4px;
 `;

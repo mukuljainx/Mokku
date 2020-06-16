@@ -101,4 +101,11 @@ chrome.storage.local.get([`mokku.extension.active.${host}`], function (result) {
     inject();
     init();
   }
+  // tell the panel about the new injection (host might have changed)
+  chrome.runtime.sendMessage({
+    host,
+    type: "INIT",
+    from: "CONTENT",
+    to: "PANEL",
+  });
 });

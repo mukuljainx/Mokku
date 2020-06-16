@@ -71,6 +71,8 @@ interface IState {
   };
   storeLoading: boolean;
   notification: { text?: string; show: boolean };
+  host: string;
+  active: boolean;
 }
 
 interface IProps {
@@ -91,6 +93,8 @@ class App extends React.Component<IProps, IState> {
     notification: {
       show: false,
     },
+    host: this.props.host,
+    active: this.props.active,
   };
 
   showNotification = (text: string) => {
@@ -259,6 +263,18 @@ class App extends React.Component<IProps, IState> {
             logs,
           };
         });
+      } else if (message.type === "INIT") {
+        if (message.host !== this.state.host) {
+          const storeKey = `mokku.extension.active.${message.host}`;
+          const isLocalhost = message.host.includes("http://localhost");
+          chrome.storage.local.get([storeKey], (result) => {
+            let active = result[storeKey];
+            if (isLocalhost && active === undefined) {
+              active = true;
+            }
+            this.setState({ host: message.host, active });
+          });
+        }
       }
     });
 
@@ -299,7 +315,7 @@ class App extends React.Component<IProps, IState> {
   };
 
   toggleMokku = () => {
-    const next = !this.props.active;
+    const next = !this.state.active;
     chrome.storage.local.set({ [this.props.storeKey]: next }, () => {
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.update(tabs[0].id, { url: tabs[0].url });
@@ -309,7 +325,7 @@ class App extends React.Component<IProps, IState> {
   };
 
   getContent = () => {
-    if (!this.props.host || !this.props.tab) {
+    if (!this.state.host || !this.props.tab) {
       return (
         <Wrapper alignCenter>
           <Text>
@@ -322,7 +338,7 @@ class App extends React.Component<IProps, IState> {
       );
     }
 
-    if (!this.props.active) {
+    if (!this.state.active) {
       return (
         <Wrapper alignCenter>
           <Text>
@@ -380,7 +396,7 @@ class App extends React.Component<IProps, IState> {
           {route.includes("logs") && (
             <ListWrapper>
               <Logs
-                active={this.props.active}
+                active={this.state.active}
                 mockNetworkCall={this.mockNetworkCall}
                 changeRoute={this.changeRoute}
                 logs={filteredLogs}
