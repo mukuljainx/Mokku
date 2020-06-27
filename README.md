@@ -1,74 +1,59 @@
+
 # Mokku
+> Mock API calls seamlessly
 
-## Built with
+![small-promo](./store/small-promo.png)
 
-[![Build Status](https://travis-ci.org/chibat/chrome-extension-typescript-starter.svg?branch=master)](https://travis-ci.org/chibat/chrome-extension-typescript-starter)
 
-Chrome Extension, TypeScript and Visual Studio Code
+### About
+Mokku helps user by mocking API and changing their response, response time and status, user can try all test case scenario like long loading time, error states, or any missing or incorrect data. 
 
-## Prerequisites
+Mokku adds itself as a tab in dev tools as a panel. In the tab user can see network logs and mocks. Any network call from the logs can be mocked by simply clicking mock button then response can be edited. User can also search logs. Mock can also be created from scratch from create mock button.
+
+All URL's are accessible but Mokku doesn't inject scripts into any pages apart from which are served locally and accessed using 'http://localhost*' until enabled from the Panel.
+
+Collections & Dynamic mock generators coming soon!
+
+You can submit issues, bugs or feature request at https://github.com/mukuljainx/mokku/issues
+
+[Promotional Images](https://github.com/mukuljainx/Mokku/tree/master/store)
+
+
+
+### Privacy policy
+
+Mokku does not collect or ask for any personal information, though it will store the mocks the chrome local store & all the hosts name where it has been enabled once to provide better experience to user.
+
+
+
+
+## Dev Guide
+
+### Prerequisites
 
 - [node + npm](https://nodejs.org/) (Current Version)
 
-## Option
+### Project Structure
 
-- [Visual Studio Code](https://code.visualstudio.com/)
-
-## Includes the following
-
-- TypeScript
-- Webpack
-- Moment.js
-- jQuery
-- Jest
-- Example Code
-  - Chrome Storage
-  - Options Version 2
-  - content script
-  - count up badge number
-  - background
-
-## Project Structure
-
-- src/typescript: TypeScript source files
-- src/assets: static files
 - dist: Chrome Extension directory
 - dist/js: Generated JavaScript files
 
-## Setup
+### Setup
 
-```
-npm install
-```
+`npm install`
 
-## Import as Visual Studio Code project
+### Dev
 
-...
+`npm run watch`
 
-## Build
+### Build
 
-```
-npm run build
-```
+`npm run build`
 
-## Build in watch mode
+### Load extension to chrome
 
-### terminal
+Load `dist` directory. All the files are refreshed without extension reload except content script. Reload the extension to see the changes.
 
-```
-npm run watch
-```
+### Built on
 
-### Visual Studio Code
-
-Run watch mode.
-
-type `Ctrl + Shift + B`
-
-## Load extension to chrome
-
-Load `dist` directory
-
-## Test
-
-`npx jest` or `npm run test`
+[Chitbat Chrome extension starter kit](https://github.com/chibat/chrome-extension-typescript-starter)
