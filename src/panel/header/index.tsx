@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Tabs from "../components/tabs";
+import Tooltip from "../components/tooltip";
 import { Button, Icon } from "../components/table";
 
 const Wrapper = styled("div")`
@@ -29,7 +30,6 @@ const Filters = styled.div`
   align-items: center;
   padding-left: 12px;
   margin-left: 8px;
-  flex-grow: 2;
 `;
 
 const Input = styled.input`
@@ -40,12 +40,25 @@ const Input = styled.input`
   width: 200px;
 `;
 
+const RecordIcon = styled(Icon)<{ border: boolean }>`
+  cursor: pointer;
+  ${({ border, theme }) =>
+    border &&
+    `
+    border-radius: 100%;
+    border: 2px solid ${theme.colors.alert};
+    margin-left: -2px;
+  `}
+`;
+
 interface IProps {
   changeRoute: (route: string) => void;
   route: string;
   onSearchChange: (search: string) => void;
   clearLogs: () => void;
   disableMocking: () => void;
+  recording: boolean;
+  onRecordingClick: () => void;
 }
 
 const getSelected = (route: string) => {
@@ -105,9 +118,32 @@ const Header = (props: IProps) => {
           </Button>
         )}
       </Filters>
-      <AddMockButton transparent link onClick={() => props.disableMocking()}>
-        Disable Mocking
-      </AddMockButton>
+      <Filters style={{ flexGrow: 2 }}>
+        <Tooltip
+          tooltipStyle={{ left: 32, top: -7, width: 320 }}
+          tooltip="Record: Mock Every API call, until Recording is on, Mocks will be created when Recoding stops. Recording might overwrite existing Mock."
+        >
+          <RecordIcon
+            onClick={props.onRecordingClick}
+            border={props.recording}
+            color={props.recording ? "alert" : undefined}
+          >
+            fiber_manual_record
+          </RecordIcon>
+        </Tooltip>
+      </Filters>
+      <Filters>
+        <Button
+          icon
+          style={{ marginRight: 4 }}
+          onClick={() => location.reload()}
+        >
+          <Icon>refresh</Icon>
+        </Button>
+        <AddMockButton transparent link onClick={() => props.disableMocking()}>
+          Disable Mocking
+        </AddMockButton>
+      </Filters>
     </Wrapper>
   );
 };

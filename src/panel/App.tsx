@@ -73,6 +73,10 @@ interface IState {
   notification: { text?: string; show: boolean };
   host: string;
   active: boolean;
+  recording: {
+    active: boolean;
+    index?: number;
+  };
 }
 
 interface IProps {
@@ -81,6 +85,8 @@ interface IProps {
   active: boolean;
   storeKey: string;
 }
+
+type ActionType = "add" | "delete" | "edit" | "clear";
 
 class App extends React.Component<IProps, IState> {
   notificationTimer: number;
@@ -95,6 +101,7 @@ class App extends React.Component<IProps, IState> {
     },
     host: this.props.host,
     active: this.props.active,
+    recording: { active: false },
   };
 
   showNotification = (text: string) => {
@@ -118,26 +125,13 @@ class App extends React.Component<IProps, IState> {
     this.setState({ route });
   };
 
-  handleAction = (
-    action: "add" | "delete" | "edit" | "clear",
-    newMock: IMockResponse | void,
-    tooltip?: string
+  updateStateStore = (
+    action: ActionType,
+    oldStore: IState["store"],
+    newMock: IMockResponse,
+    bulk?: boolean
   ) => {
-    if (action === "clear") {
-      this.setState({ rawMock: undefined });
-      this.changeRoute(
-        this.state.route.replace(".create", "") as IState["route"]
-      );
-      return;
-    }
-
-    if (!newMock) {
-      return;
-    }
-
-    const store = {
-      ...this.state.store,
-    };
+    const store = { ...oldStore };
 
     switch (action) {
       case "add": {
@@ -145,8 +139,10 @@ class App extends React.Component<IProps, IState> {
           (mock) => mock.url === newMock.url && mock.method === newMock.method
         );
         if (sameMock) {
-          this.showNotification("Mock already exist");
-          return;
+          if (!bulk) {
+            this.showNotification("Mock already exist");
+          }
+          return store;
         }
         const id = store.id;
 
@@ -172,6 +168,28 @@ class App extends React.Component<IProps, IState> {
         break;
       }
     }
+
+    return store;
+  };
+
+  handleAction = (
+    action: ActionType,
+    newMock: IMockResponse | void,
+    tooltip?: string
+  ) => {
+    if (action === "clear") {
+      this.setState({ rawMock: undefined });
+      this.changeRoute(
+        this.state.route.replace(".create", "") as IState["route"]
+      );
+      return;
+    }
+
+    if (!newMock) {
+      return;
+    }
+
+    const store = this.updateStateStore(action, this.state.store, newMock);
 
     const notificationMessage = {
       add: "Mock added Successfully.",
@@ -234,15 +252,90 @@ class App extends React.Component<IProps, IState> {
   };
 
   mockNetworkCall = (log: ILog) => {
-    this.handleAction("add", {
-      active: true,
-      method: log.request?.method || "GET",
-      createdOn: new Date().getTime(),
-      url: log.request?.url || "/some-url",
-      status: log.response?.status || 200,
-      response: log.response?.response || "",
-      delay: 500,
-      id: -1,
+    this.handleAction("add", this.createMockFromLog(log));
+  };
+
+  createMockFromLog = (log: ILog): IMockResponse => ({
+    active: true,
+    method: log.request?.method || "GET",
+    createdOn: new Date().getTime(),
+    url: log.request?.url || "/some-url",
+    status: log.response?.status || 200,
+    response: log.response?.response || "",
+    delay: 500,
+    id: -1,
+  });
+
+  bulkMockLogs = (logs: ILog[]) => {
+    let store = this.state.store;
+    logs.forEach((log) => {
+      if (log.id && log.mockPath) {
+        const tempMock: IMockResponse = get(store.mocks, log.mockPath);
+        tempMock.response = log.response.response;
+        store = this.updateStateStore("edit", store, tempMock, true);
+      } else {
+        store = this.updateStateStore(
+          "add",
+          store,
+          this.createMockFromLog(log),
+          true
+        );
+      }
+    });
+
+    updateStore(store)
+      .then((updatedStore: IStore) => {
+        this.setState((prevState: IState) => {
+          let logs = [...prevState.logs];
+
+          logs.forEach((log) => {
+            const tempMockIndex = store.mocks.find(
+              (mock) =>
+                log.request?.url === mock.url &&
+                log.request?.method === mock.method
+            );
+            log.mockPath = `mocks[${tempMockIndex}]`;
+          });
+
+          this.showNotification("Mocks updated successfully!");
+          chrome.tabs.sendMessage(this.props.tab.id, {
+            type: "UPDATE_STORE",
+            from: "PANEL",
+            to: "CONTENT",
+          });
+
+          return {
+            logs,
+            store: updatedStore,
+          };
+
+          // setState ends here
+        });
+      })
+      .catch(() => {
+        this.showNotification(
+          "Recording failed, please refresh Panel & try again!"
+        );
+      });
+  };
+
+  onRecordingClick = () => {
+    this.setState((prevState: IState) => {
+      if (!prevState.recording.active) {
+        return {
+          recording: {
+            active: true,
+            index: prevState.logs.length,
+          },
+        };
+      } else {
+        this.bulkMockLogs(prevState.logs.slice(prevState.recording.index!));
+        return {
+          recording: {
+            active: false,
+          },
+        };
+      }
     });
   };
 
@@ -373,6 +466,7 @@ class App extends React.Component<IProps, IState> {
       store,
       rawMock,
       filter: { search },
+      recording,
     } = this.state;
 
     const filteredLogs =
@@ -391,6 +485,8 @@ class App extends React.Component<IProps, IState> {
           route={route}
           changeRoute={this.changeRoute}
           disableMocking={this.toggleMokku}
+          recording={recording.active}
+          onRecordingClick={this.onRecordingClick}
         />
         <Content>
           {route.includes("logs") && (
