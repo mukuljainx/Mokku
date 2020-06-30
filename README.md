@@ -18,6 +18,8 @@ Collections & Dynamic mock generators coming soon!
 
 You can submit issues, bugs or feature request at https://github.com/mukuljainx/mokku/issues
 
+This extension is development phase, might not work in some kind of response like md files.
+
 [Promotional Images](https://github.com/mukuljainx/Mokku/tree/master/docs/store)
 
 ### Privacy policy
