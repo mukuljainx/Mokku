@@ -1,0 +1,4 @@
+- [Home](/)
+- [Development Guide](development-guide.md)
+- [Screen shots](screenshots.md)
+- [Privacy Policy](privacy-policy.md)

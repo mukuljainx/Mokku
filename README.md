@@ -1,12 +1,12 @@
-
 # Mokku
+
 > Mock API calls seamlessly
 
-![small-promo](./store/small-promo.png)
-
+![small-promo](./docs/store/small-promo.png)
 
 ### About
-Mokku helps user by mocking API and changing their response, response time and status, user can try all test case scenario like long loading time, error states, or any missing or incorrect data. 
+
+Mokku helps user by mocking API and changing their response, response time and status, user can try all test case scenario like long loading time, error states, or any missing or incorrect data.
 
 Mokku adds itself as a tab in dev tools as a panel. In the tab user can see network logs and mocks. Any network call from the logs can be mocked by simply clicking mock button then response can be edited. User can also search logs. Mock can also be created from scratch from create mock button.
 
@@ -16,16 +16,11 @@ Collections & Dynamic mock generators coming soon!
 
 You can submit issues, bugs or feature request at https://github.com/mukuljainx/mokku/issues
 
-[Promotional Images](https://github.com/mukuljainx/Mokku/tree/master/store)
-
-
+[Promotional Images](https://github.com/mukuljainx/Mokku/tree/master/docs/store)
 
 ### Privacy policy
 
 Mokku does not collect or ask for any personal information, though it will store the mocks the chrome local store & all the hosts name where it has been enabled once to provide better experience to user.
-
-
-
 
 ## Dev Guide
 
