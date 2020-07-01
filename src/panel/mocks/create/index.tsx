@@ -88,7 +88,7 @@ const Create = (props: IProps) => {
           active: componentProps.mock?.active || true,
         }}
         onSubmit={async (values) => {
-          componentProps.onAction(componentProps.mock.id ? "edit" : "add", {
+          componentProps.onAction(componentProps?.mock?.id ? "edit" : "add", {
             id: -1,
             createdOn: new Date().getTime(),
             active: true,
