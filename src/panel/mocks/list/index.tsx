@@ -17,6 +17,8 @@ import { IStore, IMockResponse } from "../../../interface/mock";
 
 const Wrapper = styled("div")`
   height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const EmptyWrapper = styled("div")`
