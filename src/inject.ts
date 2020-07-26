@@ -21,7 +21,7 @@ window.addEventListener("message", function (event) {
 });
 
 /**
- * Promisfy post message from window to window
+ * Promisify post message from window to window
  * ackRequired, if false, no id will be assigned hence, no method will be added in message
  * message id was not the problem but function in message bus was
  */
@@ -150,6 +150,11 @@ xhook.after(function (request, originalResponse) {
       postMessage(data, "LOG", false);
     }
   } catch (error) {
+    const data: IEventMessage["message"] = getLog(request, {
+      status: 0,
+      response: undefined,
+    });
+    postMessage(data, "LOG", false);
     console.log("INJECT_ERROR", error);
   }
 });
