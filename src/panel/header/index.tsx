@@ -59,6 +59,7 @@ interface IProps {
   disableMocking: () => void;
   recording: boolean;
   onRecordingClick: () => void;
+  addMock: () => void;
 }
 
 const getSelected = (route: string) => {
@@ -94,7 +95,7 @@ const Header = (props: IProps) => {
       <AddMockButton
         transparent
         link
-        onClick={() => props.changeRoute("mock.create")}
+        onClick={() => props.addMock()}
         className="button-icon transparent no-hover"
       >
         <Icon>add</Icon> Create Mock

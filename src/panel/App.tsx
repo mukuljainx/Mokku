@@ -142,7 +142,7 @@ class App extends React.Component<IProps, IState> {
           if (!bulk) {
             this.showNotification("Mock already exist");
           }
-          return store;
+          return;
         }
         const id = store.id;
 
@@ -190,6 +190,9 @@ class App extends React.Component<IProps, IState> {
     }
 
     const store = this.updateStateStore(action, this.state.store, newMock);
+    if (!store) {
+      return;
+    }
 
     const notificationMessage = {
       add: "Mock added Successfully.",
@@ -417,6 +420,11 @@ class App extends React.Component<IProps, IState> {
     });
   };
 
+  addMock = () => {
+    this.changeRoute("mock.create");
+    this.setState({ rawMock: undefined });
+  };
+
   getContent = () => {
     if (!this.state.host || !this.props.tab) {
       return (
@@ -480,6 +488,7 @@ class App extends React.Component<IProps, IState> {
     return (
       <Wrapper>
         <Header
+          addMock={this.addMock}
           clearLogs={this.clearLogs}
           onSearchChange={this.handleSearchChange}
           route={route}

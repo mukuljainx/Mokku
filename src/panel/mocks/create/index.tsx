@@ -75,6 +75,7 @@ interface IProps {
 const Create = (props: IProps) => {
   const methods = getNetworkMethodList();
   const componentProps = props;
+  console.log("111");
   return (
     <Wrapper>
       <Formik
