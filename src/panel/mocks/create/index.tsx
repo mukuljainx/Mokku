@@ -196,7 +196,7 @@ const Create = (props: IProps) => {
               <Group>
                 <FieldWrapper>
                   <Group>
-                    <Label style={{ marginBottom: -2 }}>Response:</Label>
+                    <Label>Response:</Label>
                     <StyledTabs
                       selected={tab}
                       tabs={["Body", "Headers"]}
