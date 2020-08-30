@@ -110,7 +110,7 @@ const Create = (props: IProps) => {
           delay: componentProps.mock?.delay || 500,
           response: componentProps.mock?.response || "",
           active: componentProps.mock?.active || true,
-          headers: componentProps.mock?.headers || [{ name: "", value: "" }],
+          headers: componentProps.mock?.headers || [],
         }}
         onSubmit={async (values) => {
           componentProps.onAction(componentProps?.mock?.id ? "edit" : "add", {
@@ -127,8 +127,9 @@ const Create = (props: IProps) => {
           const errors: Record<string, string> = {};
 
           if (
-            !values.headers[values.headers.length - 1].name &&
-            !values.headers[values.headers.length - 1].value
+            values.headers.length > 0 &&
+            (!values.headers[values.headers.length - 1].name ||
+              !values.headers[values.headers.length - 1].value)
           ) {
             errors.headers = "Each header pair should have name & value";
           }
@@ -200,6 +201,18 @@ const Create = (props: IProps) => {
                       selected={tab}
                       tabs={["Body", "Headers"]}
                       onChange={(selected) => {
+                        if (selected === 1 && values.headers.length === 0) {
+                          setFieldValue("headers", [{ name: "", value: "" }]);
+                        }
+
+                        if (
+                          selected === 0 &&
+                          values.headers.length === 1 &&
+                          !values.headers[0].name &&
+                          !values.headers[0].value
+                        ) {
+                          setFieldValue("headers", []);
+                        }
                         setTab(selected);
                       }}
                     />
@@ -231,7 +244,6 @@ const Create = (props: IProps) => {
                                     autoFocus
                                   ></Input>
                                   <Input
-                                    autoFocus
                                     name={`headers.${index}.value`}
                                   ></Input>
                                   <Icon
