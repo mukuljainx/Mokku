@@ -205,7 +205,10 @@ class App extends React.Component<IProps, IState> {
         this.setState((prevState: IState) => {
           let logs = prevState.logs;
           if (action === "add") {
-            const mockIndex = store.mocks.findIndex((mock) => mock);
+            const mockIndex = store.mocks.findIndex(
+              (mock) =>
+                mock.url === newMock.url && mock.method && newMock.method
+            );
             logs = logs.map((log) => {
               if (
                 log.request?.url === newMock.url &&
