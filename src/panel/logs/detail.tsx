@@ -125,6 +125,39 @@ const getQueryParamsContent = (log: IProps["log"]) => {
   );
 };
 
+const getHeaders = (log: IProps["log"]) => {
+  if (!log.response) {
+    return (
+      <Content center>
+        <Label>No Headers</Label>
+      </Content>
+    );
+  }
+
+  return (
+    <Content>
+      <h4>Response Headers</h4>
+      <JSONWrapper>
+        {log.response.headers.map((header) => (
+          <p>
+            {header.name}: {header.value}
+          </p>
+        ))}
+        {log.response.headers.length === 0 && "No Headers present"}
+      </JSONWrapper>
+      <h4>Request Headers</h4>
+      <JSONWrapper>
+        {log.request.headers.map((header) => (
+          <p>
+            {header.name}: {header.value}
+          </p>
+        ))}
+        {log.request.headers.length === 0 && "No Headers present"}
+      </JSONWrapper>
+    </Content>
+  );
+};
+
 const Detail = ({ log, onClose }: IProps) => {
   const [tab, setTab] = React.useState(0);
 
@@ -139,12 +172,13 @@ const Detail = ({ log, onClose }: IProps) => {
             setTab(selected);
           }}
           selected={tab}
-          tabs={["Response", "Request Body", "Query Params"]}
+          tabs={["Response", "Request Body", "Query Params", "Headers"]}
         />
       </Header>
       {tab === 0 && getResponseContent(log)}
       {tab === 1 && getRequestBodyContent(log)}
       {tab === 2 && getQueryParamsContent(log)}
+      {tab === 3 && getHeaders(log)}
     </Wrapper>
   );
 };

@@ -98,4 +98,10 @@ export const Button = styled.button<{
   ${({ background, theme }) =>
     background && `background: ${theme.colors[background]};`};
   ${({ color, theme }) => color && `color: ${theme.colors[color]};`};
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
 `;

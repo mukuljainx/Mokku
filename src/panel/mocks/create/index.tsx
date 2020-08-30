@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import styled from "styled-components";
 
 import { IMockResponse, IMockResponseRaw } from "../../../interface/mock";
@@ -7,7 +7,8 @@ import { IMethod } from "../../../interface/network";
 import MultiSelect from "../../components/multiselect";
 import { getNetworkMethodList } from "../../../services/collection";
 import { isValidJSON, getError } from "../../../services/helper";
-import { Button } from "../../components/table";
+import { Button, Icon } from "../../components/table";
+import Tabs from "../../components/tabs";
 
 const Wrapper = styled("div")`
   border-left: ${({ theme }) => `1px solid ${theme.colors.border}`};
@@ -18,6 +19,13 @@ const Wrapper = styled("div")`
 const Label = styled("label")`
   margin-bottom: 4px;
   font-weight: 700;
+`;
+
+const StyledTabs = styled(Tabs)`
+  margin-left: 4px;
+  div {
+    padding: 4px 8px;
+  }
 `;
 
 const Input = styled(Field)<{ small?: boolean }>`
@@ -58,9 +66,23 @@ const StyledForm = styled(Form)`
 `;
 
 const Error = styled("p")`
-  color: ${({ theme }) => theme.colors.alert};
+  color: ${({ theme }) => theme.colors.alert} !important;
   height: 16px;
   margin-bottom: 8px;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  ${Input} {
+    margin-right: 4px;
+    flex-grow: 2;
+    &:first-child {
+      flex-grow: 1;
+    }
+  }
+  width: 100%;
 `;
 
 interface IProps {
@@ -75,6 +97,8 @@ interface IProps {
 const Create = (props: IProps) => {
   const methods = getNetworkMethodList();
   const componentProps = props;
+  const [tab, setTab] = React.useState(0);
+
   return (
     <Wrapper>
       <Formik
@@ -86,6 +110,7 @@ const Create = (props: IProps) => {
           delay: componentProps.mock?.delay || 500,
           response: componentProps.mock?.response || "",
           active: componentProps.mock?.active || true,
+          headers: componentProps.mock?.headers || [{ name: "", value: "" }],
         }}
         onSubmit={async (values) => {
           componentProps.onAction(componentProps?.mock?.id ? "edit" : "add", {
@@ -100,6 +125,13 @@ const Create = (props: IProps) => {
         validateOnBlur
         validate={(values) => {
           const errors: Record<string, string> = {};
+
+          if (
+            !values.headers[values.headers.length - 1].name &&
+            !values.headers[values.headers.length - 1].value
+          ) {
+            errors.headers = "Each header pair should have name & value";
+          }
 
           if (values.response && !isValidJSON(values.response)) {
             errors.response = "Invalid Response JSON";
@@ -162,19 +194,76 @@ const Create = (props: IProps) => {
               </Group>
               <Group>
                 <FieldWrapper>
-                  <Label>Response:</Label>
-                  <Textarea
-                    error={!!errors.response}
-                    value={values.response}
-                    rows={6}
-                    name="response"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  ></Textarea>
+                  <Group>
+                    <Label style={{ marginBottom: -2 }}>Response:</Label>
+                    <StyledTabs
+                      selected={tab}
+                      tabs={["Body", "Headers"]}
+                      onChange={(selected) => {
+                        setTab(selected);
+                      }}
+                    />
+                  </Group>
+                  {tab === 0 && (
+                    <Textarea
+                      error={!!errors.response}
+                      value={values.response}
+                      rows={6}
+                      name="response"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    ></Textarea>
+                  )}
+                  {tab === 1 && (
+                    <FieldArray
+                      name="headers"
+                      render={(arrayHelpers) => {
+                        const disabled = values.headers.some(
+                          (header) => !header.name || !header.value
+                        );
+                        return (
+                          <>
+                            {values.headers.length > 0 &&
+                              values.headers.map((header, index) => (
+                                <HeaderWrapper>
+                                  <Input
+                                    name={`headers.${index}.name`}
+                                    autoFocus
+                                  ></Input>
+                                  <Input
+                                    autoFocus
+                                    name={`headers.${index}.value`}
+                                  ></Input>
+                                  <Icon
+                                    onClick={() => {
+                                      arrayHelpers.remove(index);
+                                    }}
+                                  >
+                                    close
+                                  </Icon>
+                                </HeaderWrapper>
+                              ))}
+                            <Button
+                              style={{ height: 24, fontSize: 12 }}
+                              background="primary"
+                              color="white"
+                              disabled={disabled}
+                              onClick={() =>
+                                arrayHelpers.push({ name: "", value: "" })
+                              }
+                            >
+                              Add Header
+                            </Button>
+                          </>
+                        );
+                      }}
+                    />
+                  )}
                 </FieldWrapper>
               </Group>
               <Group style={{ justifyContent: "space-between" }}>
-                <Error>{getError(errors) || " "}</Error>
+                {/* TODO */}
+                <Error>{getError(errors as any) || " "}</Error>
                 <Actions>
                   <Button
                     style={{ marginRight: 16 }}

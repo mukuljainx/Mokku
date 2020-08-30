@@ -5,6 +5,7 @@ import IdFactory from "./services/idFactory";
 import MessageBus from "./services/messageBus";
 import { IEventMessage } from "./interface/message";
 import { IMockResponse, ILog } from "./interface/mock";
+import { getHeaders } from "./services/helper";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
@@ -68,13 +69,21 @@ xhook.before(function (request, callback) {
     .then((data: { mockResponse: IMockResponse }) => {
       if (data && data.mockResponse) {
         const mock = data.mockResponse;
+
+        const headers = mock.headers
+          ? mock.headers.reduce<Record<string, string>>((final, header) => {
+              final[header.name] = header.value;
+              return final;
+            }, {})
+          : {
+              "content-type": "application/json; charset=UTF-8",
+            };
+
         const finalResponse = {
           status: mock.status,
           text: mock.response ? mock.response : "",
+          headers,
           type: "json",
-          headers: {
-            "content-type": "application/json; charset=UTF-8",
-          },
         };
 
         if (mock.delay) {
@@ -94,7 +103,8 @@ xhook.before(function (request, callback) {
 });
 
 const getLog = (
-  request: ILog["request"] & {
+  request: Omit<ILog["request"], "headers"> & {
+    headers: Record<string, string>;
     mokku?: {
       id: number;
     };
@@ -114,6 +124,7 @@ const getLog = (
       body: request.body,
       queryParams,
       method: request.method,
+      headers: getHeaders(request.headers),
     },
     response,
     id: request.mokku?.id,
@@ -128,6 +139,7 @@ xhook.after(function (request, originalResponse) {
         const data: IEventMessage["message"] = getLog(request, {
           status: response.status,
           response: response.text,
+          headers: getHeaders(response.headers),
         });
         postMessage(data, "LOG", false);
       } else {
@@ -135,6 +147,7 @@ xhook.after(function (request, originalResponse) {
           const data: IEventMessage["message"] = getLog(request, {
             status: response.status,
             response: streamedResponse,
+            headers: getHeaders(response.headers),
           });
           postMessage(data, "LOG", false);
         });
@@ -146,6 +159,7 @@ xhook.after(function (request, originalResponse) {
           typeof originalResponse.text === "string"
             ? originalResponse.text
             : "Cannot parse response, logging libraries can cause this.",
+        headers: getHeaders(originalResponse.headers),
       });
       postMessage(data, "LOG", false);
     }
@@ -153,6 +167,7 @@ xhook.after(function (request, originalResponse) {
     const data: IEventMessage["message"] = getLog(request, {
       status: 0,
       response: undefined,
+      headers: [],
     });
     postMessage(data, "LOG", false);
     console.log("INJECT_ERROR", error);

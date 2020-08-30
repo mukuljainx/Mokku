@@ -1,15 +1,19 @@
 import { IMethod } from "./network";
 
+export type Headers = Array<{ name: string; value: string }>;
+
 export interface ILog {
   request?: {
     url: string;
     method: IMethod;
     body?: string;
     queryParams?: string;
+    headers: Headers;
   };
   response?: {
     status: number;
     response: string;
+    headers: Headers;
   };
   mockResponse?: IMockResponse;
   id?: number;
@@ -25,6 +29,7 @@ export interface IMockResponse {
   url: string;
   status: number;
   response?: string;
+  headers?: Headers;
   delay?: number;
   id: number;
   active: boolean;
