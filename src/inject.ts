@@ -41,6 +41,7 @@ const postMessage = (
     extenstionName: "MOKKU",
     type,
   };
+
   window.postMessage(messageObject, "*");
 
   if (messageId !== null) {
@@ -121,7 +122,10 @@ const getLog = (
   return {
     request: {
       url,
-      body: request.body,
+      body:
+        typeof request.body === "object"
+          ? JSON.stringify(request.body)
+          : request.body,
       queryParams,
       method: request.method,
       headers: getHeaders(request.headers),

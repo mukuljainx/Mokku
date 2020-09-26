@@ -50,3 +50,15 @@ function postReq() {
       console.log(response.headers);
     });
 }
+
+function uploadFile(event) {
+  event.preventDefault();
+  var formData = new FormData();
+  var imageFile = document.querySelector("#file");
+  formData.append("image", imageFile.files[0]);
+  axios.post("upload_file", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
