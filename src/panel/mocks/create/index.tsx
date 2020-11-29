@@ -4,11 +4,11 @@ import styled from "styled-components";
 
 import { IMockResponse, IMockResponseRaw } from "../../../interface/mock";
 import { IMethod } from "../../../interface/network";
-import MultiSelect from "../../components/multiselect";
+import MultiSelect from "../../../components/multiselect";
 import { getNetworkMethodList } from "../../../services/collection";
 import { isValidJSON, getError } from "../../../services/helper";
-import { Button, Icon } from "../../components/table";
-import Tabs from "../../components/tabs";
+import { Button, Icon } from "../../../components/core";
+import Tabs from "../../../components/tabs";
 
 const Wrapper = styled("div")`
   border-left: ${({ theme }) => `1px solid ${theme.colors.border}`};

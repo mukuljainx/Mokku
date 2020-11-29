@@ -14,10 +14,11 @@ import {
   IMockResponse,
   IMockResponseRaw,
 } from "../interface/mock";
-import theme from "./theme";
+import theme from "../components/theme";
 import { getDefaultStore, updateStore } from "../services/collection";
-import { Button, Icon } from "./components/table";
-import Notification from "./components/notification";
+import { Button, Icon } from "../components/core";
+
+import Notification from "../components/notification";
 
 const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};

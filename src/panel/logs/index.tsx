@@ -2,8 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 
 import { ILog } from "../../interface/mock";
-import { Button, Icon } from "../components/table";
-import Tooltip from "../components/tooltip";
+import { Button, Icon } from "../../components/core";
+import Tooltip from "../../components/tooltip";
 import Detail from "./detail";
 import {
   Table,
@@ -14,7 +14,7 @@ import {
   TableBodyWrapper,
   TableHeadWrapper,
   TableRow,
-} from "../components/table";
+} from "../../components/table";
 
 interface IProps {
   logs: ILog[];

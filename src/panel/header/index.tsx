@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import Tabs from "../components/tabs";
-import Tooltip from "../components/tooltip";
-import { Button, Icon } from "../components/table";
+import Tabs from "../../components/tabs";
+import Tooltip from "../../components/tooltip";
+import { Button, Icon } from "../../components/core";
 
 const Wrapper = styled("div")`
   display: flex;
@@ -143,6 +143,18 @@ const Header = (props: IProps) => {
         </Button>
         <AddMockButton transparent link onClick={() => props.disableMocking()}>
           Disable Mocking
+        </AddMockButton>
+
+        <AddMockButton
+          transparent
+          link
+          onClick={() => {
+            chrome.tabs.create({
+              url: chrome.runtime.getURL("dashboard.html"),
+            });
+          }}
+        >
+          Open Dashboard
         </AddMockButton>
       </Filters>
     </Wrapper>

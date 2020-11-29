@@ -18,6 +18,8 @@
     "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.1.6",
+    "firebase": "^8.1.1",
     "formik": "^2.1.4",
     "jquery": "^3.5.0",
     "lodash": "^4.17.19",
@@ -25,12 +27,13 @@
     "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "rebass": "^4.0.7",
     "styled-components": "^5.1.1",
     "xhook": "^1.4.9"
   },
   "devDependencies": {
     "@types/chrome": "0.0.100",
-    "http-server": "^0.12.3",
     "@types/jest": "^25.1.4",
     "@types/jquery": "^3.3.33",
     "@types/lodash": "^4.14.155",
@@ -41,6 +44,7 @@
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "docsify-cli": "^4.4.1",
+    "http-server": "^0.12.3",
     "jest": "^25.1.0",
     "rimraf": "^3.0.2 ",
     "sass": "^1.26.7",

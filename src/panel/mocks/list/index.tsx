@@ -10,9 +10,8 @@ import {
   TableBodyWrapper,
   TableHeadWrapper,
   TableRow,
-  Icon,
-  Button,
-} from "../../components/table";
+} from "../../../components/table";
+import { Button, Icon } from "../../../components/core";
 import { IStore, IMockResponse } from "../../../interface/mock";
 
 const Wrapper = styled("div")`
