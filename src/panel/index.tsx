@@ -27,7 +27,7 @@ const getDomain = (url: string) => {
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
   const host = getDomain(tab?.url) || "invalid";
-  const isLocalhost = tab?.url.includes("http://localhost");
+  const isLocalhost = (tab?.url || "").includes("http://localhost");
   const storeKey = `mokku.extension.active.${host}`;
 
   chrome.storage.local.get([storeKey], (result) => {

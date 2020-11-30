@@ -430,6 +430,14 @@ class App extends React.Component<IProps, IState> {
   };
 
   getContent = () => {
+    if (this.state.host === "invalid") {
+      return (
+        <Wrapper alignCenter>
+          <Text>Mokku not available on this url.</Text>
+        </Wrapper>
+      );
+    }
+
     if (!this.state.host || !this.props.tab) {
       return (
         <Wrapper alignCenter>
