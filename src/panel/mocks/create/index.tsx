@@ -11,7 +11,6 @@ import { Button, Icon } from "../../../components/core";
 import Tabs from "../../../components/tabs";
 
 const Wrapper = styled("div")`
-  border-left: ${({ theme }) => `1px solid ${theme.colors.border}`};
   height: 100%;
   overflow: auto;
 `;

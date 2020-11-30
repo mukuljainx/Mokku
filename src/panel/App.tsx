@@ -43,19 +43,29 @@ const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   }
 `;
 
-const Content = styled("div")`
-  overflow: hidden;
-  flex-grow: 2;
-  display: flex;
-`;
-
 const ListWrapper = styled("div")`
   flex-grow: 2;
   height: 100%;
 `;
 const CreateWrapper = styled("div")`
+  border-left: ${({ theme }) => `1px solid ${theme.colors.border}`};
   width: 50%;
   min-width: 656px;
+`;
+
+const Content = styled("div")`
+  overflow: hidden;
+  flex-grow: 2;
+  display: flex;
+
+  @media screen and (max-width: 720px) {
+    flex-direction: column;
+    ${CreateWrapper} {
+      border-top: ${({ theme }) => `1px solid ${theme.colors.border}`};
+      border-left: none;
+      width: 100%;
+    }
+  }
 `;
 
 const Text = styled.p<{ large?: boolean }>`
@@ -509,7 +519,7 @@ class App extends React.Component<IProps, IState> {
           recording={recording.active}
           onRecordingClick={this.onRecordingClick}
         />
-        <Content>
+        <Content id="content">
           {route.includes("logs") && (
             <ListWrapper>
               <Logs
