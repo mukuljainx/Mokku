@@ -5,6 +5,7 @@ import firebase from "firebase/app";
 import Registration from "./Auth/Registration";
 import Dashboard from "./Dashboard";
 import { IUser } from "../interface/user";
+import { Icon } from "../components/core";
 
 const App = () => {
   const [user, setUser] = React.useState<IUser | null>(null);
@@ -22,6 +23,17 @@ const App = () => {
       setLoading(false);
     });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="h-100 flex flex-column align-items-center justify-content-center">
+        <Icon color="primary" style={{ marginBottom: 16, fontSize: 40 }}>
+          system_update_alt
+        </Icon>
+        Loading
+      </div>
+    );
+  }
 
   return (
     <Router>
