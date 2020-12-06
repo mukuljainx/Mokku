@@ -2,19 +2,14 @@ import { get } from "lodash";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
-import { getDefaultStore, getURLMap } from "./services/collection";
-import { IStore, DBNameType, IMockResponse, IURLMap } from "./interface/mock";
+import { getStore } from "./services/collection";
+import { IMockResponse } from "./interface/mock";
 const init = () => {
-  let store: IStore;
-  let urlMap: IURLMap = {};
-
-  const setStore = () => {
-    const DBName: DBNameType = "mokku.extension.main.db";
-    chrome.storage.local.get([DBName], function (result) {
-      store = result["mokku.extension.main.db"] || getDefaultStore();
-      urlMap = getURLMap(store);
-    });
-  };
+  let store, urlMap;
+  getStore().then((a) => {
+    store = a.store;
+    urlMap = a.urlMap;
+  });
 
   const getMockPath = (url: string, method: string) => {
     if (urlMap[url]) {
@@ -24,12 +19,18 @@ const init = () => {
     }
   };
 
+  const updateStore = () => {
+    getStore().then((x) => {
+      store = x.store;
+      urlMap = x.urlMap;
+    });
+  };
+
   const getMock = (path: string) => {
     return get(store, path, null);
   };
 
   // get initial store
-  setStore();
 
   // From xhook to content Script
   window.addEventListener("message", function (event) {
@@ -83,7 +84,7 @@ const init = () => {
     if (message.to !== "CONTENT") return;
 
     if (message.type === "UPDATE_STORE") {
-      setStore();
+      updateStore();
     }
   });
 };

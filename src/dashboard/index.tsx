@@ -19,3 +19,8 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById("root")
 );
+
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+  //!this.checkIfSameTab(sender.tab)) return;
+  console.log(message);
+});

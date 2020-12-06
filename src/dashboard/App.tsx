@@ -6,10 +6,13 @@ import Registration from "./Auth/Registration";
 import Dashboard from "./Dashboard";
 import { IUser } from "../interface/user";
 import { Icon } from "../components/core";
+import { IStore } from "../interface/mock";
+import { getStore } from "../services/collection";
 
 const App = () => {
   const [user, setUser] = React.useState<IUser | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [store, setStore] = React.useState<IStore | undefined>();
 
   React.useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -21,6 +24,9 @@ const App = () => {
         });
       }
       setLoading(false);
+    });
+    getStore().then(({ store }) => {
+      setStore(store);
     });
   }, []);
 
@@ -45,7 +51,9 @@ const App = () => {
           />
           <Route
             path="/"
-            render={(props) => <Dashboard {...props} user={user} />}
+            render={(props) => (
+              <Dashboard {...props} store={store} user={user} />
+            )}
           />
         </Switch>
       </div>

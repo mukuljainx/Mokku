@@ -212,7 +212,8 @@ class App extends React.Component<IProps, IState> {
     };
 
     updateStore(store)
-      .then((store: IStore) => {
+      .then((x) => {
+        const { store } = x;
         this.setState((prevState: IState) => {
           let logs = prevState.logs;
           if (action === "add") {
@@ -301,7 +302,8 @@ class App extends React.Component<IProps, IState> {
     });
 
     updateStore(store)
-      .then((updatedStore: IStore) => {
+      .then((x) => {
+        const updatedStore = x.store;
         this.setState((prevState: IState) => {
           let logs = [...prevState.logs];
 

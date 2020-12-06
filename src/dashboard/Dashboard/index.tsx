@@ -4,28 +4,27 @@ import firebase from "firebase";
 
 import { IUser } from "../../interface/user";
 import { Button } from "../../components/core";
+import Nav from "./Nav";
+import { IStore } from "../../interface/mock";
+import Mocks from "./Mock";
 
 interface IProps extends RouteProps {
-  user: IUser;
+  user?: IUser;
+  store: IStore;
 }
 
 const signOut = () => {
   firebase
     .auth()
     .signOut()
-    .then(() => {
-      debugger;
-    });
+    .then(() => {});
 };
 
-const Dashboard = ({ user }: IProps) => {
-  if (!user) {
-    return <Redirect to="/auth" />;
-  }
-
+const Dashboard = ({ user, store }: IProps) => {
   return (
     <div>
-      current : {user.name} <Button onClick={signOut}>Sign Out</Button>
+      <Nav signOut={signOut} />
+      <Mocks store={store} />
     </div>
   );
 };

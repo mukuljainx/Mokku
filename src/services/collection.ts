@@ -1,6 +1,8 @@
 import { IStore, DBNameType, IURLMap } from "../interface/mock";
 import { IMethod } from "../interface/network";
 
+const storeName = "mokku.extension.main.db";
+
 export const getDefaultStore = (): IStore => ({
   active: false,
   mocks: [],
@@ -8,12 +10,26 @@ export const getDefaultStore = (): IStore => ({
   collections: {},
 });
 
+export const getStore = (name = storeName) => {
+  let store;
+  let urlMap;
+  return new Promise<{ store: IStore; urlMap: IURLMap }>((resolve) => {
+    chrome.storage.local.get([name], function (result) {
+      store = result[name] || getDefaultStore();
+      urlMap = getURLMap(store);
+      resolve({ store: store as IStore, urlMap: urlMap as IURLMap });
+    });
+  });
+};
+
 export const updateStore = (store: IStore) => {
-  return new Promise((reslove, reject) => {
-    const key: DBNameType = "mokku.extension.main.db";
+  return new Promise<{ store: IStore; urlMap: IURLMap }>((resolve, reject) => {
     try {
-      chrome.storage.local.set({ [key]: store }, () => {
-        reslove(store);
+      chrome.storage.local.set({ [storeName]: store }, () => {
+        resolve({
+          store: store as IStore,
+          urlMap: getURLMap(store) as IURLMap,
+        });
       });
     } catch (error) {
       reject(error);
