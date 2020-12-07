@@ -15,7 +15,7 @@ import {
   IMockResponseRaw,
 } from "../interface/mock";
 import theme from "../components/theme";
-import { getDefaultStore, updateStore } from "../services/collection";
+import { getDefaultStore, updateStateStore, updateStore } from "../store";
 import { Button, Icon } from "../components/core";
 
 import Notification from "../components/notification";
@@ -136,53 +136,6 @@ class App extends React.Component<IProps, IState> {
     this.setState({ route });
   };
 
-  updateStateStore = (
-    action: ActionType,
-    oldStore: IState["store"],
-    newMock: IMockResponse,
-    bulk?: boolean
-  ) => {
-    const store = { ...oldStore };
-
-    switch (action) {
-      case "add": {
-        const sameMock = !!store.mocks.find(
-          (mock) => mock.url === newMock.url && mock.method === newMock.method
-        );
-        if (sameMock) {
-          if (!bulk) {
-            this.showNotification("Mock already exist");
-          }
-          return;
-        }
-        const id = store.id;
-
-        store.mocks = [...store.mocks, { ...newMock, id }];
-        store.id++;
-        break;
-      }
-
-      case "edit": {
-        store.mocks = store.mocks.map((item) =>
-          item.id === newMock.id
-            ? {
-                ...item,
-                ...newMock,
-              }
-            : item
-        );
-        break;
-      }
-
-      case "delete": {
-        store.mocks = store.mocks.filter((item) => item.id !== newMock.id);
-        break;
-      }
-    }
-
-    return store;
-  };
-
   handleAction = (
     action: ActionType,
     newMock: IMockResponse | void,
@@ -200,7 +153,9 @@ class App extends React.Component<IProps, IState> {
       return;
     }
 
-    const store = this.updateStateStore(action, this.state.store, newMock);
+    const store = updateStateStore(action, newMock, this.state.store, {
+      notify: this.showNotification,
+    });
     if (!store) {
       return;
     }
@@ -290,14 +245,11 @@ class App extends React.Component<IProps, IState> {
       if (log.id && log.mockPath) {
         const tempMock: IMockResponse = get(store.mocks, log.mockPath);
         tempMock.response = log.response.response;
-        store = this.updateStateStore("edit", store, tempMock, true);
+        store = updateStateStore("edit", tempMock, store, { bulk: true });
       } else {
-        store = this.updateStateStore(
-          "add",
-          store,
-          this.createMockFromLog(log),
-          true
-        );
+        store = updateStateStore("add", this.createMockFromLog(log), store, {
+          bulk: true,
+        });
       }
     });
 

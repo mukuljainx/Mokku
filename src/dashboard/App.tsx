@@ -7,7 +7,7 @@ import Dashboard from "./Dashboard";
 import { IUser } from "../interface/user";
 import { Icon } from "../components/core";
 import { IStore } from "../interface/mock";
-import { getStore } from "../services/collection";
+import { getStore } from "../store";
 
 const App = () => {
   const [user, setUser] = React.useState<IUser | null>(null);

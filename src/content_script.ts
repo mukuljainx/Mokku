@@ -2,7 +2,7 @@ import { get } from "lodash";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
-import { getStore } from "./services/collection";
+import { getStore } from "./store";
 import { IMockResponse } from "./interface/mock";
 const init = () => {
   let store, urlMap;

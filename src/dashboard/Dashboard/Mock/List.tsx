@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import { Redirect } from "react-router-dom";
 
 import {
   Table,
@@ -48,6 +49,12 @@ interface IProps {
 }
 
 const List = ({ store }: IProps) => {
+  const [redirect, setRedirect] = React.useState<string | undefined>();
+
+  if (redirect) {
+    return <Redirect to={redirect} />;
+  }
+
   if (!store) {
     return null;
   }
@@ -55,11 +62,7 @@ const List = ({ store }: IProps) => {
     return (
       <EmptyWrapper>
         <p>No Mocks Yet.</p>
-        <Button
-          transparent
-          link
-          // onClick={() => props.changeRoute("mock.create")}
-        >
+        <Button transparent link onClick={() => setRedirect("/mocks/create")}>
           Create a Mock
         </Button>
       </EmptyWrapper>

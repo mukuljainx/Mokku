@@ -1,9 +1,8 @@
 import * as React from "react";
-import { RouteProps, Redirect } from "react-router-dom";
+import { RouteProps, Route } from "react-router-dom";
 import firebase from "firebase";
 
 import { IUser } from "../../interface/user";
-import { Button } from "../../components/core";
 import Nav from "./Nav";
 import { IStore } from "../../interface/mock";
 import Mocks from "./Mock";
@@ -22,9 +21,12 @@ const signOut = () => {
 
 const Dashboard = ({ user, store }: IProps) => {
   return (
-    <div>
+    <div className="h-100">
       <Nav signOut={signOut} />
-      <Mocks store={store} />
+      <Route
+        path="/mocks"
+        render={(props) => <Mocks {...props} store={store} />}
+      />
     </div>
   );
 };

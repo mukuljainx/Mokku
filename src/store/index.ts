@@ -1,5 +1,5 @@
-import { IStore, DBNameType, IURLMap } from "../interface/mock";
-import { IMethod } from "../interface/network";
+import { IMockResponse, IStore, IURLMap } from "../interface/mock";
+import { getNetworkMethodMap } from "../services/constants";
 
 const storeName = "mokku.extension.main.db";
 
@@ -22,6 +22,53 @@ export const getStore = (name = storeName) => {
   });
 };
 
+export const updateStateStore = (
+  action: "add" | "delete" | "edit" | "clear",
+  newMock: IMockResponse,
+  oldStore: IStore,
+  options: { notify?: (x: string) => void; bulk?: boolean }
+) => {
+  const store = { ...oldStore };
+
+  switch (action) {
+    case "add": {
+      const sameMock = !!store.mocks.find(
+        (mock) => mock.url === newMock.url && mock.method === newMock.method
+      );
+      if (sameMock) {
+        if (!options.bulk && options.notify) {
+          options.notify("Mock already exist");
+        }
+        return;
+      }
+      const id = store.id;
+
+      store.mocks = [...store.mocks, { ...newMock, id }];
+      store.id++;
+      break;
+    }
+
+    case "edit": {
+      store.mocks = store.mocks.map((item) =>
+        item.id === newMock.id
+          ? {
+              ...item,
+              ...newMock,
+            }
+          : item
+      );
+      break;
+    }
+
+    case "delete": {
+      store.mocks = store.mocks.filter((item) => item.id !== newMock.id);
+      break;
+    }
+  }
+
+  return store;
+};
+
 export const updateStore = (store: IStore) => {
   return new Promise<{ store: IStore; urlMap: IURLMap }>((resolve, reject) => {
     try {
@@ -36,22 +83,6 @@ export const updateStore = (store: IStore) => {
     }
   });
 };
-
-export const getNetworkMethodList = (): IMethod[] => [
-  "GET",
-  "POST",
-  "PATCH",
-  "PUT",
-  "DELETE",
-];
-
-export const getNetworkMethodMap = () => ({
-  GET: null,
-  POST: null,
-  PATCH: null,
-  PUT: null,
-  DELETE: null,
-});
 
 export const getURLMap = (store: IStore) => {
   const urlMap: IURLMap = {};

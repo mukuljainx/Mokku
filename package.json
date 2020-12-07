@@ -20,7 +20,7 @@
   "dependencies": {
     "@types/react-router-dom": "^5.1.6",
     "firebase": "^8.1.1",
-    "formik": "^2.1.4",
+    "formik": "^2.2.5",
     "jquery": "^3.5.0",
     "lodash": "^4.17.19",
     "moment": "~2.24.0",
