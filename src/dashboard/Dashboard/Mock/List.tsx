@@ -58,9 +58,10 @@ const List = ({ store }: IProps) => {
   if (!store) {
     return null;
   }
+  console.log(store);
   if (getTotalMockCount(store) === 0) {
     return (
-      <EmptyWrapper>
+      <EmptyWrapper className="w-100">
         <p>No Mocks Yet.</p>
         <Button transparent link onClick={() => setRedirect("/mocks/create")}>
           Create a Mock

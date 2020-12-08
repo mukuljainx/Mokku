@@ -11,15 +11,13 @@ interface IProps extends RouteComponentProps {
 
 const Mocks = ({ store, match }: IProps) => {
   return (
-    <div className="h-100">
-      <Switch>
-        <Route
-          path={`${match.path}/list`}
-          render={(props) => <List {...props} store={store} />}
-        />
-        <Route path={`${match.path}/create`} component={Create} />
-      </Switch>
-    </div>
+    <Switch>
+      <Route
+        path={`${match.path}/list`}
+        render={(props) => <List {...props} store={store} />}
+      />
+      <Route path={`${match.path}/create`} component={Create} />
+    </Switch>
   );
 };
 

@@ -3,8 +3,10 @@ import { RouteProps, Route } from "react-router-dom";
 import firebase from "firebase";
 
 import { IUser } from "../../interface/user";
-import Nav from "./Nav";
 import { IStore } from "../../interface/mock";
+
+import SideNav from "./SideNav";
+import Nav from "./Nav";
 import Mocks from "./Mock";
 
 interface IProps extends RouteProps {
@@ -23,10 +25,15 @@ const Dashboard = ({ user, store }: IProps) => {
   return (
     <div className="h-100">
       <Nav signOut={signOut} />
-      <Route
-        path="/mocks"
-        render={(props) => <Mocks {...props} store={store} />}
-      />
+      <div className="flex h-100">
+        <SideNav className="flex-shrink" />
+        <div className="h-100 flex-grow">
+          <Route
+            path="/mocks"
+            render={(props) => <Mocks {...props} store={store} />}
+          />
+        </div>
+      </div>
     </div>
   );
 };

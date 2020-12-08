@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #root {
@@ -35,6 +39,13 @@ body,
 }
 .justify-content-start {
   justify-content: flex-start;
+}
+.flex-shrink {
+  flex-shrink: 0;
+}
+
+.flex-grow {
+  flex-grow: 2;
 }
 
 .mr-8 {
