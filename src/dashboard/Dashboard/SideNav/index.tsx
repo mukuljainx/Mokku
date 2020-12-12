@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import styled from "styled-components";
 
@@ -15,8 +15,12 @@ const Wrapper = styled("div")`
     }
     &:hover {
       background: ${({ theme }) => theme.colors.primary};
-      color: ${({ theme }) => theme.colors.white};
+      color: ${({ theme }) => theme.colors.white} !important;
     }
+  }
+
+  .active-link {
+    color: ${({ theme }) => theme.colors.primary} !important;
   }
 `;
 
@@ -32,12 +36,12 @@ interface IProps {
 const SideNav = ({ className = " " }: IProps) => {
   return (
     <Wrapper className={`${className} flex flex-column`}>
-      <Link to="/mocks/list">
+      <NavLink activeClassName="active-link" to="/mocks/list">
         <Item>Mocks</Item>
-      </Link>
-      <Link to="/logs">
+      </NavLink>
+      <NavLink activeClassName="active-link" to="/logs">
         <Item>Logs</Item>
-      </Link>
+      </NavLink>
     </Wrapper>
   );
 };
