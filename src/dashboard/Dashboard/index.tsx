@@ -8,6 +8,7 @@ import { IStore } from "../../interface/mock";
 import SideNav from "./SideNav";
 import Nav from "./Nav";
 import Mocks from "./Mock";
+import Logs from "./Logs";
 
 interface IProps extends RouteProps {
   user?: IUser;
@@ -32,6 +33,7 @@ const Dashboard = ({ user, store }: IProps) => {
             path="/mocks"
             render={(props) => <Mocks {...props} store={store} />}
           />
+          <Route path="/logs" render={(props) => <Logs {...props} />} />
         </div>
       </div>
     </div>
