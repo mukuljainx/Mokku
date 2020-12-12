@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { debounce, get } from "lodash";
 
 import "./app.scss";
-import Logs from "./logs";
+import Logs from "../components/molecules/logs";
 import Mock from "./mocks";
 import Create from "./mocks/create";
 import Header from "./header";
@@ -16,7 +16,7 @@ import {
 } from "../interface/mock";
 import theme from "../components/theme";
 import { getDefaultStore, updateStateStore, updateStore } from "../store";
-import { Button, Icon } from "../components/core";
+import { Button, Icon } from "../components/atoms";
 
 import Notification from "../components/notification";
 
@@ -477,9 +477,7 @@ class App extends React.Component<IProps, IState> {
           {route.includes("logs") && (
             <ListWrapper>
               <Logs
-                active={this.state.active}
                 mockNetworkCall={this.mockNetworkCall}
-                changeRoute={this.changeRoute}
                 logs={filteredLogs}
                 editMock={this.editMockFromLog}
               />

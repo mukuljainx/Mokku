@@ -4,7 +4,7 @@ import { Link, Route, RouteProps, Redirect } from "react-router-dom";
 import firebase from "firebase/app";
 
 import styled from "styled-components";
-import { Button, Text } from "../../components/core";
+import { Button, Text } from "../../components/atoms";
 import ProgressBar from "../../components/progress";
 import { IError } from "../../interface/error";
 import { IUser } from "../../interface/user";

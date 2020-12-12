@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 import Registration from "./Auth/Registration";
 import Dashboard from "./Dashboard";
 import { IUser } from "../interface/user";
-import { Icon } from "../components/core";
+import { Icon } from "../components/atoms";
 import { IStore } from "../interface/mock";
 import { getStore } from "../store";
 

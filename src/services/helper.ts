@@ -1,9 +1,38 @@
-export const isValidJSON = (json: string) => {
+export const isValidJSON = (
+  json: string
+): { error?: string; position?: number; lineNumber?: number } => {
   try {
     JSON.parse(json);
-    return true;
+    return { error: undefined };
   } catch (e) {
-    return false;
+    let position = undefined;
+    let lineNumber = undefined;
+    const jsonErrorRegex = new RegExp(/(?<=\bposition\s)(\w+)/g);
+    const stringifiedError = e.toString();
+    if (stringifiedError !== "Unexpected end of JSON input") {
+      const x = jsonErrorRegex.exec(stringifiedError);
+      position = x && x.length > 0 ? parseInt(x[0], 10) : undefined;
+      if (position) {
+        lineNumber = 1;
+        for (let i = 0; i < json.length; i++) {
+          if (i === position) {
+            break;
+          }
+          if (json[i] === "\n") {
+            lineNumber++;
+          }
+        }
+      }
+
+      jsonErrorRegex.lastIndex = 0;
+    }
+    return {
+      error: `${stringifiedError}${
+        lineNumber ? " and at line number " + lineNumber : ""
+      }`,
+      position,
+      lineNumber,
+    };
   }
 };
 

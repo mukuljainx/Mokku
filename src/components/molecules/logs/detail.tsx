@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { ILog } from "../../interface/mock";
-import Tab from "../../components/tabs";
-import { Button, Icon } from "../../components/core";
+import { ILog } from "../../../interface/mock";
+import Tab from "../../tabs";
+import { Button, Icon } from "../../atoms";
 
 interface IProps {
   log: ILog;

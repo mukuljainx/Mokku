@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import Tabs from "../../components/tabs";
 import Tooltip from "../../components/tooltip";
-import { Button, Icon } from "../../components/core";
+import { Button, Icon } from "../../components/atoms";
 
 const Wrapper = styled("div")`
   display: flex;

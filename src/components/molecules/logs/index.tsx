@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { ILog } from "../../interface/mock";
-import { Button, Icon } from "../../components/core";
-import Tooltip from "../../components/tooltip";
+import { ILog } from "../../../interface/mock";
+import { Button, Icon } from "../../atoms";
+import Tooltip from "../../tooltip";
 import Detail from "./detail";
 import {
   Table,
@@ -14,14 +14,12 @@ import {
   TableBodyWrapper,
   TableHeadWrapper,
   TableRow,
-} from "../../components/table";
+} from "../../table";
 
 interface IProps {
   logs: ILog[];
-  changeRoute: (route: string) => void;
   mockNetworkCall: (log: ILog) => void;
   editMock: (path: string) => void;
-  active: boolean;
 }
 
 const Wrapper = styled("div")`
@@ -51,19 +49,19 @@ const Logs = (props: IProps) => {
     }
   });
 
-  if (!props.active) {
-    return (
-      <EmptyWrapper>
-        <p>
-          Mocking is inactive, network calls can only be logged when mocking is
-          enabled. Please enable mocking form extension popup & click Refresh.
-        </p>
-        <Button transparent link onClick={() => location.reload()}>
-          Refresh
-        </Button>
-      </EmptyWrapper>
-    );
-  }
+  // if (!props.active) {
+  //   return (
+  //     <EmptyWrapper>
+  //       <p>
+  //         Mocking is inactive, network calls can only be logged when mocking is
+  //         enabled. Please enable mocking form extension popup & click Refresh.
+  //       </p>
+  //       <Button transparent link onClick={() => location.reload()}>
+  //         Refresh
+  //       </Button>
+  //     </EmptyWrapper>
+  //   );
+  // }
 
   if (props.logs.length === 0) {
     return (

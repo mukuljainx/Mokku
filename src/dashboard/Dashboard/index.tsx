@@ -23,9 +23,9 @@ const signOut = () => {
 
 const Dashboard = ({ user, store }: IProps) => {
   return (
-    <div className="h-100">
+    <div className="h-100 flex flex-column">
       <Nav signOut={signOut} />
-      <div className="flex h-100">
+      <div className="flex flex-grow">
         <SideNav className="flex-shrink" />
         <div className="h-100 flex-grow">
           <Route

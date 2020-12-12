@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { Button } from "../../../components/core";
+import { Button } from "../../../components/atoms";
 
 const Wrapper = styled("div")`
   height: 48px;

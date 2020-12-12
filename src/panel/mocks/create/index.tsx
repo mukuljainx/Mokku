@@ -7,7 +7,7 @@ import { IMethod } from "../../../interface/network";
 import MultiSelect from "../../../components/multiselect";
 import { getNetworkMethodList } from "../../../services/constants";
 import { isValidJSON, getError } from "../../../services/helper";
-import { Button, Icon } from "../../../components/core";
+import { Button, Icon } from "../../../components/atoms";
 import Tabs from "../../../components/tabs";
 
 const Wrapper = styled("div")`
