@@ -29,9 +29,11 @@ const TabWrapper = styled("div")<{ active?: boolean }>`
 `;
 
 const Tabs = ({ selected, tabs, tabWidth, className, onChange }: IProps) => (
-  <Wrapper className={`tabs ${className ? className : ""}`}>
+  <Wrapper id="tab-wrapper" className={`tabs ${className ? className : ""}`}>
     {tabs.map((tab, index) => (
       <TabWrapper
+        id="tab"
+        data-test={`tab-${index}`}
         key={index}
         style={{ width: tabWidth }}
         active={selected === index}

@@ -34,13 +34,15 @@ interface IProps {
   options: string[];
   selected: number | null;
   onSelect: (selected: number) => void;
+  className?: string;
 }
 
 const MultiSelect = (props: IProps) => {
   return (
-    <Wrapper>
+    <Wrapper className={props.className} id="multi-select-wrapper">
       {props.options.map((option, index) => (
         <Button
+          id="multi-select"
           type="button"
           key={index}
           onClick={() => {
