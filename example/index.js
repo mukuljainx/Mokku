@@ -21,6 +21,26 @@ function sendAPI() {
     });
 }
 
+function dynamicSendAPI1() {
+  axios
+    .get("http://demo5468585.mockable.io/patients/empi/P032/goals/ff2")
+    .then((response) => {
+      printToScreen(response);
+      console.log(response.data);
+      console.log(response.headers);
+    });
+}
+
+function dynamicSendAPI2() {
+  axios
+    .get("http://demo5468585.mockable.io/patients/empi/P012/goals/ff24")
+    .then((response) => {
+      printToScreen(response);
+      console.log(response.data);
+      console.log(response.headers);
+    });
+}
+
 function sendAPI2() {
   axios.get("https://demo5468585.mockable.io/events").then((response) => {
     printToScreen(response);

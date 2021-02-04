@@ -58,7 +58,7 @@ const List = ({ store }: IProps) => {
   if (!store) {
     return null;
   }
-  console.log(store);
+
   if (getTotalMockCount(store) === 0) {
     return (
       <EmptyWrapper className="w-100">

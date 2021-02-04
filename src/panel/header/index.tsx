@@ -145,7 +145,7 @@ const Header = (props: IProps) => {
           Disable Mocking
         </AddMockButton>
 
-        <AddMockButton
+        {/* <AddMockButton
           transparent
           link
           onClick={() => {
@@ -155,7 +155,7 @@ const Header = (props: IProps) => {
           }}
         >
           Open Dashboard
-        </AddMockButton>
+        </AddMockButton> */}
       </Filters>
     </Wrapper>
   );

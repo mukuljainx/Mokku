@@ -32,6 +32,7 @@ export interface IMockResponse {
   headers?: Headers;
   delay?: number;
   id: number;
+  dynamic?: boolean;
   active: boolean;
   action?: (req: {
     body: Record<string, any>;
@@ -64,4 +65,14 @@ export interface IURLMap {
   [url: string]: {
     [method: string]: string;
   };
+}
+
+export interface IDynamicURLMap {
+  [urlLength: number]: Array<{
+    match: (
+      s: string
+    ) => boolean | { path: string; params: Record<string, string> };
+    method: string;
+    getterKey: string;
+  }>;
 }

@@ -1,4 +1,11 @@
-import { IMockResponse, IStore, IURLMap } from "../interface/mock";
+import { match as getMatcher } from "path-to-regexp";
+
+import {
+  IDynamicURLMap,
+  IMockResponse,
+  IStore,
+  IURLMap,
+} from "../interface/mock";
 import { getNetworkMethodMap } from "../services/constants";
 
 const storeName = "mokku.extension.main.db";
@@ -11,13 +18,21 @@ export const getDefaultStore = (): IStore => ({
 });
 
 export const getStore = (name = storeName) => {
-  let store;
-  let urlMap;
-  return new Promise<{ store: IStore; urlMap: IURLMap }>((resolve) => {
+  // let store;
+  // let urlMap;
+  return new Promise<{
+    store: IStore;
+    urlMap: IURLMap;
+    dynamicUrlMap: IDynamicURLMap;
+  }>((resolve) => {
     chrome.storage.local.get([name], function (result) {
-      store = result[name] || getDefaultStore();
-      urlMap = getURLMap(store);
-      resolve({ store: store as IStore, urlMap: urlMap as IURLMap });
+      const store = { ...getDefaultStore(), ...result[name] };
+      const { urlMap, dynamicUrlMap } = getURLMap(store);
+      resolve({
+        store: store,
+        urlMap: urlMap,
+        dynamicUrlMap,
+      });
     });
   });
 };
@@ -42,8 +57,10 @@ export const updateStateStore = (
         return;
       }
       const id = store.id;
+      const dynamic =
+        newMock.url.includes("(.*)") || newMock.url.includes("/:");
 
-      store.mocks = [...store.mocks, { ...newMock, id }];
+      store.mocks = [...store.mocks, { ...newMock, dynamic, id }];
       store.id++;
       break;
     }
@@ -70,23 +87,44 @@ export const updateStateStore = (
 };
 
 export const updateStore = (store: IStore) => {
-  return new Promise<{ store: IStore; urlMap: IURLMap }>((resolve, reject) => {
-    try {
-      chrome.storage.local.set({ [storeName]: store }, () => {
-        resolve({
-          store: store as IStore,
-          urlMap: getURLMap(store) as IURLMap,
+  return new Promise<{ store: IStore; urlMap: IURLMap; dynamicUrlMap }>(
+    (resolve, reject) => {
+      try {
+        chrome.storage.local.set({ [storeName]: store }, () => {
+          const { dynamicUrlMap, urlMap } = getURLMap(store);
+          resolve({
+            store: store as IStore,
+            urlMap: urlMap,
+            dynamicUrlMap: dynamicUrlMap,
+          });
         });
-      });
-    } catch (error) {
-      reject(error);
+      } catch (error) {
+        reject(error);
+      }
     }
-  });
+  );
 };
 
 export const getURLMap = (store: IStore) => {
   const urlMap: IURLMap = {};
+  const dynamicUrlMap: IDynamicURLMap = {};
+
   store.mocks.forEach((mock, index) => {
+    if (mock.dynamic) {
+      const url = mock.url.replace("://", "-");
+      const key = url.split("/").length;
+      const matcher: IDynamicURLMap[number][0] = {
+        getterKey: `mocks[${index}]`,
+        method: mock.method,
+        match: getMatcher(url, { decode: window.decodeURIComponent }),
+      };
+      if (dynamicUrlMap[key]) {
+        dynamicUrlMap[key].push(matcher);
+      } else {
+        dynamicUrlMap[key] = [matcher];
+      }
+      return;
+    }
     if (!urlMap[mock.url]) {
       urlMap[mock.url] = getNetworkMethodMap();
     }
@@ -109,5 +147,5 @@ export const getURLMap = (store: IStore) => {
     });
   });
 
-  return urlMap;
+  return { urlMap, dynamicUrlMap };
 };

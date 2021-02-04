@@ -3,19 +3,38 @@ import { get } from "lodash";
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
 import { getStore } from "./store";
-import { IMockResponse } from "./interface/mock";
+import { IDynamicURLMap, IMockResponse } from "./interface/mock";
 const init = () => {
-  let store, urlMap;
+  let store, urlMap, dynamicUrlMap: IDynamicURLMap;
   getStore().then((a) => {
     store = a.store;
     urlMap = a.urlMap;
+    dynamicUrlMap = a.dynamicUrlMap;
   });
 
   const getMockPath = (url: string, method: string) => {
+    // this will moved to store.ts
     if (urlMap[url]) {
       if (urlMap[url][method]) {
         return urlMap[url][method];
       }
+    }
+
+    const url1 = url.replace("://", "-");
+    const key = url1.split("/").length;
+    // match all dynamics route
+    const stack = dynamicUrlMap[key];
+    if (!stack) return;
+
+    let i = 0;
+    while (i < stack.length) {
+      // there is more to it will be used when
+      // action are introduced
+      const s = stack[i];
+      if (s.method === method && !!s.match(url1)) {
+        return s.getterKey;
+      }
+      i++;
     }
   };
 
