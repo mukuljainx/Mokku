@@ -45,10 +45,13 @@ const FieldWrapper = styled("div")`
   flex-grow: 2;
 `;
 
-const Group = styled.div.attrs({ className: "mock-create-group" })`
+const Group = styled.div.attrs({ className: "mock-create-group" })<{
+  grow?: boolean;
+}>`
   display: flex;
   align-items: center;
   margin-bottom: 8px;
+  ${({ grow }) => (grow ? "flex-grow: 2;" : "")}
   ${FieldWrapper}:not(:last-child) {
     margin-right: 16px;
   }
@@ -58,6 +61,9 @@ const Actions = styled.div``;
 
 const StyledForm = styled("form")`
   padding: 8px 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Error = styled("p")`
@@ -80,13 +86,21 @@ const HeaderWrapper = styled.div`
   width: 100%;
 `;
 
+type IFormValues = Omit<IMockResponse, "id" | "createdOn">;
+
 interface IProps {
   mock?: IMockResponseRaw;
+  onSubmit: (values: IFormValues) => void;
+  onCancel: () => void;
+  jsonEditor?: {
+    className?: string;
+    style?: React.CSSProperties;
+  };
 }
 
-const MockForm = ({ mock }: IProps) => {
+const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
   const [tab, setTab] = React.useState(0);
-  const initialValues: Omit<IMockResponse, "id" | "createdOn"> = {
+  const initialValues: IFormValues = {
     method: "GET",
     url: "",
     status: 200,
@@ -100,7 +114,7 @@ const MockForm = ({ mock }: IProps) => {
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={() => {}}
+      onSubmit={(values) => onSubmit(values)}
       onReset={() => {}}
       validateOnBlur
       validate={(values) => {
@@ -114,24 +128,18 @@ const MockForm = ({ mock }: IProps) => {
           errors.headers = "Each header pair should have name & value";
         }
 
-        const JSONValidator = isValidJSON(values.response).error;
-        if (JSONValidator) {
-          errors.response = JSONValidator;
-        }
-
         return errors;
       }}
     >
       {({
         setFieldValue,
-        handleChange,
         values,
         errors,
-        handleBlur,
         handleReset,
         handleSubmit,
         isValid,
         setFieldError,
+        setFieldTouched,
       }) => {
         return (
           <StyledForm onReset={handleReset} onSubmit={handleSubmit}>
@@ -171,8 +179,11 @@ const MockForm = ({ mock }: IProps) => {
                 <Input small required name="delay" type="number"></Input>
               </FieldWrapper>
             </Group>
-            <Group>
-              <FieldWrapper className="mock-create-response">
+            <Group grow>
+              <FieldWrapper
+                className="mock-create-response h-100"
+                style={{ height: "100%" }}
+              >
                 <Group>
                   <Label>Response:</Label>
                   <StyledTabs
@@ -200,8 +211,9 @@ const MockForm = ({ mock }: IProps) => {
                     name="response"
                     value={values.response}
                     onChange={(v) => setFieldValue("response", v)}
-                    onBlur={handleBlur}
+                    onError={(v) => setFieldError("response", v)}
                     error={!!errors.response}
+                    {...jsonEditor}
                   />
                 )}
                 {tab === 1 && (
@@ -261,7 +273,9 @@ const MockForm = ({ mock }: IProps) => {
                 >
                   Save
                 </Button>
-                <Button type="button">Cancel</Button>
+                <Button onClick={() => onCancel()} type="button">
+                  Cancel
+                </Button>
               </Actions>
             </Group>
           </StyledForm>

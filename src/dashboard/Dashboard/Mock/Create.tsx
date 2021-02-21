@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import MockForm from "../../../components/mockForm";
+// import MockForm from "../../../components/mockForm";
 
 const Wrapper = styled("div")`
   #mock-create-input,
@@ -27,11 +27,7 @@ const Wrapper = styled("div")`
 `;
 
 const List = () => {
-  return (
-    <Wrapper>
-      <MockForm />
-    </Wrapper>
-  );
+  return <Wrapper>{/* <MockForm /> */}</Wrapper>;
 };
 
 export default List;
