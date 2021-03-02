@@ -168,6 +168,15 @@ class App extends React.Component<IProps, IState> {
 
     updateStore(store)
       .then((x) => {
+        // Alert the content script
+        // so it can refresh store
+        this.showNotification(tooltip || notificationMessage[action]);
+        debugger;
+        chrome.tabs.sendMessage(this.props.tab.id, {
+          type: "UPDATE_STORE",
+          from: "PANEL",
+          to: "CONTENT",
+        });
         const { store } = x;
         this.setState((prevState: IState) => {
           let logs = prevState.logs;
@@ -200,14 +209,6 @@ class App extends React.Component<IProps, IState> {
           }
 
           return { store, logs };
-        });
-        // Alert the content script
-        // so it can refresh store
-        this.showNotification(tooltip || notificationMessage[action]);
-        chrome.tabs.sendMessage(this.props.tab.id, {
-          type: "UPDATE_STORE",
-          from: "PANEL",
-          to: "CONTENT",
         });
       })
       .catch((error) => {

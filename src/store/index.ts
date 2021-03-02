@@ -18,8 +18,6 @@ export const getDefaultStore = (): IStore => ({
 });
 
 export const getStore = (name = storeName) => {
-  // let store;
-  // let urlMap;
   return new Promise<{
     store: IStore;
     urlMap: IURLMap;
@@ -44,6 +42,7 @@ export const updateStateStore = (
   options: { notify?: (x: string) => void; bulk?: boolean }
 ) => {
   const store = { ...oldStore };
+  debugger;
 
   switch (action) {
     case "add": {
@@ -66,11 +65,14 @@ export const updateStateStore = (
     }
 
     case "edit": {
+      const dynamic =
+        newMock.url.includes("(.*)") || newMock.url.includes("/:");
       store.mocks = store.mocks.map((item) =>
         item.id === newMock.id
           ? {
               ...item,
               ...newMock,
+              dynamic,
             }
           : item
       );
@@ -92,6 +94,16 @@ export const updateStore = (store: IStore) => {
       try {
         chrome.storage.local.set({ [storeName]: store }, () => {
           const { dynamicUrlMap, urlMap } = getURLMap(store);
+          window.postMessage(
+            {
+              from: "CONTENT_SCRIPT",
+              to: "ALL",
+              extenstionName: "MOKKU",
+              message: "STORE_UPDATED",
+              type: "NOTIFICATION",
+            },
+            "*"
+          );
           resolve({
             store: store as IStore,
             urlMap: urlMap,
@@ -116,6 +128,7 @@ export const getURLMap = (store: IStore) => {
       const matcher: IDynamicURLMap[number][0] = {
         getterKey: `mocks[${index}]`,
         method: mock.method,
+        url: url,
         match: getMatcher(url, { decode: window.decodeURIComponent }),
       };
       if (dynamicUrlMap[key]) {
@@ -147,5 +160,5 @@ export const getURLMap = (store: IStore) => {
     });
   });
 
-  return { urlMap, dynamicUrlMap };
+  return { urlMap, dynamicUrlMap, store };
 };

@@ -74,5 +74,6 @@ export interface IDynamicURLMap {
     ) => boolean | { path: string; params: Record<string, string> };
     method: string;
     getterKey: string;
+    url: string;
   }>;
 }

@@ -1,11 +1,11 @@
 import { ILog } from "./mock";
 
 export interface IEventMessage {
-  to: "HOOK_SCRIPT" | "CONTENT_SCRIPT";
+  to: "HOOK_SCRIPT" | "CONTENT_SCRIPT" | "ALL";
   from: IEventMessage["to"];
   extenstionName: "MOKKU";
   id?: number;
-  type: "LOG" | "QUERY";
+  type: "LOG" | "QUERY" | "NOTIFICATION";
   message: ILog;
 }
 

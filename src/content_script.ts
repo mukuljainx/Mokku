@@ -4,6 +4,7 @@ import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
 import { getStore } from "./store";
 import { IDynamicURLMap, IMockResponse } from "./interface/mock";
+
 const init = () => {
   let store, urlMap, dynamicUrlMap: IDynamicURLMap;
   getStore().then((a) => {
@@ -42,6 +43,7 @@ const init = () => {
     getStore().then((x) => {
       store = x.store;
       urlMap = x.urlMap;
+      dynamicUrlMap = x.dynamicUrlMap;
     });
   };
 
@@ -58,7 +60,7 @@ const init = () => {
 
     const data: IEventMessage = event.data;
 
-    if (data.to !== "CONTENT_SCRIPT") return;
+    if (data.to !== "CONTENT_SCRIPT" && data.to !== "ALL") return;
 
     if (data.type === "LOG") {
       const message = data.message;
@@ -79,6 +81,12 @@ const init = () => {
       return;
     }
 
+    if (data.type === "NOTIFICATION") {
+      if (data.message === "STORE_UPDATED") {
+        window.postMessage({ just: "checking" }, "*");
+        updateStore();
+      }
+    }
     const response: Omit<IEventMessage, "type"> = {
       id: data.id,
       from: "CONTENT_SCRIPT",
@@ -100,8 +108,8 @@ const init = () => {
 
   chrome.runtime.onMessage.addListener((message, sender, response) => {
     //!this.checkIfSameTab(sender.tab)) return;
+    window.postMessage({ just: "checking" }, "*");
     if (message.to !== "CONTENT") return;
-
     if (message.type === "UPDATE_STORE") {
       updateStore();
     }
