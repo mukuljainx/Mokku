@@ -3,7 +3,7 @@ import { ILog } from "./mock";
 export interface IEventMessage {
   to: "HOOK_SCRIPT" | "CONTENT_SCRIPT" | "ALL";
   from: IEventMessage["to"];
-  extenstionName: "MOKKU";
+  extensionName: "MOKKU";
   id?: number;
   type: "LOG" | "QUERY" | "NOTIFICATION";
   message: ILog;

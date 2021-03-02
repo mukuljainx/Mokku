@@ -91,7 +91,7 @@ const init = () => {
       id: data.id,
       from: "CONTENT_SCRIPT",
       to: "HOOK_SCRIPT",
-      extenstionName: "MOKKU",
+      extensionName: "MOKKU",
       message: {},
     };
 

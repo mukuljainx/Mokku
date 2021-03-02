@@ -98,7 +98,7 @@ export const updateStore = (store: IStore) => {
             {
               from: "CONTENT_SCRIPT",
               to: "ALL",
-              extenstionName: "MOKKU",
+              extensionName: "MOKKU",
               message: "STORE_UPDATED",
               type: "NOTIFICATION",
             },

@@ -38,7 +38,7 @@ const postMessage = (
     message,
     to: "CONTENT_SCRIPT",
     from: "HOOK_SCRIPT",
-    extenstionName: "MOKKU",
+    extensionName: "MOKKU",
     type,
   };
 
