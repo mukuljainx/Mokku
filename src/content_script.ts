@@ -2,8 +2,9 @@ import { get } from "lodash";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
-import { getStore } from "./store";
-import { IDynamicURLMap, IMockResponse } from "./interface/mock";
+import { getStore } from "./services/store";
+import { IDynamicURLMap, ILog, IMockResponse } from "./interface/mock";
+import messageService from "./services/message";
 
 const init = () => {
   let store, urlMap, dynamicUrlMap: IDynamicURLMap;
@@ -51,19 +52,9 @@ const init = () => {
     return get(store, path, null);
   };
 
-  // get initial store
-
-  // From xhook to content Script
-  window.addEventListener("message", function (event) {
-    // We only accept messages from ourselves
-    if (event.source !== window) return;
-
-    const data: IEventMessage = event.data;
-
-    if (data.to !== "CONTENT_SCRIPT" && data.to !== "ALL") return;
-
+  messageService.listen("CONTENT", (data: IEventMessage) => {
     if (data.type === "LOG") {
-      const message = data.message;
+      const message = data.message as ILog;
       const mockPath = getMockPath(message.request.url, message.request.method);
       const mock = getMock(mockPath) as IMockResponse;
 
@@ -72,7 +63,7 @@ const init = () => {
         message.mockPath = mockPath;
       }
 
-      chrome.runtime.sendMessage({
+      messageService.send({
         message,
         type: "LOG",
         from: "CONTENT",
@@ -81,39 +72,88 @@ const init = () => {
       return;
     }
 
-    if (data.type === "NOTIFICATION") {
-      if (data.message === "STORE_UPDATED") {
-        window.postMessage({ just: "checking" }, "*");
-        updateStore();
-      }
+    if (data.type === "NOTIFICATION" && data.message === "UPDATE_STORE") {
+      updateStore();
+      return;
     }
+
     const response: Omit<IEventMessage, "type"> = {
       id: data.id,
-      from: "CONTENT_SCRIPT",
-      to: "HOOK_SCRIPT",
+      from: "CONTENT",
+      to: "HOOK",
       extensionName: "MOKKU",
       message: {},
     };
 
-    const request = data.message.request;
+    const request = (data.message as ILog).request;
     const mockPath = getMockPath(request.url, request.method);
     const mock = getMock(mockPath) as IMockResponse;
 
     if (mock && mock.active) {
-      response.message.mockResponse = mock;
+      (response.message as ILog).mockResponse = mock;
     }
 
-    window.postMessage(response, "*");
+    messageService.send(response);
   });
 
-  chrome.runtime.onMessage.addListener((message, sender, response) => {
-    //!this.checkIfSameTab(sender.tab)) return;
-    window.postMessage({ just: "checking" }, "*");
-    if (message.to !== "CONTENT") return;
-    if (message.type === "UPDATE_STORE") {
-      updateStore();
-    }
-  });
+  // // From xhook to content Script
+  // window.addEventListener("message", function (event) {
+  //   // We only accept messages from ourselves
+  //   if (event.source !== window) return;
+
+  //   const data: IEventMessage = event.data;
+
+  //   if (data.to !== "CONTENT" && data.to !== "ALL") return;
+
+  //   if (data.type === "LOG") {
+  //     const message = data.message as ILog;
+  //     const mockPath = getMockPath(message.request.url, message.request.method);
+  //     const mock = getMock(mockPath) as IMockResponse;
+
+  //     if (mock) {
+  //       message.isMocked = mock.active;
+  //       message.mockPath = mockPath;
+  //     }
+
+  //     messageService.send({
+  //       message,
+  //       type: "LOG",
+  //       from: "CONTENT",
+  //       to: "PANEL",
+  //     });
+  //     return;
+  //   }
+
+  //   if (data.type === "NOTIFICATION") {
+  //     if (data.message === "STORE_UPDATED") {
+  //       updateStore();
+  //     }
+  //   }
+  //   const response: Omit<IEventMessage, "type"> = {
+  //     id: data.id,
+  //     from: "CONTENT",
+  //     to: "HOOK",
+  //     extensionName: "MOKKU",
+  //     message: {},
+  //   };
+
+  //   const request = (data.message as ILog).request;
+  //   const mockPath = getMockPath(request.url, request.method);
+  //   const mock = getMock(mockPath) as IMockResponse;
+
+  //   if (mock && mock.active) {
+  //     (response.message as ILog).mockResponse = mock;
+  //   }
+
+  //   window.postMessage(response, "*");
+  // });
+
+  // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  //   if (message.to !== "CONTENT") return;
+  //   if (message.type === "") {
+  //     updateStore();
+  //   }
+  // });
 };
 
 const host = location.host;
@@ -130,8 +170,8 @@ chrome.storage.local.get([`mokku.extension.active.${host}`], function (result) {
     init();
   }
   // tell the panel about the new injection (host might have changed)
-  chrome.runtime.sendMessage({
-    host,
+  messageService.send({
+    message: host,
     type: "INIT",
     from: "CONTENT",
     to: "PANEL",

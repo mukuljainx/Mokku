@@ -26,6 +26,7 @@
     "lodash": "^4.17.19",
     "moment": "~2.24.0",
     "path-to-regexp": "^6.2.0",
+    "prettier": "^2.2.1",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-ace": "^7.0.5",

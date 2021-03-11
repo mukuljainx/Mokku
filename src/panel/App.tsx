@@ -15,10 +15,16 @@ import {
   IMockResponseRaw,
 } from "../interface/mock";
 import theme from "../components/theme";
-import { getDefaultStore, updateStateStore, updateStore } from "../store";
+import {
+  getDefaultStore,
+  updateStateStore,
+  updateStore,
+} from "../services/store";
 import { Button, Icon } from "../components/atoms";
 
 import Notification from "../components/notification";
+import { IEventMessage } from "../interface/message";
+import messageService from "../services/message";
 
 const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
@@ -171,19 +177,22 @@ class App extends React.Component<IProps, IState> {
         // Alert the content script
         // so it can refresh store
         this.showNotification(tooltip || notificationMessage[action]);
-        debugger;
-        chrome.tabs.sendMessage(this.props.tab.id, {
-          type: "UPDATE_STORE",
-          from: "PANEL",
-          to: "CONTENT",
-        });
+        messageService.send(
+          {
+            type: "NOTIFICATION",
+            from: "PANEL",
+            to: "CONTENT",
+            message: "UPDATE_STORE",
+          },
+          this.props.tab.id
+        );
         const { store } = x;
         this.setState((prevState: IState) => {
           let logs = prevState.logs;
           if (action === "add") {
             const mockIndex = store.mocks.findIndex(
               (mock) =>
-                mock.url === newMock.url && mock.method && newMock.method
+                mock.url === newMock.url && mock.method === newMock.method
             );
             logs = logs.map((log) => {
               if (
@@ -270,10 +279,12 @@ class App extends React.Component<IProps, IState> {
           });
 
           this.showNotification("Mocks updated successfully!");
-          chrome.tabs.sendMessage(this.props.tab.id, {
-            type: "UPDATE_STORE",
+
+          messageService.send({
+            message: "UPDATE_STORE",
             from: "PANEL",
             to: "CONTENT",
+            type: "NOTIFICATION",
           });
 
           return {
@@ -312,11 +323,13 @@ class App extends React.Component<IProps, IState> {
   };
 
   componentDidMount() {
-    chrome.runtime.onMessage.addListener((message, sender, response) => {
-      if (message.to !== "PANEL" || !this.checkIfSameTab(sender.tab)) return;
+    messageService.listen("PANEL", (message: IEventMessage, sender: any) => {
+      if (!this.checkIfSameTab(sender.tab)) {
+        return;
+      }
       if (message.type === "LOG") {
         this.setState((prevState) => {
-          const newLog: ILog = message.message;
+          const newLog = message.message as ILog;
           let logs = prevState.logs;
           if (!newLog.response) {
             logs = [...logs, newLog];
@@ -329,15 +342,16 @@ class App extends React.Component<IProps, IState> {
           };
         });
       } else if (message.type === "INIT") {
-        if (message.host !== this.state.host) {
-          const storeKey = `mokku.extension.active.${message.host}`;
-          const isLocalhost = message.host.includes("http://localhost");
+        if (message.message !== this.state.host) {
+          const host = message.message as string;
+          const storeKey = `mokku.extension.active.${host}`;
+          const isLocalhost = host.includes("http://localhost");
           chrome.storage.local.get([storeKey], (result) => {
             let active = result[storeKey];
             if (isLocalhost && active === undefined) {
               active = true;
             }
-            this.setState({ host: message.host, active });
+            this.setState({ host, active });
           });
         }
       }

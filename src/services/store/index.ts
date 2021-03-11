@@ -5,8 +5,8 @@ import {
   IMockResponse,
   IStore,
   IURLMap,
-} from "../interface/mock";
-import { getNetworkMethodMap } from "../services/constants";
+} from "../../interface/mock";
+import { getNetworkMethodMap } from "../constants";
 
 const storeName = "mokku.extension.main.db";
 
@@ -42,7 +42,6 @@ export const updateStateStore = (
   options: { notify?: (x: string) => void; bulk?: boolean }
 ) => {
   const store = { ...oldStore };
-  debugger;
 
   switch (action) {
     case "add": {
@@ -94,16 +93,6 @@ export const updateStore = (store: IStore) => {
       try {
         chrome.storage.local.set({ [storeName]: store }, () => {
           const { dynamicUrlMap, urlMap } = getURLMap(store);
-          window.postMessage(
-            {
-              from: "CONTENT_SCRIPT",
-              to: "ALL",
-              extensionName: "MOKKU",
-              message: "STORE_UPDATED",
-              type: "NOTIFICATION",
-            },
-            "*"
-          );
           resolve({
             store: store as IStore,
             urlMap: urlMap,

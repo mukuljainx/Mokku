@@ -1,16 +1,13 @@
 import { ILog } from "./mock";
 
+export type Process = "HOOK" | "CONTENT" | "PANEL" | "ALL" | "BACKROUND" | "PANEL";
+
 export interface IEventMessage {
-  to: "HOOK_SCRIPT" | "CONTENT_SCRIPT" | "ALL";
-  from: IEventMessage["to"];
+  to: Process;
+  from: Process;
   extensionName: "MOKKU";
   id?: number;
-  type: "LOG" | "QUERY" | "NOTIFICATION";
-  message: ILog;
+  type?: "LOG" | "NOTIFICATION" | "INIT";
+  message: ILog | Record<string, any> | string | number;
 }
 
-export interface IPortMessage {
-  to: "BACKROUND" | "CONTENT" | "POPUP" | "PANEL";
-  from: IPortMessage["to"];
-  message?: Record<string, any>;
-}

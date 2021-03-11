@@ -2,22 +2,17 @@ import * as xhook from "xhook";
 import { parse } from "query-string";
 
 import IdFactory from "./services/idFactory";
-import MessageBus from "./services/messageBus";
+import MessageBus from "./services/message/messageBus";
 import { IEventMessage } from "./interface/message";
 import { IMockResponse, ILog } from "./interface/mock";
 import { getHeaders } from "./services/helper";
+import messageService from "./services/message";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
 const logIdFactory = new IdFactory();
 
-window.addEventListener("message", function (event) {
-  // We only accept messages from ourselves
-  if (event.source != window) return;
-
-  const data: IEventMessage = event.data;
-  if (data.to !== "HOOK_SCRIPT") return;
-
+messageService.listen("HOOK", (data) => {
   messageBus.dispatch(data.id, data.message);
 });
 
@@ -36,13 +31,13 @@ const postMessage = (
   const messageObject: IEventMessage = {
     id: messageId,
     message,
-    to: "CONTENT_SCRIPT",
-    from: "HOOK_SCRIPT",
+    to: "CONTENT",
+    from: "HOOK",
     extensionName: "MOKKU",
     type,
   };
 
-  window.postMessage(messageObject, "*");
+  messageService.send(messageObject);
 
   if (messageId !== null) {
     return new Promise((reslove) => {
@@ -66,7 +61,7 @@ xhook.before(function (request, callback) {
   const data: IEventMessage["message"] = getLog(request);
   postMessage(data, "LOG", false);
 
-  postMessage(data, "QUERY", true)
+  postMessage(data, "NOTIFICATION", true)
     .then((data: { mockResponse: IMockResponse }) => {
       if (data && data.mockResponse) {
         const mock = data.mockResponse;
