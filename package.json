@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "rm -rf ./dist && webpack --config webpack/webpack.dev.js --watch",
-    "build": "rm -rf ./dist && webpack --config webpack/webpack.prod.js",
+    "build": "rm -rf ./dist && webpack --config webpack/webpack.prod.js && rm mokku.zip && zip mokku.zip dist/*",
     "watch:example": "npx http-server example",
     "clean": "rimraf dist",
     "test": "npx jest",
