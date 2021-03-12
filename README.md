@@ -29,6 +29,10 @@ This extension is development phase, might not work in some kind of response lik
 1. Mock API call, specify JSON body, status, time delay and even headers 🙌.
 2. **Wild Card:** add `(.*)` as wild card in url which will match anything, for example: `some-domain/user/(.*)/messages`. This will match `some-domain/user/u1/messages` and `some-domain/user/u2/messages` too.
 
+### GraphQL
+
+Mokku doesn't support GraphQL as of now.
+
 ### Privacy policy
 
 Mokku does not collect or ask for any personal information, though it will store the mocks the chrome local store & all the hosts name where it has been enabled once to provide better experience to user.
