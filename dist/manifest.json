@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Mokku: Mock API calls seamlessly",
   "description": "Adds the API mocker Mokku to Dev Tools for seamless integration & testing.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "devtools_page": "devtool.html",
   "icons": {
     "16": "mokku-16.png",
