@@ -21,6 +21,7 @@ import {
   updateStore,
 } from "../services/store";
 import { Button, Icon } from "../components/atoms";
+import PromotionBanner from "./Banner/Promotion";
 
 import Notification from "../components/notification";
 import { IEventMessage } from "../interface/message";
@@ -94,6 +95,7 @@ interface IState {
     active: boolean;
     index?: number;
   };
+  showBanner: boolean;
 }
 
 interface IProps {
@@ -107,7 +109,9 @@ type ActionType = "add" | "delete" | "edit" | "clear";
 
 class App extends React.Component<IProps, IState> {
   notificationTimer: number;
+  initialStoreId: number = getDefaultStore().id;
   state: IState = {
+    showBanner: false,
     logs: [],
     route: "mock",
     store: getDefaultStore(),
@@ -187,6 +191,16 @@ class App extends React.Component<IProps, IState> {
           this.props.tab.id
         );
         const { store } = x;
+
+        // show banner to the usesr
+        if (
+          !store.activityInfo.promoted &&
+          store.id - this.initialStoreId > 1
+        ) {
+          this.setState({ showBanner: true });
+          updateStore({ ...store, activityInfo: { promoted: true } });
+        }
+
         this.setState((prevState: IState) => {
           let logs = prevState.logs;
           if (action === "add") {
@@ -265,7 +279,24 @@ class App extends React.Component<IProps, IState> {
 
     updateStore(store)
       .then((x) => {
-        const updatedStore = x.store;
+        messageService.send({
+          message: "UPDATE_STORE",
+          from: "PANEL",
+          to: "CONTENT",
+          type: "NOTIFICATION",
+        });
+
+        const updatedStore = x.store as IStore;
+        // show banner to the usesr
+        debugger;
+        if (
+          !updatedStore.activityInfo.promoted &&
+          updatedStore.id - this.initialStoreId > 1
+        ) {
+          this.setState({ showBanner: true });
+          updateStore({ ...updatedStore, activityInfo: { promoted: true } });
+        }
+
         this.setState((prevState: IState) => {
           let logs = [...prevState.logs];
 
@@ -279,13 +310,6 @@ class App extends React.Component<IProps, IState> {
           });
 
           this.showNotification("Mocks updated successfully!");
-
-          messageService.send({
-            message: "UPDATE_STORE",
-            from: "PANEL",
-            to: "CONTENT",
-            type: "NOTIFICATION",
-          });
 
           return {
             logs,
@@ -360,7 +384,8 @@ class App extends React.Component<IProps, IState> {
     let store: IStore;
     const DBName: DBNameType = "mokku.extension.main.db";
     chrome.storage.local.get([DBName], (result) => {
-      store = result["mokku.extension.main.db"] || getDefaultStore();
+      store = { ...getDefaultStore(), ...result["mokku.extension.main.db"] };
+      this.initialStoreId = store.id;
       this.setState({ store, storeLoading: false });
     });
   }
@@ -524,6 +549,7 @@ class App extends React.Component<IProps, IState> {
   };
 
   render() {
+    console.log(this.state);
     return (
       <ThemeProvider theme={theme}>
         {this.getContent()}
@@ -532,6 +558,11 @@ class App extends React.Component<IProps, IState> {
             show={this.state.notification.show}
             text={this.state.notification.text}
           ></Notification>
+        )}
+        {this.state.showBanner && (
+          <PromotionBanner
+            onClose={() => this.setState({ showBanner: false })}
+          />
         )}
       </ThemeProvider>
     );

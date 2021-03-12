@@ -47,6 +47,9 @@ export interface IStore {
   active: boolean;
   mocks: IMockResponse[];
   id: number;
+  activityInfo: {
+    promoted: boolean;
+  };
   collections: Record<
     string,
     {

@@ -15,6 +15,9 @@ export const getDefaultStore = (): IStore => ({
   mocks: [],
   id: 1,
   collections: {},
+  activityInfo: {
+    promoted: false,
+  },
 });
 
 export const getStore = (name = storeName) => {
@@ -24,8 +27,9 @@ export const getStore = (name = storeName) => {
     dynamicUrlMap: IDynamicURLMap;
   }>((resolve) => {
     chrome.storage.local.get([name], function (result) {
-      const store = { ...getDefaultStore(), ...result[name] };
+      const store = { ...getDefaultStore(), ...result[name] } as IStore;
       const { urlMap, dynamicUrlMap } = getURLMap(store);
+
       resolve({
         store: store,
         urlMap: urlMap,
