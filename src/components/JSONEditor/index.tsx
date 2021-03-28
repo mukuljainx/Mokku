@@ -1,12 +1,9 @@
 import { FormikHandlers } from "formik";
 import * as React from "react";
 import styled from "styled-components";
-import brace from "brace";
 import AceEditor from "react-ace";
 import "brace/mode/json";
 import "brace/theme/github";
-
-import { isValidJSON } from "../../services/helper";
 
 const Wrapper = styled.div``;
 
@@ -30,9 +27,40 @@ const JSONEditor = ({
   className,
   onError,
 }: IProps) => {
+  const ref = React.useRef();
+
+  React.useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const editor = (ref.current as any)!.editor;
+
+    editor.onPaste = (event, x, y) => {
+      // debugger;
+      console.log(event);
+      editor.session.insert(editor.getCursorPosition(), event);
+      debugger;
+      const v = editor.getValue();
+      let formatted = v;
+      try {
+        formatted = JSON.stringify(JSON.parse(v), null, "\t");
+      } catch (e) {
+        formatted = v;
+      }
+      var pos = editor.session.selection.toJSON();
+
+      editor.setValue(formatted);
+      editor.session.selection.fromJSON(pos);
+
+      return false;
+    };
+  }, []);
+
   return (
     <Wrapper className={className} style={style}>
       <AceEditor
+        ref={ref}
         style={{ height: "100%", width: "calc(100% - 4px)" }}
         mode="json"
         theme="github"
