@@ -163,10 +163,10 @@ class App extends React.Component<IProps, IState> {
       return;
     }
 
-    const store = updateStateStore(action, newMock, this.state.store, {
+    const updatedStore = updateStateStore(action, newMock, this.state.store, {
       notify: this.showNotification,
     });
-    if (!store) {
+    if (!updatedStore) {
       return;
     }
 
@@ -176,7 +176,7 @@ class App extends React.Component<IProps, IState> {
       delete: "Mock deleted Successfully.",
     };
 
-    updateStore(store)
+    updateStore(updatedStore)
       .then((x) => {
         // Alert the content script
         // so it can refresh store
@@ -199,6 +199,11 @@ class App extends React.Component<IProps, IState> {
         ) {
           this.setState({ showBanner: true });
           updateStore({ ...store, activityInfo: { promoted: true } });
+          store.activityInfo.promoted = true;
+          this.setState((state) => ({
+            ...state,
+            store: { ...state.store, activityInfo: { promoted: true } },
+          }));
         }
 
         this.setState((prevState: IState) => {
