@@ -3,12 +3,28 @@ import { match as getMatcher } from "path-to-regexp";
 import {
   IDynamicURLMap,
   IMockResponse,
+  IMockResponseRaw,
   IStore,
   IURLMap,
 } from "../../interface/mock";
 import { getNetworkMethodMap } from "../constants";
 
 const storeName = "mokku.extension.main.db";
+
+export const createMock = (mock: IMockResponseRaw) => {
+  return {
+    createdOn: new Date().getTime(),
+    method: mock.method,
+    url: mock.url,
+    status: mock.status || 200,
+    response: mock.response || "",
+    headers: mock.headers || [],
+    delay: mock.delay,
+    id: mock.id,
+    dynamic: mock.dynamic,
+    active: mock.active,
+  };
+};
 
 export const getDefaultStore = (): IStore => ({
   active: false,
@@ -56,7 +72,7 @@ export const updateStateStore = (
         if (!options.bulk && options.notify) {
           options.notify("Mock already exist");
         }
-        return;
+        return oldStore;
       }
       const id = store.id;
       const dynamic =

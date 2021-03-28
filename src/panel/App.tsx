@@ -17,6 +17,7 @@ import {
 import theme from "../components/theme";
 import {
   getDefaultStore,
+  getStore,
   updateStateStore,
   updateStore,
 } from "../services/store";
@@ -26,6 +27,7 @@ import PromotionBanner from "./Banner/Promotion";
 import Notification from "../components/notification";
 import { IEventMessage } from "../interface/message";
 import messageService from "../services/message";
+import FS from "../components/fs";
 
 const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
@@ -81,7 +83,7 @@ const Text = styled.p<{ large?: boolean }>`
 
 interface IState {
   logs: ILog[];
-  route: "logs" | "logs.create" | "mock.create" | "mock";
+  route: "logs" | "logs.create" | "mock.create" | "mock" | "export-import";
   store: IStore;
   rawMock?: IMockResponseRaw;
   filter: {
@@ -181,15 +183,7 @@ class App extends React.Component<IProps, IState> {
         // Alert the content script
         // so it can refresh store
         this.showNotification(tooltip || notificationMessage[action]);
-        messageService.send(
-          {
-            type: "NOTIFICATION",
-            from: "PANEL",
-            to: "CONTENT",
-            message: "UPDATE_STORE",
-          },
-          this.props.tab.id
-        );
+        this.notifyContent();
         const { store } = x;
 
         // show banner to the usesr
@@ -438,6 +432,27 @@ class App extends React.Component<IProps, IState> {
     this.setState({ rawMock: undefined });
   };
 
+  updateStore = () => {
+    getStore().then(({ store }) => {
+      this.notifyContent();
+      const updatedStore = { ...getDefaultStore(), ...store };
+      this.initialStoreId = updatedStore.id;
+      this.setState({ store: updatedStore });
+    });
+  };
+
+  notifyContent = () => {
+    messageService.send(
+      {
+        type: "NOTIFICATION",
+        from: "PANEL",
+        to: "CONTENT",
+        message: "UPDATE_STORE",
+      },
+      this.props.tab.id
+    );
+  };
+
   getContent = () => {
     if (this.state.host === "invalid") {
       return (
@@ -519,6 +534,9 @@ class App extends React.Component<IProps, IState> {
           onRecordingClick={this.onRecordingClick}
         />
         <Content id="content">
+          {route.includes("export-import") && (
+            <FS onImportSuccess={this.updateStore} />
+          )}
           {route.includes("logs") && (
             <ListWrapper>
               <Logs
@@ -554,7 +572,6 @@ class App extends React.Component<IProps, IState> {
   };
 
   render() {
-    console.log(this.state);
     return (
       <ThemeProvider theme={theme}>
         {this.getContent()}

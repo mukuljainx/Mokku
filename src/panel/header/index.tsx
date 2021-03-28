@@ -141,6 +141,13 @@ const Header = (props: IProps) => {
         >
           <Icon>refresh</Icon>
         </Button>
+        <AddMockButton
+          transparent
+          link
+          onClick={() => props.changeRoute("export-import")}
+        >
+          Export/Import
+        </AddMockButton>
         <AddMockButton transparent link onClick={() => props.disableMocking()}>
           Disable Mocking
         </AddMockButton>
