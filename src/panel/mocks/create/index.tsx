@@ -96,9 +96,7 @@ interface IProps {
 }
 
 const Create = (props: IProps) => {
-  const methods = getNetworkMethodList();
   const componentProps = props;
-  const [tab, setTab] = React.useState(0);
 
   return (
     <Wrapper>

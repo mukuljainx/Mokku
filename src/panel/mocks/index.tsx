@@ -13,6 +13,7 @@ interface IProps {
     tooltip?: string
   ) => void;
   editMock: (mock: IMockResponseRaw) => void;
+  duplicateMock: (mock: IMockResponseRaw) => void;
 }
 
 class Mocks extends React.Component<IProps> {
@@ -26,7 +27,13 @@ class Mocks extends React.Component<IProps> {
   };
 
   render() {
-    const { store, changeRoute, onAction, editMock } = this.props;
+    const {
+      store,
+      changeRoute,
+      onAction,
+      editMock,
+      duplicateMock,
+    } = this.props;
 
     return (
       <List
@@ -35,6 +42,7 @@ class Mocks extends React.Component<IProps> {
         changeRoute={changeRoute}
         store={store}
         toggleMock={this.toggleMock}
+        duplicateMock={duplicateMock}
       />
     );
   }

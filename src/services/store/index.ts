@@ -60,9 +60,8 @@ export const updateStateStore = (
   newMock: IMockResponse,
   oldStore: IStore,
   options: { notify?: (x: string) => void; bulk?: boolean }
-) => {
+): { store: IStore; updated: boolean } => {
   const store = { ...oldStore };
-
   switch (action) {
     case "add": {
       const sameMock = !!store.mocks.find(
@@ -72,7 +71,7 @@ export const updateStateStore = (
         if (!options.bulk && options.notify) {
           options.notify("Mock already exist");
         }
-        return oldStore;
+        return { store: oldStore, updated: false };
       }
       const id = store.id;
       const dynamic =
@@ -104,7 +103,7 @@ export const updateStateStore = (
     }
   }
 
-  return store;
+  return { store, updated: true };
 };
 
 export const updateStore = (store: IStore) => {

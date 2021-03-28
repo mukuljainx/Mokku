@@ -113,11 +113,21 @@ const FS = ({ onImportSuccess }: IProps) => {
         });
 
         newMocksToUpdate.forEach((m) => {
-          prevStore.store = updateStateStore("edit", m, prevStore.store, {});
+          prevStore.store = updateStateStore(
+            "edit",
+            m,
+            prevStore.store,
+            {}
+          ).store;
         });
 
         newMocksToAdd.forEach((m) => {
-          prevStore.store = updateStateStore("add", m, prevStore.store, {});
+          prevStore.store = updateStateStore(
+            "add",
+            m,
+            prevStore.store,
+            {}
+          ).store;
         });
 
         updateStore(prevStore.store).then(() => {

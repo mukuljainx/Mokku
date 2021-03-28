@@ -165,10 +165,16 @@ class App extends React.Component<IProps, IState> {
       return;
     }
 
-    const updatedStore = updateStateStore(action, newMock, this.state.store, {
-      notify: this.showNotification,
-    });
-    if (!updatedStore) {
+    const { store: updatedStore, updated } = updateStateStore(
+      action,
+      newMock,
+      this.state.store,
+      {
+        notify: this.showNotification,
+      }
+    );
+
+    if (!updated) {
       return;
     }
 
@@ -247,6 +253,13 @@ class App extends React.Component<IProps, IState> {
     });
   };
 
+  duplicateMock = ({ id, ...rest }: IMockResponseRaw) => {
+    console.log(rest);
+    this.setState({ rawMock: rest }, () => {
+      this.changeRoute("mock.create");
+    });
+  };
+
   mockNetworkCall = (log: ILog) => {
     this.handleAction("add", this.createMockFromLog(log));
   };
@@ -268,11 +281,11 @@ class App extends React.Component<IProps, IState> {
       if (log.id && log.mockPath) {
         const tempMock: IMockResponse = get(store.mocks, log.mockPath);
         tempMock.response = log.response.response;
-        store = updateStateStore("edit", tempMock, store, { bulk: true });
+        store = updateStateStore("edit", tempMock, store, { bulk: true }).store;
       } else {
         store = updateStateStore("add", this.createMockFromLog(log), store, {
           bulk: true,
-        });
+        }).store;
       }
     });
 
@@ -287,7 +300,6 @@ class App extends React.Component<IProps, IState> {
 
         const updatedStore = x.store as IStore;
         // show banner to the usesr
-        debugger;
         if (
           !updatedStore.activityInfo.promoted &&
           updatedStore.id - this.initialStoreId > 1
@@ -554,6 +566,7 @@ class App extends React.Component<IProps, IState> {
                 store={filteredStore}
                 route={route}
                 editMock={this.editMock}
+                duplicateMock={this.duplicateMock}
               />
             </ListWrapper>
           )}

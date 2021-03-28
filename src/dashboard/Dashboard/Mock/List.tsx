@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "../../../components/table";
 import { Button, Icon } from "../../../components/atoms";
-import { IStore, IMockResponse } from "../../../interface/mock";
+import { IStore } from "../../../interface/mock";
 
 const Wrapper = styled("div")`
   height: 100%;

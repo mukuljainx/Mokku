@@ -46,6 +46,7 @@ interface IProps {
   onAction: (action: "add" | "delete" | "edit", mock: IMockResponse) => void;
   editMock: (mock: IMockResponse) => void;
   toggleMock: (mock: IMockResponse) => void;
+  duplicateMock: (mock: IMockResponse) => void;
 }
 
 const List = (props: IProps) => {
@@ -83,6 +84,7 @@ const List = (props: IProps) => {
               <HeaderCell width={60}>
                 <CellWrapper>Delay</CellWrapper>
               </HeaderCell>
+              <HeaderCell width={60}></HeaderCell>
               <HeaderCell width={40}></HeaderCell>
               <HeaderCell width={40}></HeaderCell>
             </TableRow>
@@ -119,6 +121,20 @@ const List = (props: IProps) => {
                 </Cell>
                 <Cell width={60}>
                   <CellWrapper>{mock.delay}</CellWrapper>
+                </Cell>
+                <Cell width={40}>
+                  <CellWrapper>
+                    <Button
+                      transparent
+                      icon
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        props.duplicateMock(mock);
+                      }}
+                    >
+                      <Icon color="primary">content_copy</Icon>
+                    </Button>
+                  </CellWrapper>
                 </Cell>
                 <Cell width={40}>
                   <CellWrapper>
