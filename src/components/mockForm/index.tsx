@@ -30,6 +30,17 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
+const ResponseWrapper = styled.div`
+  position: relative;
+  height: 100%;
+`;
+
+const Select = styled.select`
+  position: absolute;
+  z-index: 233;
+  right: 0;
+`;
+
 const Input = styled(Field).attrs({ id: "mock-create-input" })<{
   small?: boolean;
 }>`
@@ -100,6 +111,10 @@ interface IProps {
 
 const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
   const [tab, setTab] = React.useState(0);
+
+  const [responseType, setResponseType] = React.useState(
+    !!mock.response && isValidJSON(mock.response).error ? "TEXT" : "JSON"
+  );
   const initialValues: IFormValues = {
     method: "GET",
     url: "",
@@ -140,6 +155,8 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
         isValid,
         setFieldError,
         setFieldTouched,
+        handleChange,
+        handleBlur,
       }) => {
         return (
           <StyledForm onReset={handleReset} onSubmit={handleSubmit}>
@@ -207,14 +224,34 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
                   />
                 </Group>
                 {tab === 0 && (
-                  <JSONEditor
-                    name="response"
-                    value={values.response}
-                    onChange={(v) => setFieldValue("response", v)}
-                    onError={(v) => setFieldError("response", v)}
-                    error={!!errors.response}
-                    {...jsonEditor}
-                  />
+                  <ResponseWrapper>
+                    <Select
+                      onChange={(event) => setResponseType(event.target.value)}
+                      value={responseType}
+                    >
+                      <option value="JSON">JSON</option>
+                      <option value="TEXT">Text</option>
+                    </Select>
+                    {responseType === "JSON" ? (
+                      <JSONEditor
+                        name="response"
+                        value={values.response}
+                        onChange={(v) => setFieldValue("response", v)}
+                        onError={(v) => setFieldError("response", v)}
+                        error={!!errors.response}
+                        {...jsonEditor}
+                      />
+                    ) : (
+                      <Input
+                        style={{ height: "100%", width: "100%" }}
+                        as="textarea"
+                        name="response"
+                        value={values.response}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    )}
+                  </ResponseWrapper>
                 )}
                 {tab === 1 && (
                   <FieldArray

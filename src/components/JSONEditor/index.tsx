@@ -5,7 +5,9 @@ import AceEditor from "react-ace";
 import "brace/mode/json";
 import "brace/theme/github";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  height: 100%;
+`;
 
 interface IProps {
   error?: boolean;

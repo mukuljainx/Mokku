@@ -37,13 +37,6 @@ const Input = styled(Field)<{ small?: boolean }>`
   ${({ small }) => small && `width: 124px;`};
 `;
 
-const Textarea = styled("textarea")<{ error?: boolean }>`
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 4px;
-  border-style: solid;
-  ${({ error, theme }) => error && `border: 1px solid ${theme.colors.alert};`};
-`;
-
 const FieldWrapper = styled("div")`
   display: flex;
   flex-direction: column;
