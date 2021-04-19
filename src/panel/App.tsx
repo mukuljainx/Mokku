@@ -28,6 +28,7 @@ import Notification from "../components/notification";
 import { IEventMessage } from "../interface/message";
 import messageService from "../services/message";
 import FS from "../components/fs";
+import BuyMeACoffee from "../components/buyMeACoffee";
 
 const Wrapper = styled("div")<{ alignCenter?: boolean }>`
   background-color: ${({ theme }) => theme.colors.white};
@@ -83,7 +84,13 @@ const Text = styled.p<{ large?: boolean }>`
 
 interface IState {
   logs: ILog[];
-  route: "logs" | "logs.create" | "mock.create" | "mock" | "export-import";
+  route:
+    | "logs"
+    | "logs.create"
+    | "mock.create"
+    | "mock"
+    | "export-import"
+    | "buy-me-a-coffee";
   store: IStore;
   rawMock?: IMockResponseRaw;
   filter: {
@@ -549,6 +556,7 @@ class App extends React.Component<IProps, IState> {
           {route.includes("export-import") && (
             <FS onImportSuccess={this.updateStore} />
           )}
+          {route.includes("buy-me-a-coffee") && <BuyMeACoffee />}
           {route.includes("logs") && (
             <ListWrapper>
               <Logs

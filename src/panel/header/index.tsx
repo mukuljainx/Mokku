@@ -148,6 +148,13 @@ const Header = (props: IProps) => {
         >
           Export/Import
         </AddMockButton>
+        <AddMockButton
+          transparent
+          link
+          onClick={() => props.changeRoute("buy-me-a-coffee")}
+        >
+          Support Extention
+        </AddMockButton>
         <AddMockButton transparent link onClick={() => props.disableMocking()}>
           Disable Mocking
         </AddMockButton>
