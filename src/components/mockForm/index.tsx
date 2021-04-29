@@ -113,7 +113,7 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
   const [tab, setTab] = React.useState(0);
 
   const [responseType, setResponseType] = React.useState(
-    !!mock.response && isValidJSON(mock.response).error ? "TEXT" : "JSON"
+    !!mock?.response && isValidJSON(mock.response).error ? "TEXT" : "JSON"
   );
   const initialValues: IFormValues = {
     method: "GET",
