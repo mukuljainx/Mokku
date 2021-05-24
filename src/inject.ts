@@ -114,13 +114,21 @@ const getLog = (
       ? JSON.stringify(parse(request.url.substr(separator)))
       : undefined;
 
+  let body = request.body;
+
+  try {
+    if (typeof body === "object") {
+      const stringifiedBody = JSON.stringify(body);
+      body = stringifiedBody;
+    }
+  } catch (e) {
+    body = "Unsupported body type!";
+  }
+
   return {
     request: {
       url,
-      body:
-        typeof request.body === "object"
-          ? JSON.stringify(request.body)
-          : request.body,
+      body,
       queryParams,
       method: request.method,
       headers: getHeaders(request.headers),

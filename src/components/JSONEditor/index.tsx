@@ -39,10 +39,8 @@ const JSONEditor = ({
     const editor = (ref.current as any)!.editor;
 
     editor.onPaste = (event, x, y) => {
-      // debugger;
       console.log(event);
       editor.session.insert(editor.getCursorPosition(), event);
-      debugger;
       const v = editor.getValue();
       let formatted = v;
       try {

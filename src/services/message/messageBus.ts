@@ -1,6 +1,10 @@
 class MessageBus {
   _defaultListner: (data: any) => void;
   _collector = {};
+  constructor() {
+    this._defaultListner = console.log;
+    this._collector = {};
+  }
 
   dispatch(id: number, eventData: any) {
     if (this._collector[id]) {
