@@ -16,10 +16,9 @@ const init = () => {
 
   const getMockPath = (url: string, method: string) => {
     // this will moved to store.ts
-    if (urlMap[url]) {
-      if (urlMap[url][method]) {
-        return urlMap[url][method];
-      }
+    const matchedKey = Object.keys(urlMap).find(u => u == url || new RegExp(u).test(url));
+    if (matchedKey) {
+      return urlMap[matchedKey][method];
     }
 
     const url1 = url.replace("://", "-");
