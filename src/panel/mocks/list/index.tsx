@@ -13,6 +13,7 @@ import {
 } from "../../../components/table";
 import { Button, Icon } from "../../../components/atoms";
 import { IStore, IMockResponse } from "../../../interface/mock";
+import Tooltip from "../../../components/tooltip";
 
 const Wrapper = styled("div")`
   height: 100%;
@@ -113,8 +114,24 @@ const List = (props: IProps) => {
                 <Cell width={80}>
                   <CellWrapper>{mock.method}</CellWrapper>
                 </Cell>
-                <Cell>
-                  <CellWrapper className="ellipsis">{mock.url}</CellWrapper>
+                <Cell style={{ display: "flex" }}>
+                  <CellWrapper style={{ marginRight: 4 }} className="ellipsis">
+                    {mock.url}
+                  </CellWrapper>
+                  {mock.description && (
+                    <Tooltip
+                      tooltipStyle={{
+                        left: 8,
+                        top: 8,
+                        minWidth: 420,
+                        maxHeight: 140,
+                        overflowY: "auto",
+                      }}
+                      tooltip={mock.description}
+                    >
+                      <Icon color="primary">info</Icon>
+                    </Tooltip>
+                  )}
                 </Cell>
                 <Cell width={60}>
                   <CellWrapper>{mock.status}</CellWrapper>

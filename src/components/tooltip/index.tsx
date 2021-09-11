@@ -28,7 +28,15 @@ interface IProps {
 const Tooltip = ({ children, tooltip, tooltipStyle }: IProps) => (
   <Wrapper>
     {children}
-    <TooltipWrapper style={tooltipStyle}>{tooltip}</TooltipWrapper>
+    <TooltipWrapper
+      onClick={(event) => {
+        event.stopPropagation();
+        event.preventDefault();
+      }}
+      style={tooltipStyle}
+    >
+      {tooltip}
+    </TooltipWrapper>
   </Wrapper>
 );
 

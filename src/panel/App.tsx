@@ -287,7 +287,7 @@ class App extends React.Component<IProps, IState> {
     let store = this.state.store;
     logs.forEach((log) => {
       if (log.id && log.mockPath) {
-        const tempMock: IMockResponse = get(store.mocks, log.mockPath);
+        const tempMock: IMockResponse = get(store, log.mockPath);
         tempMock.response = log.response.response;
         store = updateStateStore("edit", tempMock, store, { bulk: true }).store;
       } else {
@@ -299,15 +299,18 @@ class App extends React.Component<IProps, IState> {
 
     updateStore(store)
       .then((x) => {
-        messageService.send({
-          message: "UPDATE_STORE",
-          from: "PANEL",
-          to: "CONTENT",
-          type: "NOTIFICATION",
-        });
+        messageService.send(
+          {
+            message: "UPDATE_STORE",
+            from: "PANEL",
+            to: "CONTENT",
+            type: "NOTIFICATION",
+          },
+          this.props.tab.id
+        );
 
         const updatedStore = x.store as IStore;
-        // show banner to the usesr
+        // show banner to the users
         if (
           !updatedStore.activityInfo.promoted &&
           updatedStore.id - this.initialStoreId > 1
@@ -338,7 +341,8 @@ class App extends React.Component<IProps, IState> {
           // setState ends here
         });
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         this.showNotification(
           "Recording failed, please refresh Panel & try again!"
         );

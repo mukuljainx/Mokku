@@ -64,14 +64,22 @@ export const updateStateStore = (
   const store = { ...oldStore };
   switch (action) {
     case "add": {
-      const sameMock = !!store.mocks.find(
-        (mock) => mock.url === newMock.url && mock.method === newMock.method
+      // Find same mock
+      const sameMockIndex = store.mocks.findIndex(
+        (mock) =>
+          mock.url === newMock.url &&
+          mock.method === newMock.method &&
+          mock.active
       );
-      if (sameMock) {
-        if (!options.bulk && options.notify) {
-          options.notify("Mock already exist");
+      if (sameMockIndex !== -1 && newMock.active) {
+        // disable it silently if bulk is off
+        // TODO: Test bulk
+        if (!options.bulk) {
+          store.mocks[sameMockIndex] = {
+            ...store.mocks[sameMockIndex],
+            active: false,
+          };
         }
-        return { store: oldStore, updated: false };
       }
       const id = store.id;
       const dynamic =
@@ -85,15 +93,43 @@ export const updateStateStore = (
     case "edit": {
       const dynamic =
         newMock.url.includes("(.*)") || newMock.url.includes("/:");
-      store.mocks = store.mocks.map((item) =>
-        item.id === newMock.id
-          ? {
-              ...item,
-              ...newMock,
-              dynamic,
-            }
-          : item
-      );
+
+      console.log("EDIT");
+
+      const mockIndex = store.mocks.findIndex((item) => item.id === newMock.id);
+
+      if (mockIndex === -1) {
+        console.error("Mock not found");
+        break;
+      }
+      // the mock status has been toggled from off to on
+      // find the active mock with same url & method
+      // and disable it
+      let sameMockIndex = -1;
+      if (newMock.active && !store.mocks[mockIndex].active) {
+        sameMockIndex = store.mocks.findIndex(
+          (mock) =>
+            mock.url === newMock.url &&
+            mock.method === newMock.method &&
+            mock.active
+        );
+      }
+
+      store.mocks = store.mocks.map((item, index) => {
+        if (index === sameMockIndex) {
+          return {
+            ...item,
+            active: false,
+          };
+        } else if (item.id === newMock.id) {
+          return {
+            ...item,
+            ...newMock,
+            dynamic,
+          };
+        }
+        return item;
+      });
       break;
     }
 

@@ -209,7 +209,6 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
               )}
             </Group>
             <Group style={{ justifyContent: "space-between" }}>
-              {/* TODO */}
               <Error>{getError(errors as any) || " "}</Error>
               <Actions>
                 <Button
