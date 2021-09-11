@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Button, Icon } from "../atoms";
 import Tabs from "../../components/tabs";
 import JSONEditor from "../JSONEditor";
-import { FieldWrapper, Group, Label, Input } from "./index";
+import { FieldWrapper, Group, Input } from "./index";
 import { isValidJSON } from "../../services/helper";
 import { IMockResponseRaw } from "../../interface/mock";
 
@@ -77,7 +77,6 @@ const Response = ({
       style={{ height: "100%" }}
     >
       <Group>
-        <Label>Response:</Label>
         <StyledTabs
           selected={tab}
           tabs={["Body", "Headers"]}
@@ -88,9 +87,9 @@ const Response = ({
 
             if (
               selected === 0 &&
-              values.headers.length === 1 &&
-              !values.headers[0].name &&
-              !values.headers[0].value
+              values.headers.length &&
+              !values.headers[values.headers.length - 1].name &&
+              !values.headers[values.headers.length - 1].value
             ) {
               setFieldValue("headers", []);
             }

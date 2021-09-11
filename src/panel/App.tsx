@@ -280,6 +280,7 @@ class App extends React.Component<IProps, IState> {
     response: log.response?.response || "",
     delay: 500,
     id: -1,
+    description: "",
   });
 
   bulkMockLogs = (logs: ILog[]) => {

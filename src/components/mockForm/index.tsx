@@ -9,6 +9,8 @@ import MultiSelect from "../../components/multiselect";
 import { getError } from "../../services/helper";
 import { getNetworkMethodList } from "../../services/constants";
 import Response from "./Response";
+import Description from "./Description";
+import Tabs from "../../components/tabs";
 
 const methods = getNetworkMethodList();
 
@@ -61,6 +63,10 @@ const Error = styled("p")`
   margin-bottom: 8px;
 `;
 
+const StyledTabs = styled(Tabs)`
+  margin-bottom: 2px;
+`;
+
 type IFormValues = Omit<IMockResponse, "id" | "createdOn">;
 
 interface IProps {
@@ -82,8 +88,12 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
     response: "",
     active: true,
     headers: [],
+    description: "",
     ...mock,
   };
+
+  // RESPONSE | DESCRIPTION
+  const [view, setView] = React.useState(0);
 
   return (
     <Formik
@@ -155,16 +165,48 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
                 <Input small required name="delay" type="number"></Input>
               </FieldWrapper>
             </Group>
-            <Group grow style={{ overflow: "auto" }}>
-              <Response
-                mock={mock}
-                values={values}
-                errors={errors}
-                setFieldError={setFieldError}
-                setFieldValue={setFieldValue}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
+            <Group
+              grow
+              style={{
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "unset",
+              }}
+            >
+              <StyledTabs
+                selected={view}
+                tabs={["Response", "Description"]}
+                onChange={(selected) => {
+                  if (
+                    selected === 1 &&
+                    values.headers.length &&
+                    !values.headers[values.headers.length - 1].name &&
+                    !values.headers[values.headers.length - 1].value
+                  ) {
+                    setFieldValue("headers", []);
+                  }
+                  setView(selected);
+                }}
               />
+              {view === 0 && (
+                <Response
+                  mock={mock}
+                  values={values}
+                  errors={errors}
+                  setFieldError={setFieldError}
+                  setFieldValue={setFieldValue}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                />
+              )}
+              {view === 1 && (
+                <Description
+                  description={values.description}
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
+                />
+              )}
             </Group>
             <Group style={{ justifyContent: "space-between" }}>
               {/* TODO */}
