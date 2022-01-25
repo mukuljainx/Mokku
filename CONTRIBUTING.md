@@ -11,6 +11,7 @@ Hi there 👋
 
 
 `npm run watch` -> Watches over the extention files and builds them.
+
 `npm run watch:example` -> Runs a simple node server with basic API calls to test the extention at http://localhost:8080
 
 ### Load extension to chrome
@@ -24,7 +25,7 @@ Hi there 👋
 
 # How to debug Content script and inject script
 
-They loads the allowed page so you can assume just another JS file for every page enalbed with Mokku.
+They loads as JS files on Mokku enabled pages (any localhost by default). You can use consoles and debugger there as do for any app.
 
 
 # How to debug Panel
@@ -46,7 +47,7 @@ Now all the `console.log` and `debugger` can be accessed from the devtools.
 If you will de-attach before opening the mokku panel it will not work! 
 
 **Why:** 
-https://github.com/mukuljainx/Mokku/issues/24
-https://github.com/mukuljainx/Mokku/issues/67
+1.https://github.com/mukuljainx/Mokku/issues/24
+2.https://github.com/mukuljainx/Mokku/issues/67
 
 Though this will be fixed in V2
