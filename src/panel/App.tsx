@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { debounce, get } from "lodash";
+import debounce from "lodash/debounce";
+import get from "lodash/get";
 
 import "./app.scss";
 import Logs from "../components/molecules/logs";
@@ -22,7 +23,7 @@ import {
   updateStore,
 } from "../services/store";
 import { Button, Icon } from "../components/atoms";
-import PromotionBanner from "./Banner/Promotion";
+import PromotionBanner from "./banner/promotion";
 
 import Notification from "../components/notification";
 import { IEventMessage } from "../interface/message";
@@ -139,7 +140,7 @@ class App extends React.Component<IProps, IState> {
       clearTimeout(this.notificationTimer);
     }
     this.setState({ notification: { text, show: true } });
-    this.notificationTimer = setTimeout(() => {
+    this.notificationTimer = window.setTimeout(() => {
       this.setState((prevState) => ({
         notification: { text: prevState.notification.text, show: false },
       }));

@@ -1,3 +1,7 @@
+import theme from "./theme";
+
+export type ThemeType = typeof theme;
+
 export default {
   colors: {
     border: "#BCBABE",
@@ -14,6 +18,3 @@ export default {
   },
 };
 
-import theme from "./theme";
-
-export type ThemeType = typeof theme;

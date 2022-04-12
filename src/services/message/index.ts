@@ -5,7 +5,7 @@ import { IEventMessage } from "../../interface/message";
  *     -> Content Script
  *
  * Content script is bridge between panel and inject for communication
- * as it has both windows event listern and chrome runtime message listner
+ * as it has both windows event listern and chrome runtime message Listener
  * Content Script
  *     -> Panel
  *     -> Hook

@@ -40,8 +40,8 @@ const postMessage = (
   messageService.send(messageObject);
 
   if (messageId !== null) {
-    return new Promise((reslove) => {
-      messageBus.addLister(messageId, reslove);
+    return new Promise((resolve) => {
+      messageBus.addListener(messageId, resolve);
     });
   }
 };

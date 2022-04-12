@@ -8,5 +8,13 @@
             ],
             "url": "http://json.schemastore.org/chrome-manifest"
         }
+    ],
+    "cSpell.words": [
+        "docsify",
+        "Formik",
+        "IURL",
+        "Mokku",
+        "multiselect",
+        "xhook"
     ]
 }

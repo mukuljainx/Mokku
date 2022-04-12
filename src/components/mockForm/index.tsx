@@ -2,15 +2,17 @@ import * as React from "react";
 import { Field, Formik } from "formik";
 import styled from "styled-components";
 
-import { Button, Icon } from "../atoms";
-import { IMockResponse, IMockResponseRaw } from "../../interface/mock";
 import { IMethod } from "../../interface/network";
-import MultiSelect from "../../components/multiselect";
+import { IMockResponse, IMockResponseRaw } from "../../interface/mock";
+
 import { getError } from "../../services/helper";
 import { getNetworkMethodList } from "../../services/constants";
+
 import Response from "./Response";
 import Description from "./Description";
+import { Button } from "../atoms";
 import Tabs from "../../components/tabs";
+import MultiSelect from "../../components/multiselect";
 
 const methods = getNetworkMethodList();
 
@@ -19,7 +21,7 @@ export const Label = styled("label")`
   font-weight: 700;
 `;
 
-export const Input = styled(Field).attrs({ id: "mock-create-input" })<{
+export const Input = styled(Field).attrs({ id: "mock-create-input" }) <{
   small?: boolean;
   marginRight?: boolean;
 }>`
@@ -36,7 +38,7 @@ export const FieldWrapper = styled("div")`
   flex-grow: 2;
 `;
 
-export const Group = styled.div.attrs({ className: "mock-create-group" })<{
+export const Group = styled.div.attrs({ className: "mock-create-group" }) <{
   grow?: boolean;
 }>`
   display: flex;
@@ -99,7 +101,7 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => onSubmit(values)}
-      onReset={() => {}}
+      onReset={() => { }}
       validateOnBlur
       validate={(values) => {
         const errors: Record<string, string> = {};
@@ -161,7 +163,7 @@ const MockForm = ({ mock, onSubmit, onCancel, jsonEditor = {} }: IProps) => {
                 <Input small required name="status" type="number"></Input>
               </FieldWrapper>
               <FieldWrapper className="mock-create-delay">
-                <Label>Delay (in ms):</Label>
+                <Label>Delay(ms):</Label>
                 <Input small required name="delay" type="number"></Input>
               </FieldWrapper>
             </Group>

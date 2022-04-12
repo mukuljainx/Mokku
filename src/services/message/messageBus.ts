@@ -1,8 +1,9 @@
 class MessageBus {
-  _defaultListner: (data: any) => void;
+  _defaultListener: (data: any) => void;
   _collector = {};
+
   constructor() {
-    this._defaultListner = console.log;
+    this._defaultListener = console.log;
     this._collector = {};
   }
 
@@ -10,16 +11,16 @@ class MessageBus {
     if (this._collector[id]) {
       this._collector[id](eventData);
     } else {
-      this._defaultListner(eventData);
+      this._defaultListener(eventData);
     }
   }
 
-  addLister(id: number, func: any) {
+  addListener(id: number, func: Function) {
     this._collector[id] = func;
   }
 
   createDefaultListener(func: any) {
-    this._defaultListner = func;
+    this._defaultListener = func;
   }
 }
 

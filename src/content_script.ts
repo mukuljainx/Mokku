@@ -1,9 +1,10 @@
-import { get } from "lodash";
-
+import get from "lodash/get";
 import inject from "./contentScript/injectToDom";
+
 import { IEventMessage } from "./interface/message";
-import { getStore } from "./services/store";
 import { IDynamicURLMap, ILog, IMockResponse } from "./interface/mock";
+
+import { getStore } from "./services/store";
 import messageService from "./services/message";
 
 const init = () => {

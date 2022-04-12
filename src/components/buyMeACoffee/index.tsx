@@ -11,11 +11,6 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 interface IProps {}
 
 const ByMeACoffee = ({}: IProps) => {
@@ -31,7 +26,7 @@ const ByMeACoffee = ({}: IProps) => {
           })
         }
       >
-        Support Extention
+        Support Extension
       </Button>
       <p style={{ maxWidth: 540, textAlign: "center" }}>
         Hope you are loving the extension, it takes significant amount of time

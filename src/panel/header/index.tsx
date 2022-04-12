@@ -122,7 +122,7 @@ const Header = (props: IProps) => {
       <Filters style={{ flexGrow: 2 }}>
         <Tooltip
           tooltipStyle={{ left: 32, top: -7, width: 320 }}
-          tooltip="Record: Mock Every API call, until Recording is on, Mocks will be created when Recoding stops. Recording might overwrite existing Mock."
+          tooltip="Record: Mock every API call, until recording is on, Mocks will be created when recording stops. Recording might overwrite existing Mocks."
         >
           <RecordIcon
             onClick={props.onRecordingClick}
@@ -153,7 +153,7 @@ const Header = (props: IProps) => {
           link
           onClick={() => props.changeRoute("buy-me-a-coffee")}
         >
-          Support Extention
+          Support Extension
         </AddMockButton>
         <AddMockButton transparent link onClick={() => props.disableMocking()}>
           Disable Mocking
