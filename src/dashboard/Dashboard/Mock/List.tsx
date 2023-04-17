@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import {
   Table,
@@ -52,7 +52,7 @@ const List = ({ store }: IProps) => {
   const [redirect, setRedirect] = React.useState<string | undefined>();
 
   if (redirect) {
-    return <Redirect to={redirect} />;
+    return <Navigate to={redirect} />;
   }
 
   if (!store) {

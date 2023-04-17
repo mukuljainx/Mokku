@@ -10,7 +10,8 @@
     "128": "mokku-128.png",
     "512": "mokku-512.png"
   },
-  "browser_action": {
+
+  "action": {
     "default_icon": "mokku-16.png",
     "default_popup": "popup.html"
   },
@@ -22,6 +23,19 @@
       "run_at": "document_start"
     }
   ],
-  "web_accessible_resources": ["js/inject.js"],
-  "permissions": ["storage", "<all_urls>"]
+  "devtools_page": "devtool.html",
+
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
+  "permissions": ["storage"],
+
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/inject.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

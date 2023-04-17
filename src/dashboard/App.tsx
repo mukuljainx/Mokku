@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import firebase from "firebase/app";
 
 import Registration from "./Auth/Registration";
@@ -44,18 +44,10 @@ const App = () => {
   return (
     <Router>
       <div className="h-100">
-        <Switch>
-          <Route
-            path="/auth"
-            render={(props) => <Registration {...props} user={user} />}
-          />
-          <Route
-            path="/"
-            render={(props) => (
-              <Dashboard {...props} store={store} user={user} />
-            )}
-          />
-        </Switch>
+        <Routes>
+          <Route path="/auth" element={<Registration user={user} />} />
+          <Route path="/" element={<Dashboard store={store} user={user} />} />
+        </Routes>
       </div>
     </Router>
   );

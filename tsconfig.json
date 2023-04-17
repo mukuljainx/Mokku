@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "strict": false,
     "module": "commonjs",
     "target": "es6",
-    "jsx": "react",
-    "noImplicitAny": false,
+    "esModuleInterop": true,
     "sourceMap": false,
     "rootDir": "src",
     "outDir": "dist/js",
     "noEmitOnError": true,
-    "esModuleInterop": true
+    "jsx": "react",
+    "typeRoots": ["node_modules/@types"]
   }
 }

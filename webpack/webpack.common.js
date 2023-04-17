@@ -1,28 +1,30 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const srcDir = "../src/";
+const srcDir = path.join(__dirname, "..", "src/");
 
 module.exports = {
   entry: {
-    options: path.join(__dirname, srcDir + "options.ts"),
-    background: path.join(__dirname, srcDir + "background.ts"),
-    content_script: path.join(__dirname, srcDir + "content_script.ts"),
-    devtool: path.join(__dirname, srcDir + "devtool.ts"),
-    panel: path.join(__dirname, srcDir + "panel/index.tsx"),
-    dashboard: path.join(__dirname, srcDir + "dashboard/index.tsx"),
-    inject: path.join(__dirname, srcDir + "inject.ts"),
+    options: path.join(srcDir, "options.ts"),
+    background: path.join(srcDir, "background.ts"),
+    content_script: path.join(srcDir, "content_script.ts"),
+    devtool: path.join(srcDir, "devtool.ts"),
+    panel: path.join(srcDir + "panel/index.tsx"),
+    dashboard: path.join(srcDir + "dashboard/index.tsx"),
+    inject: path.join(srcDir + "inject.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
     filename: "[name].js",
   },
-  // optimization: {
-  //   splitChunks: {
-  //     name: "vendor",
-  //     chunks: "initial",
+  //   optimization: {
+  //     splitChunks: {
+  //       name: "vendor",
+  //       chunks(chunk) {
+  //         return chunk.name !== "background";
+  //       },
+  //     },
   //   },
-  // },
   module: {
     rules: [
       {
@@ -47,8 +49,9 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
-    // exclude locale files in moment
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new CopyPlugin([{ from: ".", to: "../" }], { context: "public" }),
+    new CopyPlugin({
+      patterns: [{ from: ".", to: "../", context: "public" }],
+      options: {},
+    }),
   ],
 };

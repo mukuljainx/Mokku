@@ -36,10 +36,16 @@ interface IProps {
 const SideNav = ({ className = " " }: IProps) => {
   return (
     <Wrapper className={`${className} flex flex-column`}>
-      <NavLink activeClassName="active-link" to="/mocks/list">
+      <NavLink
+        className={(navData) => (navData.isActive ? "active-link" : "")}
+        to="/mocks/list"
+      >
         <Item>Mocks</Item>
       </NavLink>
-      <NavLink activeClassName="active-link" to="/logs">
+      <NavLink
+        className={(navData) => (navData.isActive ? "active-link" : "")}
+        to="/logs"
+      >
         <Item>Logs</Item>
       </NavLink>
     </Wrapper>

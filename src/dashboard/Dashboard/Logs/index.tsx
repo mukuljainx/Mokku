@@ -1,10 +1,9 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router-dom";
 
 import Logs from "../../../components/molecules/logs";
 import { ILog } from "../../../interface/mock";
 
-interface IProps extends RouteComponentProps {}
+interface IProps {}
 
 const DashboardLogs = (props: IProps) => {
   const [logs, setLogs] = React.useState([]);
@@ -22,7 +21,7 @@ const DashboardLogs = (props: IProps) => {
             return [...prevLogs, newLog];
           } else if (newLog.id) {
             return prevLogs.map((item) =>
-              item.id === newLog.id ? newLog : item
+              item.id === newLog.id ? newLog : item,
             );
           }
         });

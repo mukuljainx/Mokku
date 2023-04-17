@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useFormik } from "formik";
-import { Link, Route, RouteProps, Redirect } from "react-router-dom";
+import { Link, Route, Navigate } from "react-router-dom";
 import firebase from "firebase/app";
 
 import styled from "styled-components";
@@ -40,7 +40,7 @@ interface ISignInDetail {
 const signUp = (
   { name, password, email }: ISignInDetail,
   setLoading: (loading: boolean) => void,
-  setError: (error: string) => void
+  setError: (error: string) => void,
 ) => {
   setError("");
   setLoading(true);
@@ -63,7 +63,7 @@ const signIn = (
   { email, password }: ISignInDetail,
   setLoading: (loading: boolean) => void,
   setError: (error: string) => void,
-  setRedirect: (path: string) => void
+  setRedirect: (path: string) => void,
 ) => {
   setError("");
   setLoading(true);
@@ -80,12 +80,12 @@ const signIn = (
     });
 };
 
-interface IProps extends RouteProps {
+interface IProps {
   user: IUser;
 }
 
-const Registration = ({ user, location }: IProps) => {
-  const isRegistration = location.pathname === "/auth/register";
+const Registration = ({ user }: IProps) => {
+  const isRegistration = false;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [redirect, setRedirect] = React.useState<string | null>(null);
@@ -112,7 +112,7 @@ const Registration = ({ user, location }: IProps) => {
   });
 
   if (redirect) {
-    return <Redirect to={redirect} />;
+    return <Navigate to={redirect} />;
   }
 
   return (
