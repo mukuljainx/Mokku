@@ -1,70 +1,77 @@
-# Chrome Extension TypeScript Starter
+# Stalled
 
-![build](https://github.com/chibat/chrome-extension-typescript-starter/workflows/build/badge.svg)
+> Development on mokku has been stopped idefinetly. It's goods enough for basic use case and without the support Native Chrome API support it can't be a robust app as it depends on script injection.
 
-Chrome Extension, TypeScript and Visual Studio Code
+Alternate: [Mock Server](https://github.com/mukuljainx/mock-server)! A minimal mock-server can be used from cmd line.
 
-## Prerequisites
+# Mokku
 
-* [node + npm](https://nodejs.org/) (Current Version)
+> Mock API calls seamlessly
 
-## Option
+![small-promo](./docs/store/small-promo.png)
 
-* [Visual Studio Code](https://code.visualstudio.com/)
+[Chrome Web Store](https://chrome.google.com/webstore/detail/mokku-mock-api-calls-seam/llflfcikklhgamfmnjkgpdadpmdplmji?hl=en&authuser=1) | [MS Edge Add on](https://microsoftedge.microsoft.com/addons/detail/mokku-mock-api-calls-sea/ekcbmjnnnphonejedibidifflhljbobc)
 
-## Includes the following
+<a href="https://www.buymeacoffee.com/mukuljainx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
-* TypeScript
-* Webpack
-* React
-* Jest
-* Example Code
-    * Chrome Storage
-    * Options Version 2
-    * content script
-    * count up badge number
-    * background
+### About
 
-## Project Structure
+Mokku helps user by mocking API and changing their response, response time and status, user can try all test case scenario like long loading time, error states, or any missing or incorrect data.
 
-* src/typescript: TypeScript source files
-* src/assets: static files
-* dist: Chrome Extension directory
-* dist/js: Generated JavaScript files
+Mokku adds itself as a tab in dev tools as a panel. In the tab user can see network logs and mocks. Any network call from the logs can be mocked by simply clicking mock button then response can be edited. User can also search logs. Mock can also be created from scratch from create mock button.
 
-## Setup
+All URL's are accessible but Mokku doesn't inject scripts into any pages apart from which are served locally and accessed using 'http://localhost\*' until enabled from the Panel.
 
-```
-npm install
-```
+Collections & Dynamic mock generators coming soon!
 
-## Import as Visual Studio Code project
+You can submit issues, bugs or feature request at https://github.com/mukuljainx/mokku/issues
 
-...
+This extension is development phase, might not work in some kind of response like md files.
 
-## Build
+[Promotional Images](https://github.com/mukuljainx/Mokku/tree/master/docs/store)
 
-```
-npm run build
-```
+### Features
 
-## Build in watch mode
+1. Mock API call, specify JSON body, status, time delay and even headers 🙌.
+2. **Wild Card:** add `(.*)` as wild card in url which will match anything, for example: `some-domain/user/(.*)/messages`. This will match `some-domain/user/u1/messages` and `some-domain/user/u2/messages` too.
 
-### terminal
+### GraphQL
 
-```
-npm run watch
-```
+Mokku doesn't support GraphQL as of now.
 
-### Visual Studio Code
+### Privacy policy
 
-Run watch mode.
+Mokku does not collect or ask for any personal information, though it will store the mocks the chrome local store & all the hosts name where it has been enabled once to provide better experience to user.
 
-type `Ctrl + Shift + B`
+## Dev Guide
 
-## Load extension to chrome
+### Prerequisites
 
-Load `dist` directory
+- [node + npm](https://nodejs.org/) (Current Version)
 
-## Test
-`npx jest` or `npm run test`
+### Project Structure
+
+- dist: Chrome Extension directory
+- dist/js: Generated JavaScript files
+
+### Setup
+
+`npm install`
+
+### Dev
+
+`npm run watch`
+
+### Build
+
+`npm run build`
+
+### Load extension to chrome
+
+Load `dist` directory. All the files are refreshed without extension reload except content script. Reload the extension to see the changes.
+
+### Built on
+
+[Chitbat Chrome extension starter kit](https://github.com/chibat/chrome-extension-typescript-starter)
+
+<a style="margin-left: 16px" href="https://www.buymeacoffee.com/mukuljainx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 52px !important;" ></a>

@@ -1,4 +1,12 @@
-npm-debug.log
-node_modules/
-dist/
-tmp/
+.vscode
+.idea
+.DS_STORE
+node_modules
+.module-cache
+*.log*
+build
+dist
+ionic
+mobile_build
+dist.pem
+.firebase.*

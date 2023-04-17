@@ -1,13 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Getting Started Extension's Popup</title>
-    <script src="js/vendor.js"></script>
+    <meta charset="UTF-8" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      body{
+        font-size: 14px;
+      }
+      h2{
+        margin: 0;
+      }
+      #wrapper{
+        width: 228px;
+        padding: 8px;
+      }
+      img{
+        height: 40px;
+      }
+      .primary-text{
+        color: #0043e8;
+      }
+      button{
+        border: none;
+        border-radius: 4px;
+        line-height: 1;
+        color: white;
+        background-color: #0043e8;
+        padding: 8px 16px;
+      }
+      #refresh-container{
+        text-align: center;
+        display: none;
+      }
+      #toggle{
+        cursor: pointer;
+      }
+      #toggle-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      pre{
+        background-color: #eee;
+        border-radius: 3px;
+        border: 1px solid #b4b4b4;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;
+        color: #333;
+        display: inline-block;
+        font-weight: 700;
+        line-height: 1;
+        padding: 2px 4px;
+        white-space: nowrap;
+        font-size: 12px;
+        margin: 0;
+      }
+      p{
+        margin: 4px 0;
+      }
+    </style>
+    <title>Mokku</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script src="js/popup.js"></script>
+    <div id="wrapper">
+      <h2 style="text-align: center;margin-bottom: 24px;">Mokku</h2>
+      <div style="display:flex;align-items: center;justify-content: center; flex-direction: column;">
+        <img src="mokku.svg"  id="logo"></img>
+        <div style="text-align:center; margin-top: 20px;">
+          <p style="margin: 0">Check the dev tools for Mokku tab.</p>
+          <p>Mac: <pre>Command</pre> + <pre>Option</pre> + <pre>J</pre></p>
+          <p>Windows/Linux/Chrome OS: <pre>Control</pre> + <pre>Shift</pre> + <pre>J</pre></p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
-
