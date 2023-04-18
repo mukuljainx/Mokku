@@ -59,7 +59,7 @@
     "@types/styled-components": "^5.1.0",
     "css-loader": "^3.5.3",
     "docsify-cli": "^4.4.1",
-    "http-server": "^0.12.3",
+    "http-server": "^14.1.1",
     "sass": "1.62.0",
     "sass-loader": "13.2.2",
     "style-loader": "3.3.2"
