@@ -1,9 +1,3 @@
-# Stalled
-
-> Development on mokku has been stopped idefinetly. It's goods enough for basic use case and without the support Native Chrome API support it can't be a robust app as it depends on script injection.
-
-Alternate: [Mock Server](https://github.com/mukuljainx/mock-server)! A minimal mock-server can be used from cmd line.
-
 # Mokku
 
 > Mock API calls seamlessly
