@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
 
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
-  "version": "1.0",
+  "name": "Mokku",
+  "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
+  "version": "1.7.0",
 
   "options_ui": {
     "page": "options.html"
