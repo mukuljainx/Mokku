@@ -1,14 +1,12 @@
 {
-  "manifest_version": 2,
-  "name": "Mokku: Mock API calls seamlessly",
-  "description": "Adds the API mocker Mokku to Dev Tools for seamless integration & testing.",
+  "manifest_version": 3,
+
+  "name": "Mokku",
+  "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
   "version": "1.7.0",
-  "devtools_page": "devtool.html",
-  "icons": {
-    "16": "mokku-16.png",
-    "48": "mokku-48.png",
-    "128": "mokku-128.png",
-    "512": "mokku-512.png"
+
+  "options_ui": {
+    "page": "options.html"
   },
 
   "action": {

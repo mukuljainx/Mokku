@@ -2,14 +2,28 @@ printToScreen = (response) => {
   document.querySelector("#body").textContent = JSON.stringify(
     response.data,
     undefined,
-    4
+    4,
   );
   document.querySelector("#headers").textContent = JSON.stringify(
     response.headers,
     undefined,
-    4
+    4,
   );
 };
+
+function sendFormAPI() {
+  const url = document.querySelector("#api-url").value;
+  const method = document.querySelector("#api-method").value;
+  const finalUrl = url.startsWith("http")
+    ? url
+    : `http://demo5468585.mockable.io/${url}`;
+
+  axios[method](finalUrl).then((response) => {
+    printToScreen(response);
+    console.log(response.data);
+    console.log(response.headers);
+  });
+}
 
 function sendAPI() {
   axios
