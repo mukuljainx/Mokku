@@ -4,16 +4,19 @@
   "name": "Mokku",
   "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
   "version": "1.8.0",
-
+  "icons": {
+    "16": "mokku-16.png",
+    "48": "mokku-48.png",
+    "128": "mokku-128.png",
+    "512": "mokku-512.png"
+  },
   "options_ui": {
     "page": "options.html"
   },
-
   "action": {
     "default_icon": "mokku-16.png",
     "default_popup": "popup.html"
   },
-
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -22,13 +25,10 @@
     }
   ],
   "devtools_page": "devtool.html",
-
   "background": {
     "service_worker": "js/background.js"
   },
-
   "permissions": ["storage"],
-
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {
