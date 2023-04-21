@@ -1,3 +1,10 @@
+# It's Broken
+
+I know it is, updated the Manifest and a lot of libraries tested and uploaded. But didn't tested the prod build :( something is wrong with the build process. Have emailed the Chrome Team. Working on it fix ASAP.
+
+Sorry 😓
+
+
 # Mokku
 
 > Mock API calls seamlessly
