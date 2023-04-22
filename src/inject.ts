@@ -1,4 +1,4 @@
-import * as xhook from "xhook";
+import xhook from "xhook";
 import { parse } from "query-string";
 
 import IdFactory from "./services/idFactory";
@@ -24,7 +24,7 @@ messageService.listen("HOOK", (data) => {
 const postMessage = (
   message: IEventMessage["message"],
   type: IEventMessage["type"],
-  ackRequired
+  ackRequired,
 ) => {
   const messageId = ackRequired ? messageIdFactory.getId() : null;
 
@@ -105,7 +105,7 @@ const getLog = (
       id: number;
     };
   },
-  response?: ILog["response"]
+  response?: ILog["response"],
 ): IEventMessage["message"] => {
   const separator = request.url.indexOf("?");
   const url = separator !== -1 ? request.url.substr(0, separator) : request.url;

@@ -34,7 +34,7 @@
     "react-router-dom": "^5.2.0",
     "rebass": "^4.0.7",
     "styled-components": "^5.1.1",
-    "xhook": "^1.4.9"
+    "xhook": "^1.5.5"
   },
   "devDependencies": {
     "@types/chrome": "0.0.100",
