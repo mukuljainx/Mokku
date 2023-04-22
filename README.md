@@ -1,3 +1,7 @@
+# Current Status
+
+It's broken to some error in build process. I was not in my checklist to check build as it was just compressed JS files, but after updating everything to latest version something went wrong. I regret the problem you faced, it might take upto 7 days to publish fixed version. It will be 1.8.2
+
 # Mokku
 
 > Mock API calls seamlessly
