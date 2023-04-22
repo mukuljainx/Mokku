@@ -10,7 +10,6 @@ module.exports = {
     content_script: path.join(__dirname, srcDir + "content_script.ts"),
     devtool: path.join(__dirname, srcDir + "devtool.ts"),
     panel: path.join(__dirname, srcDir + "panel/index.tsx"),
-    dashboard: path.join(__dirname, srcDir + "dashboard/index.tsx"),
     inject: path.join(__dirname, srcDir + "inject.ts"),
   },
   output: {
