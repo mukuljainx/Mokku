@@ -4,6 +4,10 @@ It's broken to some error in build process. I was not in my checklist to check b
 
 Meanwhile you can load this [unpacked version](https://github.com/mukuljainx/Mokku/blob/master/mokku-1.8.2.zip)
 
+You can access the existing mocks by clicking the inspect views of the extension page in `chrome://extensions/`  
+and `chrome.storage.local.get(result => console.log(result))`
+
+
 # Mokku
 
 > Mock API calls seamlessly
