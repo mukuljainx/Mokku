@@ -1,6 +1,6 @@
 # Current Status
 
-It's broken to some error in build process. I was not in my checklist to check build as it was just compressed JS files, but after updating everything to latest version something went wrong. I regret the problem you faced, it might take upto 7 days to publish fixed version. It will be 1.8.2
+It's broken due to some error in build process. It was not in my checklist to check build as it was just compressed JS files, but after updating everything to latest version something went wrong. I deeply regret the inconvenience caused, it might take upto 7 days to publish fixed version. It will be 1.8.2
 
 Meanwhile you can load this [unpacked version](https://github.com/mukuljainx/Mokku/blob/master/mokku-1.8.2.zip)
 
