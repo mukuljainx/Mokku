@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import App from "./App";
+import { App as AppV2 } from "./App_New/App_New";
 import "../dashboard/index.scss";
 
 /**
@@ -37,10 +38,17 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
       active = true;
     }
 
-    ReactDOM.render(
-      <App host={host} tab={tab} active={active} storeKey={storeKey} />,
-      document.getElementById("root")
-    );
+    if (process.env.NODE_ENV === "development") {
+      ReactDOM.render(
+        <AppV2 host={host} tab={tab} active={active} storeKey={storeKey} />,
+        document.getElementById("root"),
+      );
+    } else {
+      ReactDOM.render(
+        <App host={host} tab={tab} active={active} storeKey={storeKey} />,
+        document.getElementById("root"),
+      );
+    }
   });
 });
 
