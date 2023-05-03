@@ -3,7 +3,7 @@ import { shallow } from "zustand/shallow";
 import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
-import { useViewStore, ViewEnum, viewSelector } from "../Store/useViewStore";
+import { useViewStore, ViewEnum, viewSelector } from "../store/useViewStore";
 import { ThemeButton } from "./ThemeButton";
 
 const useStyles = createStyles((theme) => ({

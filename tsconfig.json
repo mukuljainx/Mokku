@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
@@ -8,6 +9,10 @@
     "rootDir": "src",
     "outDir": "dist/js",
     "noEmitOnError": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@mokku/types": ["src/panel/App_New/types"],
+      "@mokku/store": ["src/panel/App_New/store"]
+    }
   }
 }

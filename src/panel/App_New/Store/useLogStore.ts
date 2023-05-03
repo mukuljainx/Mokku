@@ -1,26 +1,25 @@
 import { create } from "zustand";
+import { ILog } from "@mokku/types";
 
-export enum ViewEnum {
-  MOCKS = "MOCKS",
-  LOGS = "LOGS",
-}
-
-export type useViewStoreState = {
-  view: "MOCKS" | "LOGS";
-  setView: (view: ViewEnum) => void;
+export type useLogStoreState = {
+  search: string;
+  logs: ILog[];
+  addLog: (log: ILog) => void;
+  updateLog: (log: ILog) => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
-export const useViewStore = create<useViewStoreState>((set, get) => ({
-  //   setGraph: (fn) => {
-  //     const { nodes, edges } = fn(get().nodes, get().edges);
-  //     set({ nodes, edges });
-  //   },
-  view: ViewEnum.MOCKS,
-  setView: (view: ViewEnum) => set({ view: view }),
+export const useLogStore = create<useLogStoreState>((set, get) => ({
+  search: "",
+  logs: [],
+  addLog: (log: ILog) => {
+    set({
+      logs: [...get().logs, log],
+    });
+  },
+  updateLog: (log: ILog) => {
+    set({
+      logs: get().logs.map((item) => (item.id === log.id ? log : item)),
+    });
+  },
 }));
-
-export const viewSelector = (state: useViewStoreState) => ({
-  view: state.view,
-  setView: state.setView,
-});

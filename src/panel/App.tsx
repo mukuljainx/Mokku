@@ -158,12 +158,12 @@ class App extends React.Component<IProps, IState> {
   handleAction = (
     action: ActionType,
     newMock: IMockResponse | void,
-    tooltip?: string
+    tooltip?: string,
   ) => {
     if (action === "clear") {
       this.setState({ rawMock: undefined });
       this.changeRoute(
-        this.state.route.replace(".create", "") as IState["route"]
+        this.state.route.replace(".create", "") as IState["route"],
       );
       return;
     }
@@ -178,7 +178,7 @@ class App extends React.Component<IProps, IState> {
       this.state.store,
       {
         notify: this.showNotification,
-      }
+      },
     );
 
     if (!updated) {
@@ -218,7 +218,7 @@ class App extends React.Component<IProps, IState> {
           if (action === "add") {
             const mockIndex = store.mocks.findIndex(
               (mock) =>
-                mock.url === newMock.url && mock.method === newMock.method
+                mock.url === newMock.url && mock.method === newMock.method,
             );
             logs = logs.map((log) => {
               if (
@@ -248,7 +248,7 @@ class App extends React.Component<IProps, IState> {
       })
       .catch((error) => {
         this.showNotification(
-          "Something went wrong, please reopen the panel then try."
+          "Something went wrong, please reopen the panel then try.",
         );
         console.log(error);
       });
@@ -306,7 +306,7 @@ class App extends React.Component<IProps, IState> {
             to: "CONTENT",
             type: "NOTIFICATION",
           },
-          this.props.tab.id
+          this.props.tab.id,
         );
 
         const updatedStore = x.store as IStore;
@@ -326,7 +326,7 @@ class App extends React.Component<IProps, IState> {
             const tempMockIndex = store.mocks.find(
               (mock) =>
                 log.request?.url === mock.url &&
-                log.request?.method === mock.method
+                log.request?.method === mock.method,
             );
             log.mockPath = `mocks[${tempMockIndex}]`;
           });
@@ -344,7 +344,7 @@ class App extends React.Component<IProps, IState> {
       .catch((error) => {
         console.log(error);
         this.showNotification(
-          "Recording failed, please refresh Panel & try again!"
+          "Recording failed, please refresh Panel & try again!",
         );
       });
   };
@@ -422,7 +422,7 @@ class App extends React.Component<IProps, IState> {
     store.mocks = store.mocks.filter((item) => item.url.includes(search));
     Object.keys(store.collections).forEach((collection) => {
       store[collection].mocks = store[collection].mocks.filter((item) =>
-        item.url.includes(search)
+        item.url.includes(search),
       );
     });
 
@@ -473,7 +473,7 @@ class App extends React.Component<IProps, IState> {
         to: "CONTENT",
         message: "UPDATE_STORE",
       },
-      this.props.tab.id
+      this.props.tab.id,
     );
   };
 

@@ -32,7 +32,7 @@ const send = (props: ISendProps, tabId?: number) => {
           ...props,
           extensionName: "MOKKU",
         },
-        "*"
+        "*",
       ),
     runtime: () =>
       chrome.runtime.sendMessage({
@@ -49,7 +49,7 @@ const send = (props: ISendProps, tabId?: number) => {
 
 const listen = (
   entity: IEventMessage["from"],
-  callback: (props: IEventMessage, sender?: any, sendResponse?: any) => void
+  callback: (props: IEventMessage, sender?: any, sendResponse?: any) => void,
 ) => {
   const service = {
     runtime: () => {

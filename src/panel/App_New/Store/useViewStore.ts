@@ -16,7 +16,7 @@ export const useViewStore = create<useViewStoreState>((set, get) => ({
   //     const { nodes, edges } = fn(get().nodes, get().edges);
   //     set({ nodes, edges });
   //   },
-  view: ViewEnum.MOCKS,
+  view: ViewEnum.LOGS,
   setView: (view: ViewEnum) => set({ view: view }),
 }));
 
