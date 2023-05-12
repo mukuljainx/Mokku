@@ -16,7 +16,7 @@ export interface ILog {
     headers: Headers;
   };
   mockResponse?: IMockResponse;
-  id?: number;
+  id: number | string;
   // if the API response is mocked
   isMocked?: boolean;
   // will be used to fetch mock from store

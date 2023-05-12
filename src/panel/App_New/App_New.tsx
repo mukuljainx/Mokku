@@ -20,13 +20,6 @@ export interface IAppProps {
 
 export const App = (props: IAppProps) => {
   const state = usePanelListener(props);
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      setTimeout(() => {
-        window.location.reload();
-      }, 7000);
-    }
-  }, []);
 
   if (!state.active) {
     return (

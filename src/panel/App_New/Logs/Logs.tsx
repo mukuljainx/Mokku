@@ -1,13 +1,36 @@
 import React from "react";
 import { Header } from "../Header/Header";
 import { Flex } from "@mantine/core";
-import { useLogStore } from "../store/useLogStore";
+import { useLogStore, useLogStoreState } from "../store";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { ILog } from "../types/mock";
 import { TbServer2, TbCpu } from "react-icons/tb";
+import { useRef } from "react";
+import { debounce } from "lodash";
+import { shallow } from "zustand/shallow";
+
+const useLogStoreSelector = (state: useLogStoreState) => ({
+  logs: state.logs,
+  search: state.search.toLowerCase(),
+  setSearch: state.setSearch,
+  setSelectedLog: state.setSelectedLog,
+  selectedLog: state.selectedLog,
+});
 
 export const Logs = () => {
-  const logs = useLogStore((state) => state.logs);
+  const { logs, search, setSearch, selectedLog, setSelectedLog } = useLogStore(
+    useLogStoreSelector,
+    shallow,
+  );
+
+  const debouncedSetSearch = useRef(debounce(setSearch, 300));
+
+  const filteredLogs = logs.filter(
+    (log) =>
+      log.request.method.toLowerCase().includes(search) ||
+      log.request?.url.toLowerCase().includes(search) ||
+      log.response?.status.toString().includes(search),
+  );
   const schema: TableSchema<ILog> = [
     {
       header: "",
@@ -31,10 +54,19 @@ export const Logs = () => {
       content: () => "Action",
     },
   ];
+
   return (
     <Flex direction="column">
-      <Header />
-      <TableWrapper data={logs} schema={schema} />
+      <Header
+        defaultSearchValue={search}
+        onSearchChange={debouncedSetSearch.current}
+      />
+      <TableWrapper
+        onRowClick={setSelectedLog}
+        selectedRowId={selectedLog?.id}
+        data={filteredLogs}
+        schema={schema}
+      />
     </Flex>
   );
 };

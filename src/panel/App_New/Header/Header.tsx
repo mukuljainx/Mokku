@@ -3,8 +3,10 @@ import { shallow } from "zustand/shallow";
 import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
-import { useViewStore, ViewEnum, viewSelector } from "../store/useViewStore";
+import { useViewStore, ViewEnum, viewSelector } from "../store";
 import { ThemeButton } from "./ThemeButton";
+import { RefreshButton } from "./RefreshButton";
+import { ClearButton } from "./ClearButton";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -12,7 +14,12 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const Header = () => {
+interface HeaderProps {
+  onSearchChange?: (value: string) => void;
+  defaultSearchValue?: string;
+}
+
+export const Header = ({ defaultSearchValue, onSearchChange }: HeaderProps) => {
   const { view, setView } = useViewStore(viewSelector, shallow);
   const { classes } = useStyles();
 
@@ -23,18 +30,23 @@ export const Header = () => {
           <Flex align="center">
             <Tabs.Tab value={ViewEnum.MOCKS}>Mocks</Tabs.Tab>
             <Tabs.Tab value={ViewEnum.LOGS}>Logs</Tabs.Tab>
-            <Button
-              leftIcon={<MdAdd />}
-              size="xs"
-              variant="subtle"
-              style={{ marginRight: 16 }}
-            >
-              Add Mock
-            </Button>
-            <Input icon={<TbSearch />} placeholder="Search..." size="xs" />
+            <Flex align="center" gap={8}>
+              <Button leftIcon={<MdAdd />} size="xs" variant="subtle">
+                Add Mock
+              </Button>
+              <Input
+                icon={<TbSearch />}
+                placeholder="Search..."
+                size="xs"
+                defaultValue={defaultSearchValue}
+                onChange={(event) => onSearchChange(event.target.value)}
+              />
+              <ClearButton />
+            </Flex>
           </Flex>
-          <Flex>
+          <Flex gap={4} style={{ paddingRight: 4 }}>
             <ThemeButton />
+            <RefreshButton />
           </Flex>
         </Flex>
       </Tabs.List>
