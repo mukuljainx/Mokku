@@ -8,6 +8,8 @@ import { TbServer2, TbCpu } from "react-icons/tb";
 import { useRef } from "react";
 import { debounce } from "lodash";
 import { shallow } from "zustand/shallow";
+import { SiteDrawer } from "../Blocks/SideDrawer";
+import { LogDetails } from "./LogDetails/LogDetails";
 
 const useLogStoreSelector = (state: useLogStoreState) => ({
   logs: state.logs,
@@ -56,17 +58,24 @@ export const Logs = () => {
   ];
 
   return (
-    <Flex direction="column">
-      <Header
-        defaultSearchValue={search}
-        onSearchChange={debouncedSetSearch.current}
-      />
-      <TableWrapper
-        onRowClick={setSelectedLog}
-        selectedRowId={selectedLog?.id}
-        data={filteredLogs}
-        schema={schema}
-      />
-    </Flex>
+    <>
+      <Flex direction="column">
+        <Header
+          defaultSearchValue={search}
+          onSearchChange={debouncedSetSearch.current}
+        />
+        <TableWrapper
+          onRowClick={setSelectedLog}
+          selectedRowId={selectedLog?.id}
+          data={filteredLogs}
+          schema={schema}
+        />
+      </Flex>
+      {selectedLog && (
+        <SiteDrawer>
+          <LogDetails log={selectedLog} onClose={() => setSelectedLog()} />
+        </SiteDrawer>
+      )}
+    </>
   );
 };
