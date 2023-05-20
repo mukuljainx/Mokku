@@ -23,6 +23,7 @@
     "@mantine/hooks": "^6.0.8",
     "@monaco-editor/react": "^4.5.1",
     "brace": "^0.11.1",
+    "bundle-analyzer": "^0.0.6",
     "firebase": "^8.1.1",
     "formik": "^2.2.5",
     "jquery": "^3.5.0",
@@ -37,6 +38,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "styled-components": "^5.1.1",
+    "webpack-plugin": "^1.0.5",
     "xhook": "^1.5.5",
     "zustand": "^4.3.7"
   },
@@ -59,12 +61,11 @@
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "ts-jest": "^25.2.1 ",
-    "ts-loader": "^6.2.1",
+    "ts-loader": "^9.4.2",
     "typescript": "5.0.4",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.42.1",
+    "webpack": "^5.83.1",
     "webpack-bundle-analyzer": "^3.8.0",
-    "webpack-cli": "~3.3.11",
-    "webpack-merge": "~4.2.2"
+    "webpack-cli": "^5.1.1",
+    "webpack-merge": "^5.8.0"
   }
 }

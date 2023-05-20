@@ -51,5 +51,3 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     }
   });
 });
-
-export default App;
