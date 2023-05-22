@@ -21,7 +21,6 @@ export const usePanelListener = (props: IAppProps) => {
     switch (message.type) {
       case "LOG": {
         const newLog = message.message as ILog;
-        console.log("newLog", newLog);
         if (!newLog.response) {
           addLog(newLog);
         } else if (newLog.id) {

@@ -2,23 +2,21 @@ printToScreen = (response) => {
   document.querySelector("#body").textContent = JSON.stringify(
     response.data,
     undefined,
-    4
+    4,
   );
   document.querySelector("#headers").textContent = JSON.stringify(
     response.headers,
     undefined,
-    4
+    4,
   );
 };
 
 function sendAPI() {
-  axios
-    .get("http://demo5468585.mockable.io/patients/empi/goals")
-    .then((response) => {
-      printToScreen(response);
-      console.log(response.data);
-      console.log(response.headers);
-    });
+  axios.get("http://demo6210424.mockable.io/a").then((response) => {
+    printToScreen(response);
+    console.log(response.data);
+    console.log(response.headers);
+  });
 }
 
 function dynamicSendAPI1() {

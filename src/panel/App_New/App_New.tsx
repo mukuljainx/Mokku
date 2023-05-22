@@ -37,12 +37,14 @@ export const App = (props: IAppProps) => {
       toggleColorScheme={toggleColorScheme}
     >
       <MantineProvider withGlobalStyles withNormalizeCSS>
-        <Show if={view === ViewEnum.MOCKS}>
-          <Mocks />
-        </Show>
-        <Show if={view === ViewEnum.LOGS}>
-          <Logs />
-        </Show>
+        <div style={{ minWidth: 1024 }}>
+          <Show if={view === ViewEnum.MOCKS}>
+            <Mocks />
+          </Show>
+          <Show if={view === ViewEnum.LOGS}>
+            <Logs />
+          </Show>
+        </div>
       </MantineProvider>
     </ColorSchemeProvider>
   );

@@ -1,38 +1,62 @@
 import React from "react";
 import { ILog } from "@mokku/types";
-import { Flex, Tabs } from "@mantine/core";
+import { createStyles, Flex, Tabs } from "@mantine/core";
 import { LogDetailsResponse } from "./LogDetails.Response";
+import { MdClose } from "react-icons/md";
+import { LogDetailsHeader } from "./LogDetails.Header";
 
 interface IProps {
   log: ILog;
   onClose: () => void;
 }
 
+const useStyles = createStyles((theme) => ({
+  tabList: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  panel: {
+    flexGrow: 2,
+  },
+  icon: {
+    cursor: "pointer",
+    marginRight: 4,
+    marginLeft: 4,
+  },
+}));
+
 export const LogDetails = ({ log, onClose }: IProps) => {
+  const { classes } = useStyles();
   return (
-    <Flex>
-      <span onClick={onClose}>close</span>
-      <Tabs defaultValue="response">
-        <Tabs.List>
-          <Tabs.Tab value="response">Response</Tabs.Tab>
-          <Tabs.Tab value="requestBody">Request Body</Tabs.Tab>
-          <Tabs.Tab value="queryParams">Query Params</Tabs.Tab>
-          <Tabs.Tab value="headers">Headers</Tabs.Tab>
+    <Tabs defaultValue="response" style={{ height: "100%" }}>
+      <Flex style={{ height: "100%" }} direction="column">
+        <Tabs.List className={classes.tabList}>
+          <Flex>
+            <Tabs.Tab value="response">Response</Tabs.Tab>
+            <Tabs.Tab value="requestBody">Request Body</Tabs.Tab>
+            <Tabs.Tab value="queryParams">Query Params</Tabs.Tab>
+            <Tabs.Tab value="headers">Headers</Tabs.Tab>
+          </Flex>
+          <MdClose className={classes.icon} onClick={onClose} />
         </Tabs.List>
 
-        <Tabs.Panel value="response" pt="xs">
-          <LogDetailsResponse response={log.response} />
+        <Tabs.Panel className={classes.panel} value="response" pt="xs">
+          <LogDetailsResponse response={log?.response?.response} />
         </Tabs.Panel>
-        <Tabs.Panel value="requestBody" pt="xs">
-          Gallery tab content
+        <Tabs.Panel className={classes.panel} value="requestBody" pt="xs">
+          <LogDetailsResponse response={log?.request?.body} />
         </Tabs.Panel>
-        <Tabs.Panel value="queryParams" pt="xs">
-          Gallery tab content
+        <Tabs.Panel className={classes.panel} value="queryParams" pt="xs">
+          <LogDetailsResponse response={log?.request?.queryParams} />
         </Tabs.Panel>
-        <Tabs.Panel value="headers" pt="xs">
-          Gallery tab content
+        <Tabs.Panel className={classes.panel} value="headers" pt="xs">
+          <LogDetailsHeader
+            responseHeaders={log?.response?.headers}
+            requestHeaders={log?.request?.headers}
+          />
         </Tabs.Panel>
-      </Tabs>
-    </Flex>
+      </Flex>
+    </Tabs>
   );
 };

@@ -8,7 +8,7 @@ import { TbServer2, TbCpu } from "react-icons/tb";
 import { useRef } from "react";
 import { debounce } from "lodash";
 import { shallow } from "zustand/shallow";
-import { SiteDrawer } from "../Blocks/SideDrawer";
+import { SideDrawer } from "../Blocks/SideDrawer";
 import { LogDetails } from "./LogDetails/LogDetails";
 
 const useLogStoreSelector = (state: useLogStoreState) => ({
@@ -72,9 +72,9 @@ export const Logs = () => {
         />
       </Flex>
       {selectedLog && (
-        <SiteDrawer>
+        <SideDrawer>
           <LogDetails log={selectedLog} onClose={() => setSelectedLog()} />
-        </SiteDrawer>
+        </SideDrawer>
       )}
     </>
   );

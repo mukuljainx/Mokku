@@ -1,21 +1,15 @@
 import React from "react";
+import * as monaco from "monaco-editor";
 import { ILog } from "@mokku/types";
 import { Center, Text } from "@mantine/core";
-import { Editor } from "@monaco-editor/react";
+import { Editor, loader } from "@monaco-editor/react";
+import { getResponse } from "./LogDetails.utils";
+
+loader.config({ monaco });
 
 interface IProps {
-  response: ILog["response"];
+  response: ILog["response"]["response"];
 }
-
-const getResponse = (response) => {
-  let result = "";
-  try {
-    result = JSON.stringify(JSON.parse(response), undefined, 2);
-  } catch {
-    result = response;
-  }
-  return result;
-};
 
 export const LogDetailsResponse = ({ response }: IProps) => {
   if (!response) {
@@ -26,18 +20,25 @@ export const LogDetailsResponse = ({ response }: IProps) => {
     );
   }
 
-  const responseJson = getResponse(response?.response || "");
-  if (!response) {
+  const responseJson = getResponse(response || "");
+
+  if (!responseJson) {
     return (
       <Center>
-        <Text fz="md">Nothing to preview</Text>
-      </Center>
-    );
-  } else {
-    return (
-      <Center>
-        <Editor defaultLanguage="json" defaultValue={responseJson} />
+        <Text fz="md">Nothing to Preview</Text>
       </Center>
     );
   }
+
+  return (
+    <Editor
+      className="editor-wrapper"
+      options={{
+        readOnly: true,
+        minimap: { enabled: false },
+      }}
+      defaultLanguage="json"
+      defaultValue={responseJson}
+    />
+  );
 };

@@ -1,4 +1,5 @@
 import xhook from "xhook";
+import { v4 as uuidv4 } from "uuid";
 import { parse } from "query-string";
 
 import IdFactory from "./services/idFactory";
@@ -55,7 +56,7 @@ xhook.before(function (request, callback) {
       : undefined;
 
   request.mokku = {
-    id: logIdFactory.getId(),
+    id: uuidv4(),
   };
 
   const data: IEventMessage["message"] = getLog(request);

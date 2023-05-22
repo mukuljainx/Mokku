@@ -38,6 +38,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "styled-components": "^5.1.1",
+    "uuid": "^9.0.0",
     "webpack-plugin": "^1.0.5",
     "xhook": "^1.5.5",
     "zustand": "^4.3.7"
@@ -54,6 +55,7 @@
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.3",
     "docsify-cli": "^4.4.1",
+    "file-loader": "^6.2.0",
     "http-server": "^0.12.3",
     "jest": "^25.1.0",
     "rimraf": "^3.0.2 ",
