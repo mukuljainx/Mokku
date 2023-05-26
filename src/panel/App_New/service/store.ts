@@ -1,13 +1,19 @@
 import { match as getMatcher } from "path-to-regexp";
-
 import {
   IDynamicURLMap,
   IMockResponse,
   IMockResponseRaw,
   IStore,
   IURLMap,
-} from "../../interface/mock";
-import { getNetworkMethodMap } from "../constants";
+} from "../types";
+
+const getNetworkMethodMap = () => ({
+  GET: null,
+  POST: null,
+  PATCH: null,
+  PUT: null,
+  DELETE: null,
+});
 
 const storeName = "mokku.extension.main.db";
 
@@ -66,10 +72,7 @@ export const updateStateStore = (
     case "add": {
       // Find same mock
       const sameMockIndex = store.mocks.findIndex(
-        (mock) =>
-          mock.url === newMock.url &&
-          mock.method === newMock.method &&
-          mock.active,
+        (mock) => mock.url === newMock.url && mock.method === newMock.method,
       );
       if (sameMockIndex !== -1 && newMock.active) {
         // disable it silently if bulk is off

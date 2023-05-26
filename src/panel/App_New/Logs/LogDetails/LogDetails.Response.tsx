@@ -32,7 +32,6 @@ export const LogDetailsResponse = ({ response }: IProps) => {
 
   return (
     <Editor
-      className="editor-wrapper"
       options={{
         readOnly: true,
         minimap: { enabled: false },
