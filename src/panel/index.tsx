@@ -1,7 +1,6 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
-import App from "./App";
 import { App as AppV2 } from "./App_New/App_New";
 import "../dashboard/index.scss";
 
@@ -27,6 +26,9 @@ const getDomain = (url: string) => {
   return domain;
 };
 
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
+
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
   const host = getDomain(tab?.url) || "invalid";
   const isLocalhost = (tab?.url || "").includes("http://localhost");
@@ -38,16 +40,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
       active = true;
     }
 
-    if (process.env.NODE_ENV === "development") {
-      ReactDOM.render(
-        <AppV2 host={host} tab={tab} active={active} storeKey={storeKey} />,
-        document.getElementById("root"),
-      );
-    } else {
-      ReactDOM.render(
-        <App host={host} tab={tab} active={active} storeKey={storeKey} />,
-        document.getElementById("root"),
-      );
-    }
+    root.render(
+      <AppV2 host={host} tab={tab} active={active} storeKey={storeKey} />,
+    );
   });
 });
