@@ -37,13 +37,14 @@ export interface ILog {
 }
 
 export interface IMockResponse {
-  method: IMethod;
+  method: MethodEnum;
   createdOn: number;
   url: string;
   status: number;
   response?: string;
   headers?: Headers;
   delay?: number;
+  name?: string;
   id: number;
   dynamic?: boolean;
   active: boolean;

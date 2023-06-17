@@ -29,6 +29,8 @@ export const createMock = (mock: IMockResponseRaw) => {
     id: mock.id,
     dynamic: mock.dynamic,
     active: mock.active,
+    description: mock.description,
+    name: mock.name,
   };
 };
 
