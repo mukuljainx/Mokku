@@ -5,7 +5,7 @@ import {
   IMockResponseRaw,
   IStore,
   IURLMap,
-} from "../types";
+} from "@mokku/types";
 
 const getNetworkMethodMap = () => ({
   GET: null,
@@ -37,7 +37,7 @@ export const createMock = (mock: IMockResponseRaw) => {
 export const getDefaultStore = (): IStore => ({
   active: false,
   mocks: [],
-  id: 1,
+  totalMocksCreated: 0,
   collections: {},
   activityInfo: {
     promoted: false,
@@ -52,7 +52,7 @@ export const getStore = (name = storeName) => {
   }>((resolve) => {
     chrome.storage.local.get([name], function (result) {
       const store = { ...getDefaultStore(), ...result[name] } as IStore;
-      const { urlMap, dynamicUrlMap } = getURLMap(store);
+      const { urlMap, dynamicUrlMap } = getURLMapWithStore(store);
 
       resolve({
         store: store,
@@ -63,96 +63,12 @@ export const getStore = (name = storeName) => {
   });
 };
 
-export const updateStateStore = (
-  action: "add" | "delete" | "edit" | "clear",
-  newMock: IMockResponse,
-  oldStore: IStore,
-  options: { notify?: (x: string) => void; bulk?: boolean },
-): { store: IStore; updated: boolean } => {
-  const store = { ...oldStore };
-  switch (action) {
-    case "add": {
-      // Find same mock
-      const sameMockIndex = store.mocks.findIndex(
-        (mock) => mock.url === newMock.url && mock.method === newMock.method,
-      );
-      if (sameMockIndex !== -1 && newMock.active) {
-        // disable it silently if bulk is off
-        // TODO: Test bulk
-        if (!options.bulk) {
-          store.mocks[sameMockIndex] = {
-            ...store.mocks[sameMockIndex],
-            active: false,
-          };
-        }
-      }
-      const id = store.id;
-      const dynamic =
-        newMock.url.includes("(.*)") || newMock.url.includes("/:");
-
-      store.mocks = [...store.mocks, { ...newMock, dynamic, id }];
-      store.id++;
-      break;
-    }
-
-    case "edit": {
-      const dynamic =
-        newMock.url.includes("(.*)") || newMock.url.includes("/:");
-
-      console.log("EDIT");
-
-      const mockIndex = store.mocks.findIndex((item) => item.id === newMock.id);
-
-      if (mockIndex === -1) {
-        console.error("Mock not found");
-        break;
-      }
-      // the mock status has been toggled from off to on
-      // find the active mock with same url & method
-      // and disable it
-      let sameMockIndex = -1;
-      if (newMock.active && !store.mocks[mockIndex].active) {
-        sameMockIndex = store.mocks.findIndex(
-          (mock) =>
-            mock.url === newMock.url &&
-            mock.method === newMock.method &&
-            mock.active,
-        );
-      }
-
-      store.mocks = store.mocks.map((item, index) => {
-        if (index === sameMockIndex) {
-          return {
-            ...item,
-            active: false,
-          };
-        } else if (item.id === newMock.id) {
-          return {
-            ...item,
-            ...newMock,
-            dynamic,
-          };
-        }
-        return item;
-      });
-      break;
-    }
-
-    case "delete": {
-      store.mocks = store.mocks.filter((item) => item.id !== newMock.id);
-      break;
-    }
-  }
-
-  return { store, updated: true };
-};
-
-export const updateStore = (store: IStore) => {
+export const updateStoreInDB = (store: IStore) => {
   return new Promise<{ store: IStore; urlMap: IURLMap; dynamicUrlMap }>(
     (resolve, reject) => {
       try {
         chrome.storage.local.set({ [storeName]: store }, () => {
-          const { dynamicUrlMap, urlMap } = getURLMap(store);
+          const { dynamicUrlMap, urlMap } = getURLMapWithStore(store);
           resolve({
             store: store as IStore,
             urlMap: urlMap,
@@ -166,7 +82,7 @@ export const updateStore = (store: IStore) => {
   );
 };
 
-export const getURLMap = (store: IStore) => {
+export const getURLMapWithStore = (store: IStore) => {
   const urlMap: IURLMap = {};
   const dynamicUrlMap: IDynamicURLMap = {};
 
@@ -210,4 +126,76 @@ export const getURLMap = (store: IStore) => {
   });
 
   return { urlMap, dynamicUrlMap, store };
+};
+
+export const addMocks = (
+  oldStore: IStore,
+  dirtyNewMock: IMockResponse | IMockResponse[],
+) => {
+  const store = { ...oldStore };
+
+  // standardize mock
+  const newMocks = Array.isArray(dirtyNewMock) ? dirtyNewMock : [dirtyNewMock];
+
+  newMocks.forEach((mock) => {
+    const dynamic = mock.url.includes("(.*)") || mock.url.includes("/:");
+    store.mocks = [...store.mocks, { ...mock, dynamic }];
+    store.totalMocksCreated++;
+  });
+
+  return store;
+};
+
+type PartialMockWithId = { id: IMockResponse["id"] } & Partial<IMockResponse>;
+export const updateMocks = (
+  oldStore: IStore,
+  dirtyNewMock: PartialMockWithId | Array<PartialMockWithId>,
+) => {
+  const store = { ...oldStore };
+
+  // standardize mock
+  const newMocks = Array.isArray(dirtyNewMock) ? dirtyNewMock : [dirtyNewMock];
+
+  const newMocksMap: Record<string, PartialMockWithId> = {};
+  newMocks.forEach((mock) => {
+    newMocksMap[mock.id] = mock;
+  });
+
+  const newStoreMocks = store.mocks.map((storeMock) => {
+    const mockToBeUpdated = newMocksMap[storeMock.id];
+    if (mockToBeUpdated) {
+      const dynamic =
+        mockToBeUpdated.url.includes("(.*)") ||
+        mockToBeUpdated.url.includes("/:");
+      return { ...storeMock, ...mockToBeUpdated, dynamic };
+    } else {
+      return storeMock;
+    }
+  });
+
+  store.mocks = newStoreMocks;
+  return { ...store, mocks: newStoreMocks };
+};
+
+export const deleteMocks = (
+  draftStore: IStore,
+  dirtyMockId: string | string[],
+) => {
+  const mockIdsSet = Array.isArray(dirtyMockId)
+    ? new Set(dirtyMockId)
+    : new Set([dirtyMockId]);
+
+  const mocks = draftStore.mocks.filter((mock) => {
+    if (mockIdsSet.has(mock.id)) {
+      return false;
+    }
+    return true;
+  });
+
+  const store = {
+    ...draftStore,
+    mocks,
+  };
+
+  return store;
 };

@@ -45,7 +45,7 @@ export interface IMockResponse {
   headers?: Headers;
   delay?: number;
   name?: string;
-  id: number;
+  id: string;
   dynamic?: boolean;
   active: boolean;
   description: string;
@@ -61,7 +61,7 @@ export type IMockResponseRaw = Partial<IMockResponse>;
 export interface IStore {
   active: boolean;
   mocks: IMockResponse[];
-  id: number;
+  totalMocksCreated: number;
   activityInfo: {
     promoted: boolean;
   };

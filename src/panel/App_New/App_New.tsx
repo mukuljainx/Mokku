@@ -10,6 +10,8 @@ import { Mocks } from "./Mocks/Mocks";
 import { Logs } from "./Logs/Logs";
 import { usePanelListener } from "./hooks/usePanelListner";
 import { DisabledPlaceholder } from "./DisabledPlaceholder/DisabledPlaceholder";
+import { useMockStore } from "./store";
+import { Notifications } from "@mantine/notifications";
 
 export interface IAppProps {
   host: string;
@@ -31,12 +33,18 @@ export const App = (props: IAppProps) => {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const initMockStore = useMockStore((state) => state.init);
+
+  useEffect(() => {
+    initMockStore();
+  }, []);
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
       toggleColorScheme={toggleColorScheme}
     >
       <MantineProvider withGlobalStyles withNormalizeCSS>
+        <Notifications />
         <div style={{ minWidth: 1024 }}>
           <Show if={view === ViewEnum.MOCKS}>
             <Mocks />
