@@ -10,8 +10,7 @@ const checkIfSameTab = (sender: chrome.tabs.Tab, tab: chrome.tabs.Tab) => {
 };
 
 export const usePanelListener = (props: IAppProps) => {
-  const addLog = useLogStore((state) => state.addLog);
-  const updateLog = useLogStore((state) => state.updateLog);
+  const upsertLog = useLogStore((state) => state.upsertLog);
   const [state, setState] = useState(props);
   messageService.listen("PANEL", (message: IEventMessage, sender: any) => {
     if (!checkIfSameTab(sender.tab, props.tab)) {
@@ -21,11 +20,7 @@ export const usePanelListener = (props: IAppProps) => {
     switch (message.type) {
       case "LOG": {
         const newLog = message.message as ILog;
-        if (!newLog.response) {
-          addLog(newLog);
-        } else if (newLog.id) {
-          updateLog(newLog);
-        }
+        upsertLog(newLog);
         break;
       }
       case "INIT": {

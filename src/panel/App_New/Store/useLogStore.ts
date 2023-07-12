@@ -6,6 +6,7 @@ export type useLogStoreState = {
   logs: ILog[];
   addLog: (log: ILog) => void;
   updateLog: (log: ILog) => void;
+  upsertLog: (log: ILog) => void;
   setSearch: (value: string) => void;
   clearLogs: () => void;
   selectedLog?: ILog;
@@ -28,6 +29,18 @@ export const useLogStore = create<useLogStoreState>((set, get) => ({
     set({
       logs: get().logs.map((item) => (item.id === log.id ? log : item)),
     });
+  },
+  upsertLog: (log: ILog) => {
+    const logExist = get().logs.find(({ id }) => id === log.id);
+    if (logExist) {
+      set({
+        logs: get().logs.map((item) => (item.id === log.id ? log : item)),
+      });
+    } else {
+      set({
+        logs: [log, ...get().logs],
+      });
+    }
   },
   clearLogs: () => {
     set({ logs: [] });

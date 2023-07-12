@@ -11,7 +11,6 @@ import messageService from "./services/message";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
-const logIdFactory = new IdFactory();
 
 messageService.listen("HOOK", (data) => {
   messageBus.dispatch(data.id, data.message);
@@ -48,18 +47,12 @@ const postMessage = (
 };
 
 xhook.before(function (request, callback) {
-  const separator = request.url.indexOf("?");
-  const url = separator !== -1 ? request.url.substr(0, separator) : request.url;
-  const queryParams =
-    separator !== -1
-      ? JSON.stringify(parse(request.url.substr(separator)))
-      : undefined;
-
   request.mokku = {
     id: uuidv4(),
   };
 
   const data: IEventMessage["message"] = getLog(request);
+  console.log(data);
   postMessage(data, "LOG", false);
 
   postMessage(data, "NOTIFICATION", true)
@@ -103,7 +96,7 @@ const getLog = (
   request: Omit<ILog["request"], "headers"> & {
     headers: Record<string, string>;
     mokku?: {
-      id: number;
+      id: string;
     };
   },
   response?: ILog["response"],
