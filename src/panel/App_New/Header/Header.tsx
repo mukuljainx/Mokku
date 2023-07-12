@@ -3,7 +3,7 @@ import { shallow } from "zustand/shallow";
 import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
-import { useViewStore, ViewEnum, viewSelector } from "../store";
+import { useMockStore, useViewStore, ViewEnum, viewSelector } from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
 import { ClearButton } from "./ClearButton";
@@ -21,7 +21,7 @@ interface HeaderProps {
 
 export const Header = ({ defaultSearchValue, onSearchChange }: HeaderProps) => {
   const { view, setView } = useViewStore(viewSelector, shallow);
-  const { classes } = useStyles();
+  const setSelectedMock = useMockStore((state) => state.setSelectedMock);
 
   return (
     <Tabs defaultValue={ViewEnum.MOCKS} value={view} onTabChange={setView}>
@@ -31,7 +31,12 @@ export const Header = ({ defaultSearchValue, onSearchChange }: HeaderProps) => {
             <Tabs.Tab value={ViewEnum.MOCKS}>Mocks</Tabs.Tab>
             <Tabs.Tab value={ViewEnum.LOGS}>Logs</Tabs.Tab>
             <Flex align="center" gap={8}>
-              <Button leftIcon={<MdAdd />} size="xs" variant="subtle">
+              <Button
+                onClick={() => setSelectedMock({})}
+                leftIcon={<MdAdd />}
+                size="xs"
+                variant="subtle"
+              >
                 Add Mock
               </Button>
               <Input

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Header } from "../Header/Header";
-import { Flex, Switch } from "@mantine/core";
+import { ActionIcon, Flex, Switch } from "@mantine/core";
 import { AddMock } from "./AddMock/AddMock";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockResponse } from "@mokku/types";
@@ -10,12 +10,20 @@ import { shallow } from "zustand/shallow";
 import * as storeService from "../service/store";
 import { notifications } from "@mantine/notifications";
 import { MdDeleteOutline, MdOutlineContentCopy } from "react-icons/md";
+import { useMockActions } from "./Mocks.action";
+
+interface GetSchemeProps {
+  toggleMock: (mock: IMockResponse) => void;
+  deleteMock: (mock: IMockResponse) => void;
+  editMock: (mock: IMockResponse) => void;
+  duplicateMock: (mock: IMockResponse) => void;
+}
 
 const getSchema = ({
   toggleMock,
-}: {
-  toggleMock: (mock: IMockResponse) => void;
-}): TableSchema<IMockResponse> => [
+  deleteMock,
+  duplicateMock,
+}: GetSchemeProps): TableSchema<IMockResponse> => [
   {
     header: "",
     content: (data) => (
@@ -63,12 +71,33 @@ const getSchema = ({
   {
     header: "",
     content: (data) => (
-      <Flex align="center" gap={4}>
-        <MdDeleteOutline />
-        <MdOutlineContentCopy />
+      <Flex
+        align="center"
+        gap={4}
+        onClick={(event) => {
+          // this was not working with switch for some unknown reason
+          event.stopPropagation();
+        }}
+      >
+        <ActionIcon
+          variant="outline"
+          color="red"
+          onClick={() => deleteMock(data)}
+          title={`Delete ${data.name}`}
+        >
+          <MdDeleteOutline />
+        </ActionIcon>
+        <ActionIcon
+          variant="outline"
+          color="blue"
+          onClick={() => duplicateMock(data)}
+          title={`Duplicate ${data.name}`}
+        >
+          <MdOutlineContentCopy />
+        </ActionIcon>
       </Flex>
     ),
-    width: 240,
+    width: 80,
   },
 ];
 
@@ -88,31 +117,17 @@ export const Mocks = () => {
     setSearch,
     selectedMock,
     setSelectedMock,
-    setStoreProperties,
   } = useMockStore(useMockStoreSelector, shallow);
 
   const debouncedSetSearch = useRef(debounce(setSearch, 300));
-  const toggleMock = (mockToBeUpdated: IMockResponse) => {
-    const updatedStore = storeService.updateMocks(store, mockToBeUpdated);
-    const mockStatus = mockToBeUpdated.active ? "is enabled" : "is disabled";
-    storeService
-      .updateStoreInDB(updatedStore)
-      .then(setStoreProperties)
-      .then(() => {
-        notifications.show({
-          title: `Mock Toggled`,
-          message: `Mock ${mockStatus}`,
-        });
-      })
-      .catch(() => {
-        notifications.show({
-          title: "Cannot updated mock.",
-          message: "Something went wrong, unable to update mock.",
-          color: "red",
-        });
-      });
-  };
-  const schema = getSchema({ toggleMock });
+  const { deleteMock, duplicateMock, toggleMock, editMock } = useMockActions();
+
+  const schema = getSchema({
+    toggleMock,
+    deleteMock,
+    duplicateMock,
+    editMock,
+  });
 
   const filteredMocks = store.mocks.filter(
     (mock) =>
@@ -124,7 +139,7 @@ export const Mocks = () => {
     <Flex direction="column">
       <Header onSearchChange={debouncedSetSearch.current} />
       <TableWrapper
-        onRowClick={setSelectedMock}
+        onRowClick={(data) => setSelectedMock(data)}
         selectedRowId={selectedMock?.id}
         data={filteredMocks}
         schema={schema}

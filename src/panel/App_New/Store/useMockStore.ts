@@ -14,7 +14,7 @@ export interface useMockStoreState extends StoreProperties {
   init: () => void;
   setStoreProperties: (properties: StoreProperties) => void;
   selectedMock?: IMockResponse;
-  setSelectedMock: (mock?: IMockResponse) => void;
+  setSelectedMock: (mock?: Partial<IMockResponse>) => void;
 }
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
