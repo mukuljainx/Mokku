@@ -9,7 +9,11 @@ import { useMockStore, useMockStoreState } from "../store";
 import { shallow } from "zustand/shallow";
 import * as storeService from "../service/store";
 import { notifications } from "@mantine/notifications";
-import { MdDeleteOutline, MdOutlineContentCopy } from "react-icons/md";
+import {
+  MdDeleteOutline,
+  MdOutlineContentCopy,
+  MdOutlineModeEditOutline,
+} from "react-icons/md";
 import { useMockActions } from "./Mocks.action";
 
 interface GetSchemeProps {
@@ -23,6 +27,7 @@ const getSchema = ({
   toggleMock,
   deleteMock,
   duplicateMock,
+  editMock,
 }: GetSchemeProps): TableSchema<IMockResponse> => [
   {
     header: "",
@@ -81,12 +86,13 @@ const getSchema = ({
       >
         <ActionIcon
           variant="outline"
-          color="red"
-          onClick={() => deleteMock(data)}
-          title={`Delete ${data.name}`}
+          color="blue"
+          onClick={() => editMock(data)}
+          title={`Edit Mock ${data.name}`}
         >
-          <MdDeleteOutline />
+          <MdOutlineModeEditOutline />
         </ActionIcon>
+
         <ActionIcon
           variant="outline"
           color="blue"
@@ -94,6 +100,14 @@ const getSchema = ({
           title={`Duplicate ${data.name}`}
         >
           <MdOutlineContentCopy />
+        </ActionIcon>
+        <ActionIcon
+          variant="outline"
+          color="red"
+          onClick={() => deleteMock(data)}
+          title={`Delete ${data.name}`}
+        >
+          <MdDeleteOutline />
         </ActionIcon>
       </Flex>
     ),
