@@ -7,6 +7,7 @@ import {
   Text,
   Textarea,
   TextInput,
+  Title,
 } from "@mantine/core";
 import JSONInput from "react-json-editor-ajrm";
 import locale from "react-json-editor-ajrm/locale/en";
@@ -20,7 +21,7 @@ import {
   MockStatusEnum,
 } from "../../types";
 import { useForm } from "@mantine/form";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdClose, MdDeleteOutline } from "react-icons/md";
 import * as storeService from "../../service/store";
 import { useMockStore, useMockStoreState } from "../../store/useMockStore";
 import { notifications } from "@mantine/notifications";
@@ -33,6 +34,7 @@ const useStyles = createStyles((theme) => ({
     padding: 12,
     height: "100%",
     overflow: "auto",
+    paddingTop: 0,
   },
   tabs: {
     flexGrow: 2,
@@ -42,6 +44,12 @@ const useStyles = createStyles((theme) => ({
   footer: {
     padding: 12,
     borderTop: `1px solid ${theme.colors.gray[2]}`,
+  },
+  header: {
+    borderBottom: `2px solid ${theme.colors.gray[3]}`,
+    paddingRight: 4,
+    paddingLeft: 8,
+    height: 50,
   },
 }));
 
@@ -62,7 +70,7 @@ export const AddMock = () => {
   } = useMockStore(useMockStoreSelector);
 
   const {
-    classes: { flexGrow, wrapper, tabs, footer },
+    classes: { flexGrow, wrapper, tabs, footer, header },
   } = useStyles();
 
   const form = useForm<IMockResponseRaw>({
@@ -113,6 +121,13 @@ export const AddMock = () => {
         })}
       >
         <Flex direction="column" style={{ height: "100%" }}>
+          <Flex justify="space-between" align="center" className={header}>
+            <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
+            <MdClose
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelectedMock()}
+            />
+          </Flex>
           <Flex direction="column" gap={16} className={wrapper}>
             <Flex gap={12} align="center">
               <Flex direction="column">

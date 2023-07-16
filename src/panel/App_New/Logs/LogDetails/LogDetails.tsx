@@ -1,7 +1,7 @@
 import React from "react";
 import { ILog } from "@mokku/types";
 import { createStyles, Flex, Tabs } from "@mantine/core";
-import { LogDetailsResponse } from "./LogDetails.Response";
+import { LogDetailsJSON } from "./LogDetails.JSON";
 import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
 
@@ -42,13 +42,22 @@ export const LogDetails = ({ log, onClose }: IProps) => {
         </Tabs.List>
 
         <Tabs.Panel className={classes.panel} value="response" pt="xs">
-          <LogDetailsResponse response={log?.response?.response} />
+          <LogDetailsJSON
+            isRequestPending={!log?.response?.response}
+            response={log?.response?.response}
+          />
         </Tabs.Panel>
         <Tabs.Panel className={classes.panel} value="requestBody" pt="xs">
-          <LogDetailsResponse response={log?.request?.body} />
+          <LogDetailsJSON
+            isRequestPending={!log?.response?.response}
+            response={log?.request?.body}
+          />
         </Tabs.Panel>
         <Tabs.Panel className={classes.panel} value="queryParams" pt="xs">
-          <LogDetailsResponse response={log?.request?.queryParams} />
+          <LogDetailsJSON
+            isRequestPending={!log?.response?.response}
+            response={log?.request?.queryParams}
+          />
         </Tabs.Panel>
         <Tabs.Panel className={classes.panel} value="headers" pt="xs">
           <LogDetailsHeader

@@ -18,10 +18,12 @@ const Headers = ({ headers }: { headers: ILog["request"]["headers"] }) => {
 
   return (
     <>
-      {headers.map(({ name, value }) => (
-        <Flex gap={4}>
-          <Text fw={500}>{name}:</Text>
-          <Text>{value}</Text>
+      {headers.map(({ name, value }, index) => (
+        <Flex gap={4} key={index}>
+          <Text fz="sm" fw={500}>
+            {name}:
+          </Text>
+          <Text fz="sm">{value}</Text>
         </Flex>
       ))}
     </>

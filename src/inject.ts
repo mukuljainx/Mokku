@@ -52,7 +52,6 @@ xhook.before(function (request, callback) {
   };
 
   const data: IEventMessage["message"] = getLog(request);
-  console.log(data);
   postMessage(data, "LOG", false);
 
   postMessage(data, "NOTIFICATION", true)

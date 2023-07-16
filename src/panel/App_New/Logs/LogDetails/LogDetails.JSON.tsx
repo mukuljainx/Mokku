@@ -9,12 +9,13 @@ loader.config({ monaco });
 
 interface IProps {
   response: ILog["response"]["response"];
+  isRequestPending: boolean;
 }
 
-export const LogDetailsResponse = ({ response }: IProps) => {
-  if (!response) {
+export const LogDetailsJSON = ({ response, isRequestPending }: IProps) => {
+  if (isRequestPending) {
     return (
-      <Center>
+      <Center pt={64}>
         <Text fz="md">Request pending</Text>
       </Center>
     );
@@ -24,7 +25,7 @@ export const LogDetailsResponse = ({ response }: IProps) => {
 
   if (!responseJson) {
     return (
-      <Center>
+      <Center pt={64}>
         <Text fz="md">Nothing to Preview</Text>
       </Center>
     );
