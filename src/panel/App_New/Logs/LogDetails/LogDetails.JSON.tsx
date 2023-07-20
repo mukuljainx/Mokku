@@ -1,18 +1,17 @@
 import React from "react";
-import * as monaco from "monaco-editor";
 import { ILog } from "@mokku/types";
 import { Center, Text } from "@mantine/core";
-import { Editor, loader } from "@monaco-editor/react";
-import { getResponse } from "./LogDetails.utils";
-
-loader.config({ monaco });
+import { getResponse, parseJSONIfPossible } from "./LogDetails.utils";
+import JSONInput from "react-json-editor-ajrm";
+import locale from "react-json-editor-ajrm/locale/en";
 
 interface IProps {
   response: ILog["response"]["response"];
   isRequestPending: boolean;
+  id: string;
 }
 
-export const LogDetailsJSON = ({ response, isRequestPending }: IProps) => {
+export const LogDetailsJSON = ({ response, isRequestPending, id }: IProps) => {
   if (isRequestPending) {
     return (
       <Center pt={64}>
@@ -21,9 +20,7 @@ export const LogDetailsJSON = ({ response, isRequestPending }: IProps) => {
     );
   }
 
-  const responseJson = getResponse(response || "");
-
-  if (!responseJson) {
+  if (!response) {
     return (
       <Center pt={64}>
         <Text fz="md">Nothing to Preview</Text>
@@ -31,14 +28,23 @@ export const LogDetailsJSON = ({ response, isRequestPending }: IProps) => {
     );
   }
 
+  const responseJson = parseJSONIfPossible(response);
+  console.log(22, { id, responseJson });
+
+  if (responseJson.parsed) {
+    return (
+      <JSONInput
+        id={`log-details-json-${id}`}
+        placeholder={JSON.parse(response || "{}")}
+        locale={locale}
+        height="550px"
+      />
+    );
+  }
+
   return (
-    <Editor
-      options={{
-        readOnly: true,
-        minimap: { enabled: false },
-      }}
-      defaultLanguage="json"
-      defaultValue={responseJson}
-    />
+    <div style={{ paddingLeft: 8, paddingRight: 8 }}>
+      <Text fz="md">{responseJson.original}</Text>
+    </div>
   );
 };

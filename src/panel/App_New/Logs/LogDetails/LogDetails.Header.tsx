@@ -1,10 +1,6 @@
 import React from "react";
-import * as monaco from "monaco-editor";
 import { ILog } from "@mokku/types";
 import { Center, Flex, Text, Title } from "@mantine/core";
-import { loader } from "@monaco-editor/react";
-
-loader.config({ monaco });
 
 interface IProps {
   requestHeaders: ILog["request"]["headers"];

@@ -212,7 +212,7 @@ export const AddMock = () => {
               />
             </Flex>
             <Flex className={flexGrow}>
-              <Tabs defaultValue="headers" className={tabs}>
+              <Tabs defaultValue="body" className={tabs}>
                 <Tabs.List>
                   <Tabs.Tab value="body">Response Body</Tabs.Tab>
                   <Tabs.Tab value="headers">Response Headers</Tabs.Tab>
@@ -220,8 +220,8 @@ export const AddMock = () => {
 
                 <Tabs.Panel value="body" pt="xs" className={flexGrow}>
                   <JSONInput
-                    id="a_unique_id"
-                    value={JSON.parse(form.values?.response || "{}")}
+                    id="mock-response"
+                    placeholder={JSON.parse(form.values?.response || "{}")}
                     onChange={({ error, jsObject }) => {
                       if (!error) {
                         form.setFieldValue(

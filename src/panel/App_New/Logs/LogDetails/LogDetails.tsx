@@ -43,18 +43,21 @@ export const LogDetails = ({ log, onClose }: IProps) => {
 
         <Tabs.Panel className={classes.panel} value="response" pt="xs">
           <LogDetailsJSON
+            id="response"
             isRequestPending={!log?.response?.response}
             response={log?.response?.response}
           />
         </Tabs.Panel>
         <Tabs.Panel className={classes.panel} value="requestBody" pt="xs">
           <LogDetailsJSON
+            id="request-body"
             isRequestPending={!log?.response?.response}
             response={log?.request?.body}
           />
         </Tabs.Panel>
         <Tabs.Panel className={classes.panel} value="queryParams" pt="xs">
           <LogDetailsJSON
+            id="request-params"
             isRequestPending={!log?.response?.response}
             response={log?.request?.queryParams}
           />
