@@ -29,11 +29,11 @@ export const LogDetailsJSON = ({ response, isRequestPending, id }: IProps) => {
   }
 
   const responseJson = parseJSONIfPossible(response);
-  console.log(22, { id, responseJson });
 
   if (responseJson.parsed) {
     return (
       <JSONInput
+        style={{ outerBox: { width: "100%" }, container: { width: "100%" } }}
         id={`log-details-json-${id}`}
         placeholder={JSON.parse(response || "{}")}
         locale={locale}

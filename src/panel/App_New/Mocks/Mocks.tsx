@@ -158,7 +158,6 @@ export const Mocks = () => {
         data={filteredMocks}
         schema={schema}
       />
-      {selectedMock && <AddMock />}
     </Flex>
   );
 };

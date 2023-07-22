@@ -10,8 +10,11 @@ import { Mocks } from "./Mocks/Mocks";
 import { Logs } from "./Logs/Logs";
 import { usePanelListener } from "./hooks/usePanelListner";
 import { DisabledPlaceholder } from "./DisabledPlaceholder/DisabledPlaceholder";
-import { useMockStore } from "./store";
+import { useLogStore, useMockStore } from "./store";
 import { Notifications } from "@mantine/notifications";
+import { AddMock } from "./Mocks/AddMock/AddMock";
+import { LogDetails } from "./Logs/LogDetails/LogDetails";
+import { Modal } from "./Modal";
 
 export interface IAppProps {
   host: string;
@@ -34,6 +37,9 @@ export const App = (props: IAppProps) => {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   const initMockStore = useMockStore((state) => state.init);
+  const selectedMock = useMockStore((state) => state.selectedMock);
+  const selectedLog = useLogStore((state) => state.selectedLog);
+  const setSelectedLog = useLogStore((state) => state.setSelectedLog);
 
   useEffect(() => {
     initMockStore();
@@ -53,6 +59,7 @@ export const App = (props: IAppProps) => {
             <Logs />
           </Show>
         </div>
+        <Modal />
       </MantineProvider>
     </ColorSchemeProvider>
   );

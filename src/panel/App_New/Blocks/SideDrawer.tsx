@@ -1,16 +1,11 @@
 import React, { ReactNode, useEffect, useRef } from "react";
-import { Center, createStyles, Flex, Portal } from "@mantine/core";
-import { MdDragIndicator } from "react-icons/md";
+import { createStyles, Flex } from "@mantine/core";
+
+const MIN_WIDTH = 240;
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    position: "fixed",
-    top: 0,
-    right: 0,
-    height: "100vh",
-    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-    zIndex: 1000,
-    background: "white",
+    overflow: "auto",
   },
   dragger: {
     flexShrink: 0,
@@ -22,6 +17,7 @@ const useStyles = createStyles((theme) => ({
   container: {
     flexGrow: 2,
     height: "100%",
+    minWidth: MIN_WIDTH,
   },
   dots: {
     background: theme.colors.gray[5],
@@ -31,14 +27,25 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const SideDrawer = ({ children }: { children: ReactNode }) => {
+export const SideDrawer = ({
+  children,
+  minWidth,
+}: {
+  children: ReactNode;
+  minWidth?: number;
+}) => {
   const { classes } = useStyles();
   const draggerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const onDraggerMouseMove = (event) => {
-    const diff = event.clientX;
-    containerRef.current.style.width = `calc(100vw - ${diff}px)`;
+    const mousePosition = event.clientX;
+    const elementRightEdge = containerRef.current.getBoundingClientRect().right;
+    const width = Math.max(
+      minWidth || MIN_WIDTH,
+      elementRightEdge - mousePosition,
+    );
+    containerRef.current.style.width = `${width}px`;
   };
 
   const onDraggerMouseUp = (event) => {
@@ -55,15 +62,13 @@ export const SideDrawer = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <Flex className={classes.wrapper} id="side-drawer">
-      <Center id="dragger" ref={draggerRef} className={classes.dragger}>
-        {/* <Flex direction="column" gap="2px">
-          <span className={classes.dots}></span>
-          <span className={classes.dots}></span>
-          <span className={classes.dots}></span>
-        </Flex> */}
-      </Center>
-      <div ref={containerRef} className={classes.container}>
+    <Flex id="side-drawer" className={classes.wrapper}>
+      <div id="dragger" ref={draggerRef} className={classes.dragger} />
+      <div
+        ref={containerRef}
+        className={classes.container}
+        style={{ minWidth }}
+      >
         {children}
       </div>
     </Flex>

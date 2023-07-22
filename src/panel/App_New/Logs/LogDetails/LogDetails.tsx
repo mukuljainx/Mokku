@@ -4,6 +4,7 @@ import { createStyles, Flex, Tabs } from "@mantine/core";
 import { LogDetailsJSON } from "./LogDetails.JSON";
 import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
+import { SideDrawer } from "../../Blocks/SideDrawer";
 
 interface IProps {
   log: ILog;
@@ -29,46 +30,48 @@ const useStyles = createStyles((theme) => ({
 export const LogDetails = ({ log, onClose }: IProps) => {
   const { classes } = useStyles();
   return (
-    <Tabs defaultValue="response" style={{ height: "100%" }}>
-      <Flex style={{ height: "100%" }} direction="column">
-        <Tabs.List className={classes.tabList}>
-          <Flex>
-            <Tabs.Tab value="response">Response</Tabs.Tab>
-            <Tabs.Tab value="requestBody">Request Body</Tabs.Tab>
-            <Tabs.Tab value="queryParams">Query Params</Tabs.Tab>
-            <Tabs.Tab value="headers">Headers</Tabs.Tab>
-          </Flex>
-          <MdClose className={classes.icon} onClick={onClose} />
-        </Tabs.List>
+    <SideDrawer minWidth={480}>
+      <Tabs defaultValue="response" style={{ height: "100%", minWidth: 480 }}>
+        <Flex style={{ height: "100%" }} direction="column">
+          <Tabs.List className={classes.tabList}>
+            <Flex>
+              <Tabs.Tab value="response">Response</Tabs.Tab>
+              <Tabs.Tab value="requestBody">Request Body</Tabs.Tab>
+              <Tabs.Tab value="queryParams">Query Params</Tabs.Tab>
+              <Tabs.Tab value="headers">Headers</Tabs.Tab>
+            </Flex>
+            <MdClose className={classes.icon} onClick={onClose} />
+          </Tabs.List>
 
-        <Tabs.Panel className={classes.panel} value="response" pt="xs">
-          <LogDetailsJSON
-            id="response"
-            isRequestPending={!log?.response?.response}
-            response={log?.response?.response}
-          />
-        </Tabs.Panel>
-        <Tabs.Panel className={classes.panel} value="requestBody" pt="xs">
-          <LogDetailsJSON
-            id="request-body"
-            isRequestPending={!log?.response?.response}
-            response={log?.request?.body}
-          />
-        </Tabs.Panel>
-        <Tabs.Panel className={classes.panel} value="queryParams" pt="xs">
-          <LogDetailsJSON
-            id="request-params"
-            isRequestPending={!log?.response?.response}
-            response={log?.request?.queryParams}
-          />
-        </Tabs.Panel>
-        <Tabs.Panel className={classes.panel} value="headers" pt="xs">
-          <LogDetailsHeader
-            responseHeaders={log?.response?.headers}
-            requestHeaders={log?.request?.headers}
-          />
-        </Tabs.Panel>
-      </Flex>
-    </Tabs>
+          <Tabs.Panel className={classes.panel} value="response" pt="xs">
+            <LogDetailsJSON
+              id="response"
+              isRequestPending={!log?.response?.response}
+              response={log?.response?.response}
+            />
+          </Tabs.Panel>
+          <Tabs.Panel className={classes.panel} value="requestBody" pt="xs">
+            <LogDetailsJSON
+              id="request-body"
+              isRequestPending={!log?.response?.response}
+              response={log?.request?.body}
+            />
+          </Tabs.Panel>
+          <Tabs.Panel className={classes.panel} value="queryParams" pt="xs">
+            <LogDetailsJSON
+              id="request-params"
+              isRequestPending={!log?.response?.response}
+              response={log?.request?.queryParams}
+            />
+          </Tabs.Panel>
+          <Tabs.Panel className={classes.panel} value="headers" pt="xs">
+            <LogDetailsHeader
+              responseHeaders={log?.response?.headers}
+              requestHeaders={log?.request?.headers}
+            />
+          </Tabs.Panel>
+        </Flex>
+      </Tabs>
+    </SideDrawer>
   );
 };
