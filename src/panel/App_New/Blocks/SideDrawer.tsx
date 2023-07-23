@@ -25,14 +25,22 @@ const useStyles = createStyles((theme) => ({
     width: 2,
     height: 2,
   },
+  header: {
+    borderBottom: `2px solid ${theme.colors.gray[3]}`,
+    paddingRight: 4,
+    paddingLeft: 8,
+    height: 36,
+  },
 }));
 
 export const SideDrawer = ({
   children,
   minWidth,
+  header,
 }: {
   children: ReactNode;
   minWidth?: number;
+  header?: ReactNode;
 }) => {
   const { classes } = useStyles();
   const draggerRef = useRef<HTMLDivElement>(null);
@@ -69,6 +77,9 @@ export const SideDrawer = ({
         className={classes.container}
         style={{ minWidth }}
       >
+        <Flex justify="space-between" align="center" className={classes.header}>
+          {header}
+        </Flex>
         {children}
       </div>
     </Flex>

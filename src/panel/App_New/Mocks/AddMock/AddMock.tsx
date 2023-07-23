@@ -45,12 +45,6 @@ const useStyles = createStyles((theme) => ({
     padding: 12,
     borderTop: `1px solid ${theme.colors.gray[2]}`,
   },
-  header: {
-    borderBottom: `2px solid ${theme.colors.gray[3]}`,
-    paddingRight: 4,
-    paddingLeft: 8,
-    height: 50,
-  },
 }));
 
 const useMockStoreSelector = (state: useMockStoreState) => ({
@@ -70,7 +64,7 @@ export const AddMock = () => {
   } = useMockStore(useMockStoreSelector);
 
   const {
-    classes: { flexGrow, wrapper, tabs, footer, header },
+    classes: { flexGrow, wrapper, tabs, footer },
   } = useStyles();
 
   const form = useForm<IMockResponseRaw>({
@@ -85,7 +79,17 @@ export const AddMock = () => {
   const isNewMock = !selectedMock.id;
 
   return (
-    <SideDrawer>
+    <SideDrawer
+      header={
+        <>
+          <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
+          <MdClose
+            style={{ cursor: "pointer" }}
+            onClick={() => setSelectedMock()}
+          />
+        </>
+      }
+    >
       <form
         style={{ height: "100%" }}
         onSubmit={form.onSubmit((values) => {
@@ -121,13 +125,6 @@ export const AddMock = () => {
         })}
       >
         <Flex direction="column" style={{ height: "100%" }}>
-          <Flex justify="space-between" align="center" className={header}>
-            <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
-            <MdClose
-              style={{ cursor: "pointer" }}
-              onClick={() => setSelectedMock()}
-            />
-          </Flex>
           <Flex direction="column" gap={16} className={wrapper}>
             <Flex gap={12} align="center">
               <Flex direction="column">
@@ -220,6 +217,10 @@ export const AddMock = () => {
 
                 <Tabs.Panel value="body" pt="xs" className={flexGrow}>
                   <JSONInput
+                    style={{
+                      outerBox: { width: "100%" },
+                      container: { width: "100%" },
+                    }}
                     id="mock-response"
                     placeholder={JSON.parse(form.values?.response || "{}")}
                     onChange={({ error, jsObject }) => {

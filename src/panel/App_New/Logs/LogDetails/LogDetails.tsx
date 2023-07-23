@@ -1,6 +1,6 @@
 import React from "react";
 import { ILog } from "@mokku/types";
-import { createStyles, Flex, Tabs } from "@mantine/core";
+import { createStyles, Flex, Tabs, Title } from "@mantine/core";
 import { LogDetailsJSON } from "./LogDetails.JSON";
 import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
@@ -19,6 +19,7 @@ const useStyles = createStyles((theme) => ({
   },
   panel: {
     flexGrow: 2,
+    padding: "0 !important",
   },
   icon: {
     cursor: "pointer",
@@ -30,8 +31,16 @@ const useStyles = createStyles((theme) => ({
 export const LogDetails = ({ log, onClose }: IProps) => {
   const { classes } = useStyles();
   return (
-    <SideDrawer minWidth={480}>
-      <Tabs defaultValue="response" style={{ height: "100%", minWidth: 480 }}>
+    <SideDrawer
+      minWidth={480}
+      header={
+        <>
+          <Title order={6}>Log Details</Title>
+          <MdClose style={{ cursor: "pointer" }} onClick={onClose} />
+        </>
+      }
+    >
+      <Tabs defaultValue="response">
         <Flex style={{ height: "100%" }} direction="column">
           <Tabs.List className={classes.tabList}>
             <Flex>
@@ -40,7 +49,6 @@ export const LogDetails = ({ log, onClose }: IProps) => {
               <Tabs.Tab value="queryParams">Query Params</Tabs.Tab>
               <Tabs.Tab value="headers">Headers</Tabs.Tab>
             </Flex>
-            <MdClose className={classes.icon} onClick={onClose} />
           </Tabs.List>
 
           <Tabs.Panel className={classes.panel} value="response" pt="xs">
