@@ -13,7 +13,7 @@ import JSONInput from "react-json-editor-ajrm";
 import locale from "react-json-editor-ajrm/locale/en";
 import { v4 as uuidv4 } from "uuid";
 import React from "react";
-import { SideDrawer } from "../../Blocks/SideDrawer";
+import { SideDrawer, SideDrawerHeader } from "../../Blocks/SideDrawer";
 import {
   IMockResponseRaw,
   IMockResponse,
@@ -79,17 +79,7 @@ export const AddMock = () => {
   const isNewMock = !selectedMock.id;
 
   return (
-    <SideDrawer
-      header={
-        <>
-          <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
-          <MdClose
-            style={{ cursor: "pointer" }}
-            onClick={() => setSelectedMock()}
-          />
-        </>
-      }
-    >
+    <SideDrawer>
       <form
         style={{ height: "100%" }}
         onSubmit={form.onSubmit((values) => {
@@ -125,6 +115,13 @@ export const AddMock = () => {
         })}
       >
         <Flex direction="column" style={{ height: "100%" }}>
+          <SideDrawerHeader>
+            <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
+            <MdClose
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelectedMock()}
+            />
+          </SideDrawerHeader>
           <Flex direction="column" gap={16} className={wrapper}>
             <Flex gap={12} align="center">
               <Flex direction="column">
