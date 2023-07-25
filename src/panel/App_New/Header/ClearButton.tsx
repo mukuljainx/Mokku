@@ -10,7 +10,7 @@ export const ClearButton = () => {
       variant="outline"
       color={"blue"}
       onClick={() => clearLogs()}
-      title="Toggle color scheme"
+      title="Clear Logs"
     >
       <TbClearAll />
     </ActionIcon>

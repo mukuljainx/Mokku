@@ -8,12 +8,6 @@ import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
 import { ClearButton } from "./ClearButton";
 
-const useStyles = createStyles((theme) => ({
-  wrapper: {
-    borderBottom: `1px solid ${theme.colors.dark[7]}`,
-  },
-}));
-
 interface HeaderProps {
   onSearchChange?: (value: string) => void;
   defaultSearchValue?: string;
@@ -46,7 +40,7 @@ export const Header = ({ defaultSearchValue, onSearchChange }: HeaderProps) => {
                 defaultValue={defaultSearchValue}
                 onChange={(event) => onSearchChange(event.target.value)}
               />
-              <ClearButton />
+              {view === "LOGS" ? <ClearButton /> : null}
             </Flex>
           </Flex>
           <Flex gap={4} style={{ paddingRight: 4 }}>

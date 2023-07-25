@@ -11,7 +11,7 @@ export const ThemeButton = () => {
       variant="outline"
       color={dark ? "yellow" : "blue"}
       onClick={() => toggleColorScheme()}
-      title="Toggle color scheme"
+      title="Toggle Theme"
     >
       {dark ? <TbSun /> : <TbMoonStars />}
     </ActionIcon>
