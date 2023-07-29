@@ -1,13 +1,14 @@
 import React from "react";
 import { Header } from "../Header/Header";
-import { ActionIcon, Button, Flex } from "@mantine/core";
+import { Button, Flex } from "@mantine/core";
 import { useLogStore, useLogStoreState, useMockStore } from "../store";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
-import { ILog, IMockResponseRaw, MethodEnum } from "../types/mock";
+import { ILog } from "../types/mock";
 import { TbServer2, TbCpu } from "react-icons/tb";
 import { useRef } from "react";
 import { debounce } from "lodash";
 import { shallow } from "zustand/shallow";
+import { getMockFromLog } from "./log.util";
 
 const useLogStoreSelector = (state: useLogStoreState) => ({
   logs: state.logs,
@@ -15,17 +16,6 @@ const useLogStoreSelector = (state: useLogStoreState) => ({
   setSearch: state.setSearch,
   setSelectedLog: state.setSelectedLog,
   selectedLog: state.selectedLog,
-});
-
-const getMockFromLog = (log: ILog): IMockResponseRaw => ({
-  active: true,
-  method: (log.request?.method as MethodEnum) || MethodEnum.GET,
-  createdOn: new Date().getTime(),
-  url: log.request?.url || "/some-url",
-  status: log.response?.status || 200,
-  response: log.response?.response || "",
-  delay: 500,
-  description: "",
 });
 
 export const Logs = () => {

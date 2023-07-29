@@ -1,10 +1,12 @@
 import React from "react";
 import { ILog } from "@mokku/types";
-import { createStyles, Flex, Tabs, Title } from "@mantine/core";
+import { Button, createStyles, Flex, Tabs, Title } from "@mantine/core";
 import { LogDetailsJSON } from "./LogDetails.JSON";
 import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
 import { SideDrawer, SideDrawerHeader } from "../../Blocks/SideDrawer";
+import { getMockFromLog } from "../log.util";
+import { useMockStore } from "../../store/useMockStore";
 
 interface IProps {
   log: ILog;
@@ -34,11 +36,20 @@ const useStyles = createStyles((theme) => ({
 
 export const LogDetails = ({ log, onClose }: IProps) => {
   const { classes } = useStyles();
+  const setSelectedMock = useMockStore((state) => state.setSelectedMock);
+  const addMock = () => {
+    setSelectedMock(getMockFromLog(log));
+  };
   return (
     <SideDrawer minWidth={480}>
       <Flex direction="column" style={{ height: "100%" }}>
         <SideDrawerHeader>
-          <Title order={6}>Log Details</Title>
+          <Flex align="center" gap={4}>
+            <Title order={6}>Log Details</Title>
+            <Button compact variant="subtle" onClick={addMock}>
+              Mock
+            </Button>
+          </Flex>
           <MdClose style={{ cursor: "pointer" }} onClick={onClose} />
         </SideDrawerHeader>
         <Tabs defaultValue="response" className={classes.tabs}>

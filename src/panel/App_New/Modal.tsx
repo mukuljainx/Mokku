@@ -4,25 +4,37 @@ import { AddMock } from "./Mocks/AddMock/AddMock";
 import { LogDetails } from "./Logs/LogDetails/LogDetails";
 import { Flex } from "@mantine/core";
 
+enum ModalType {
+  Mock = "MOCK",
+  Log = "LOG",
+}
+
 export const Modal = () => {
   const selectedMock = useMockStore((state) => state.selectedMock);
   const selectedLog = useLogStore((state) => state.selectedLog);
   const setSelectedLog = useLogStore((state) => state.setSelectedLog);
-  const [order, setOrder] = useState([]);
+  const [order, setOrder] = useState<ModalType[]>([]);
+
+  const handleModalInstance = (modalType: ModalType, condition: boolean) => {
+    setOrder((order) => {
+      if (condition) {
+        if (order.includes(modalType)) {
+          return [...order];
+        } else {
+          return [modalType, ...order];
+        }
+      } else {
+        return order.filter((o) => o !== modalType);
+      }
+    });
+  };
+
   useEffect(() => {
-    if (selectedMock) {
-      setOrder((order) => [...order, "MOCK"]);
-    } else {
-      setOrder((order) => order.filter((o) => o !== "MOCK"));
-    }
+    handleModalInstance(ModalType.Mock, !!selectedMock);
   }, [selectedMock]);
 
   useEffect(() => {
-    if (selectedLog) {
-      setOrder((order) => [...order, "LOG"]);
-    } else {
-      setOrder((order) => order.filter((o) => o !== "LOG"));
-    }
+    handleModalInstance(ModalType.Log, !!selectedLog);
   }, [selectedLog]);
 
   const Mock = selectedMock ? <AddMock /> : null;
@@ -48,7 +60,7 @@ export const Modal = () => {
         background: "white",
       }}
     >
-      {order.reverse().map((o) => (
+      {order.map((o) => (
         <Flex key={o}>{componentOrderMap[o]}</Flex>
       ))}
     </div>
