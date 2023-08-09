@@ -1,6 +1,6 @@
 import React from "react";
 import { Header } from "../Header/Header";
-import { Button, Flex } from "@mantine/core";
+import { Button, Flex, useMantineTheme, Tooltip } from "@mantine/core";
 import { useLogStore, useLogStoreState, useMockStore } from "../store";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { ILog } from "../types/mock";
@@ -19,6 +19,9 @@ const useLogStoreSelector = (state: useLogStoreState) => ({
 });
 
 export const Logs = () => {
+  const {
+    colors: { blue },
+  } = useMantineTheme();
   const { logs, search, setSearch, selectedLog, setSelectedLog } = useLogStore(
     useLogStoreSelector,
     shallow,
@@ -36,7 +39,20 @@ export const Logs = () => {
   const schema: TableSchema<ILog> = [
     {
       header: "",
-      content: (data) => (data.isMocked ? <TbCpu /> : <TbServer2 />),
+      content: (data) =>
+        data.isMocked ? (
+          <Tooltip label="Mocked Call">
+            <span>
+              <TbCpu color={blue[6]} />
+            </span>
+          </Tooltip>
+        ) : (
+          <Tooltip label="Network Call">
+            <span>
+              <TbServer2 />
+            </span>
+          </Tooltip>
+        ),
       width: 40,
     },
     {

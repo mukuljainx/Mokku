@@ -36,6 +36,7 @@ export const LogDetailsJSON = ({ response, isRequestPending, id }: IProps) => {
         style={{ outerBox: { width: "100%" }, container: { width: "100%" } }}
         id={`log-details-json-${id}`}
         placeholder={JSON.parse(response || "{}")}
+        viewOnly
         locale={locale}
         height="550px"
       />
