@@ -6,7 +6,6 @@ import { AddMockForm } from "./AddMock.Form";
 const useMockStoreSelector = (state: useMockStoreState) => ({
   store: state.store,
   selectedMock: state.selectedMock,
-  setSearch: state.setSearch,
   setSelectedMock: state.setSelectedMock,
   setStoreProperties: state.setStoreProperties,
 });

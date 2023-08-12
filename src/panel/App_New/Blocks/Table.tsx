@@ -28,6 +28,12 @@ const useStyles = createStyles((theme) => ({
       cursor: "pointer",
     },
   },
+  th: {
+    background: `${theme.white}`,
+    position: "sticky",
+    top: 0,
+    borderBottom: "1px solid black",
+  },
 }));
 
 export const TableWrapper = <T extends unknown & { id: string | number }>({
@@ -41,7 +47,11 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
   const ths = (
     <tr>
       {schema.map(({ header, minWidth, maxWidth, width }, index) => (
-        <th style={{ minWidth, maxWidth, width }} key={index}>
+        <th
+          style={{ minWidth, maxWidth, width }}
+          key={index}
+          className={classes.th}
+        >
           {header}
         </th>
       ))}
@@ -59,13 +69,19 @@ export const TableWrapper = <T extends unknown & { id: string | number }>({
       }`}
     >
       {schema.map(({ content }, index) => (
-        <th key={index}>{content(row)}</th>
+        <td key={index}>{content(row)}</td>
       ))}
     </tr>
   ));
 
   return (
-    <Table captionSide="bottom" striped highlightOnHover withColumnBorders>
+    <Table
+      captionSide="bottom"
+      striped
+      highlightOnHover
+      withColumnBorders
+      style={{ position: "relative" }}
+    >
       <thead>{ths}</thead>
       <tbody>{rows}</tbody>
     </Table>

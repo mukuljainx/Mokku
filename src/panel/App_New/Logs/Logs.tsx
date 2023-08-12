@@ -1,19 +1,19 @@
 import React from "react";
-import { Header } from "../Header/Header";
 import { Button, Flex, useMantineTheme, Tooltip } from "@mantine/core";
-import { useLogStore, useLogStoreState, useMockStore } from "../store";
+import {
+  useGlobalStore,
+  useLogStore,
+  useLogStoreState,
+  useMockStore,
+} from "../store";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { ILog } from "../types/mock";
 import { TbServer2, TbCpu } from "react-icons/tb";
-import { useRef } from "react";
-import { debounce } from "lodash";
 import { shallow } from "zustand/shallow";
 import { getMockFromLog } from "./log.util";
 
 const useLogStoreSelector = (state: useLogStoreState) => ({
   logs: state.logs,
-  search: state.search.toLowerCase(),
-  setSearch: state.setSearch,
   setSelectedLog: state.setSelectedLog,
   selectedLog: state.selectedLog,
 });
@@ -22,12 +22,11 @@ export const Logs = () => {
   const {
     colors: { blue },
   } = useMantineTheme();
-  const { logs, search, setSearch, selectedLog, setSelectedLog } = useLogStore(
+  const { logs, selectedLog, setSelectedLog } = useLogStore(
     useLogStoreSelector,
     shallow,
   );
-
-  const debouncedSetSearch = useRef(debounce(setSearch, 300));
+  const search = useGlobalStore((state) => state.search).toLowerCase();
 
   const filteredLogs = logs.filter(
     (log) =>
@@ -87,19 +86,11 @@ export const Logs = () => {
   ];
 
   return (
-    <>
-      <Flex direction="column">
-        <Header
-          defaultSearchValue={search}
-          onSearchChange={debouncedSetSearch.current}
-        />
-        <TableWrapper
-          onRowClick={setSelectedLog}
-          selectedRowId={selectedLog?.id}
-          data={filteredLogs}
-          schema={schema}
-        />
-      </Flex>
-    </>
+    <TableWrapper
+      onRowClick={setSelectedLog}
+      selectedRowId={selectedLog?.id}
+      data={filteredLogs}
+      schema={schema}
+    />
   );
 };

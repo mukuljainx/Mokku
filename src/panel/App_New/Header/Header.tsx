@@ -3,18 +3,28 @@ import { shallow } from "zustand/shallow";
 import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
-import { useMockStore, useViewStore, ViewEnum, viewSelector } from "../store";
+import {
+  useMockStore,
+  useGlobalStore,
+  ViewEnum,
+  useGlobalStoreState,
+} from "../store";
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
 import { ClearButton } from "./ClearButton";
 
-interface HeaderProps {
-  onSearchChange?: (value: string) => void;
-  defaultSearchValue?: string;
-}
+const viewSelector = (state: useGlobalStoreState) => ({
+  view: state.view,
+  setView: state.setView,
+  search: state.search,
+  setSearch: state.setSearch,
+});
 
-export const Header = ({ defaultSearchValue, onSearchChange }: HeaderProps) => {
-  const { view, setView } = useViewStore(viewSelector, shallow);
+export const Header = () => {
+  const { view, setView, search, setSearch } = useGlobalStore(
+    viewSelector,
+    shallow,
+  );
   const setSelectedMock = useMockStore((state) => state.setSelectedMock);
 
   return (
@@ -37,8 +47,8 @@ export const Header = ({ defaultSearchValue, onSearchChange }: HeaderProps) => {
                 icon={<TbSearch />}
                 placeholder="Search..."
                 size="xs"
-                defaultValue={defaultSearchValue}
-                onChange={(event) => onSearchChange(event.target.value)}
+                defaultValue={search}
+                onChange={(event) => setSearch(event.target.value)}
               />
               {view === "LOGS" ? <ClearButton /> : null}
             </Flex>

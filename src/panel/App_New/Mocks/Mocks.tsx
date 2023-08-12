@@ -1,14 +1,9 @@
-import React, { useRef } from "react";
-import { Header } from "../Header/Header";
+import React from "react";
 import { ActionIcon, Flex, Switch } from "@mantine/core";
-import { AddMock } from "./AddMock/AddMock";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockResponse } from "@mokku/types";
-import { debounce } from "lodash";
-import { useMockStore, useMockStoreState } from "../store";
+import { useGlobalStore, useMockStore, useMockStoreState } from "../store";
 import { shallow } from "zustand/shallow";
-import * as storeService from "../service/store";
-import { notifications } from "@mantine/notifications";
 import {
   MdDeleteOutline,
   MdOutlineContentCopy,
@@ -117,23 +112,18 @@ const getSchema = ({
 
 const useMockStoreSelector = (state: useMockStoreState) => ({
   store: state.store,
-  search: state.search.toLowerCase(),
-  setSearch: state.setSearch,
   setSelectedMock: state.setSelectedMock,
   selectedMock: state.selectedMock,
   setStoreProperties: state.setStoreProperties,
 });
 
 export const Mocks = () => {
-  const {
-    store,
-    search,
-    setSearch,
-    selectedMock,
-    setSelectedMock,
-  } = useMockStore(useMockStoreSelector, shallow);
+  const { store, selectedMock, setSelectedMock } = useMockStore(
+    useMockStoreSelector,
+    shallow,
+  );
+  const search = useGlobalStore((state) => state.search).toLowerCase();
 
-  const debouncedSetSearch = useRef(debounce(setSearch, 300));
   const { deleteMock, duplicateMock, toggleMock, editMock } = useMockActions();
 
   const schema = getSchema({
@@ -146,18 +136,16 @@ export const Mocks = () => {
   const filteredMocks = store.mocks.filter(
     (mock) =>
       mock.name.toLowerCase().includes(search) ||
-      mock.url.toLowerCase().includes(search),
-    //|| mock.response?.status.toString().includes(search),
+      mock.url.toLowerCase().includes(search) ||
+      mock.method.toLowerCase().includes(search) ||
+      mock.status.toString().includes(search),
   );
   return (
-    <Flex direction="column">
-      <Header onSearchChange={debouncedSetSearch.current} />
-      <TableWrapper
-        onRowClick={(data) => setSelectedMock(data)}
-        selectedRowId={selectedMock?.id}
-        data={filteredMocks}
-        schema={schema}
-      />
-    </Flex>
+    <TableWrapper
+      onRowClick={(data) => setSelectedMock(data)}
+      selectedRowId={selectedMock?.id}
+      data={filteredMocks}
+      schema={schema}
+    />
   );
 };

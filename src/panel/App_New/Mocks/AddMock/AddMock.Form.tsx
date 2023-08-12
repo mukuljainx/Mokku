@@ -47,14 +47,6 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const useMockStoreSelector = (state: useMockStoreState) => ({
-  store: state.store,
-  selectedMock: state.selectedMock,
-  setSearch: state.setSearch,
-  setSelectedMock: state.setSelectedMock,
-  setStoreProperties: state.setStoreProperties,
-});
-
 export const AddMockForm = ({
   store,
   selectedMock,
@@ -218,6 +210,7 @@ export const AddMockForm = ({
                   id="mock-response"
                   placeholder={JSON.parse(form.values?.response || "{}")}
                   onChange={({ error, jsObject }) => {
+                    console.log(error, jsObject);
                     if (!error) {
                       form.setFieldValue("response", JSON.stringify(jsObject));
                     }

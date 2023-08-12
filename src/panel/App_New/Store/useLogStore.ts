@@ -2,12 +2,10 @@ import { create } from "zustand";
 import { ILog } from "@mokku/types";
 
 export type useLogStoreState = {
-  search: string;
   logs: ILog[];
   addLog: (log: ILog) => void;
   updateLog: (log: ILog) => void;
   upsertLog: (log: ILog) => void;
-  setSearch: (value: string) => void;
   clearLogs: () => void;
   selectedLog?: ILog;
   setSelectedLog: (log?: ILog) => void;
@@ -15,11 +13,7 @@ export type useLogStoreState = {
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
 export const useLogStore = create<useLogStoreState>((set, get) => ({
-  search: "",
   logs: [],
-  setSearch: (value) => {
-    set({ search: value });
-  },
   addLog: (log: ILog) => {
     set({
       logs: [log, ...get().logs],

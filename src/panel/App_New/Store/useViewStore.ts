@@ -5,22 +5,21 @@ export enum ViewEnum {
   LOGS = "LOGS",
 }
 
-export type useViewStoreState = {
+export type useGlobalStoreState = {
   view: "MOCKS" | "LOGS";
   setView: (view: ViewEnum) => void;
+  search: string;
+  setSearch: (search: string) => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
-export const useViewStore = create<useViewStoreState>((set, get) => ({
+export const useGlobalStore = create<useGlobalStoreState>((set, get) => ({
   //   setGraph: (fn) => {
   //     const { nodes, edges } = fn(get().nodes, get().edges);
   //     set({ nodes, edges });
   //   },
   view: ViewEnum.MOCKS,
   setView: (view: ViewEnum) => set({ view: view }),
+  search: "",
+  setSearch: (search: string) => set({ search: search }),
 }));
-
-export const viewSelector = (state: useViewStoreState) => ({
-  view: state.view,
-  setView: state.setView,
-});

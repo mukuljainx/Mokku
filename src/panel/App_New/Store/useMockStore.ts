@@ -9,8 +9,6 @@ export type StoreProperties = {
 };
 
 export interface useMockStoreState extends StoreProperties {
-  search: string;
-  setSearch: (value: string) => void;
   init: () => void;
   setStoreProperties: (properties: StoreProperties) => void;
   selectedMock?: IMockResponse;
@@ -19,10 +17,6 @@ export interface useMockStoreState extends StoreProperties {
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
 export const useMockStore = create<useMockStoreState>((set, get) => ({
-  search: "",
-  setSearch: (value) => {
-    set({ search: value });
-  },
   store: getDefaultStore(),
   dynamicUrlMap: {},
   urlMap: {},
