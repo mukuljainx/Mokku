@@ -12,6 +12,7 @@ import {
 import { ThemeButton } from "./ThemeButton";
 import { RefreshButton } from "./RefreshButton";
 import { ClearButton } from "./ClearButton";
+import { RecordButton } from "./RecordButton";
 
 const viewSelector = (state: useGlobalStoreState) => ({
   view: state.view,
@@ -50,6 +51,7 @@ export const Header = () => {
                 defaultValue={search}
                 onChange={(event) => setSearch(event.target.value)}
               />
+              <RecordButton />
               {view === "LOGS" ? <ClearButton /> : null}
             </Flex>
           </Flex>

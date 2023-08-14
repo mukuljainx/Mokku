@@ -5,7 +5,7 @@ import {
   ColorScheme,
   Flex,
 } from "@mantine/core";
-import { useGlobalStore, ViewEnum } from "./store/useViewStore";
+import { useGlobalStore, ViewEnum } from "./store/useGlobalStore";
 import { Show } from "./Blocks/Show";
 import { Mocks } from "./Mocks/Mocks";
 import { Logs } from "./Logs/Logs";
