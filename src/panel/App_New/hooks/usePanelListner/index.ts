@@ -2,17 +2,20 @@ import { v4 as uuidv4 } from "uuid";
 import { IEventMessage } from "../../../../interface/message";
 import messageService from "../../service/messageService";
 import { ILog } from "@mokku/types";
-import { useGlobalStore, useLogStore } from "../../store";
 import { useEffect, useRef, useState } from "react";
-import { IAppProps } from "../../App_New";
 import { getMockFromLog } from "../../Logs/log.util";
 import { useAddBulkMock } from "./addBulkMock";
+import {
+  useGlobalStore,
+  useGlobalStoreState,
+} from "../../store/useGlobalStore";
+import { useLogStore } from "../../store/useLogStore";
 
 const checkIfSameTab = (sender: chrome.tabs.Tab, tab: chrome.tabs.Tab) => {
   return sender.index === tab.index && sender.windowId === tab.windowId;
 };
 
-export const usePanelListener = (props: IAppProps) => {
+export const usePanelListener = (props: useGlobalStoreState["meta"]) => {
   const upsertLog = useLogStore((state) => state.upsertLog);
   const [state, setState] = useState(props);
   const isRecording = useGlobalStore((state) => state.recording);

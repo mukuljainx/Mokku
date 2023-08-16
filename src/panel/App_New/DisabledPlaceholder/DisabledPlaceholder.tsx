@@ -1,13 +1,6 @@
 import React from "react";
-import {
-  Title,
-  Flex,
-  Paper,
-  Button,
-  Highlight,
-  createStyles,
-} from "@mantine/core";
-import { IAppProps } from "../App_New";
+import { Flex, Paper, Button, Highlight, createStyles } from "@mantine/core";
+import { useGlobalStore } from "../store/useGlobalStore";
 
 const useStyles = createStyles((theme) => ({
   full: {
@@ -16,10 +9,10 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const DisabledPlaceholder = ({
-  active,
-  storeKey,
-}: Pick<IAppProps, "active" | "storeKey">) => {
+export const DisabledPlaceholder = () => {
+  const active = useGlobalStore((state) => state.meta.active);
+  const storeKey = useGlobalStore((state) => state.meta.storeKey);
+
   const { classes } = useStyles();
   const onClick = () => {
     chrome.storage.local.set({ [storeKey]: !active }, () => {

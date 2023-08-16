@@ -5,34 +5,27 @@ import {
   ColorScheme,
   Flex,
 } from "@mantine/core";
-import { useGlobalStore, ViewEnum } from "./store/useGlobalStore";
 import { Show } from "./Blocks/Show";
 import { Mocks } from "./Mocks/Mocks";
 import { Logs } from "./Logs/Logs";
 import { usePanelListener } from "./hooks/usePanelListner";
 import { DisabledPlaceholder } from "./DisabledPlaceholder/DisabledPlaceholder";
-import { useMockStore } from "./store";
+import {
+  useGlobalStore,
+  useGlobalStoreState,
+  useMockStore,
+  ViewEnum,
+} from "./store";
 import { Notifications } from "@mantine/notifications";
 import { Modal } from "./Modal";
 import { Header } from "./Header/Header";
 
-export interface IAppProps {
-  host: string;
-  tab: chrome.tabs.Tab;
-  active: boolean;
-  storeKey: string;
-}
-
-export const App = (props: IAppProps) => {
+export const App = (props: useGlobalStoreState["meta"]) => {
   const state = usePanelListener(props);
 
-  if (!state.active) {
-    return (
-      <DisabledPlaceholder active={props.active} storeKey={props.storeKey} />
-    );
-  }
-
+  const setMeta = useGlobalStore((state) => state.setMeta);
   const view = useGlobalStore((state) => state.view);
+
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
@@ -40,7 +33,13 @@ export const App = (props: IAppProps) => {
 
   useEffect(() => {
     initMockStore();
+    setMeta(props);
   }, []);
+
+  if (!state.active) {
+    return <DisabledPlaceholder />;
+  }
+
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
