@@ -11,6 +11,7 @@ import { ILog } from "../types/mock";
 import { TbServer2, TbCpu } from "react-icons/tb";
 import { shallow } from "zustand/shallow";
 import { getMockFromLog } from "./log.util";
+import { Placeholder } from "../Blocks/Placeholder";
 
 const useLogStoreSelector = (state: useLogStoreState) => ({
   logs: state.logs,
@@ -84,6 +85,24 @@ export const Logs = () => {
       ),
     },
   ];
+
+  if (logs.length === 0) {
+    return (
+      <Placeholder
+        title="No Network calls yet!"
+        description="There is no network call yet, all xhr network calls will appear here."
+      />
+    );
+  }
+
+  if (filteredLogs.length === 0) {
+    return (
+      <Placeholder
+        title="No matched Log."
+        description="No mock is matching the current search, you can search by method, url or status."
+      />
+    );
+  }
 
   return (
     <TableWrapper

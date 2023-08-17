@@ -10,6 +10,7 @@ import {
   MdOutlineModeEditOutline,
 } from "react-icons/md";
 import { useMockActions } from "./Mocks.action";
+import { Placeholder } from "../Blocks/Placeholder";
 
 interface GetSchemeProps {
   toggleMock: (mock: IMockResponse) => void;
@@ -140,6 +141,25 @@ export const Mocks = () => {
       mock.method.toLowerCase().includes(search) ||
       mock.status.toString().includes(search),
   );
+
+  if (store.mocks.length === 0) {
+    return (
+      <Placeholder
+        title="No Mocks created yet."
+        description="Create a mock from scratch or mock a log from logs."
+      />
+    );
+  }
+
+  if (filteredMocks.length === 0) {
+    return (
+      <Placeholder
+        title="No matched mock."
+        description="No mock is matching the current search, you can search by name, url, method or status."
+      />
+    );
+  }
+
   return (
     <TableWrapper
       onRowClick={(data) => setSelectedMock(data)}

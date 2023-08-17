@@ -52,7 +52,7 @@ export const App = (props: useGlobalStoreState["meta"]) => {
           style={{ minWidth: 1024, height: "100%", overflow: "hidden" }}
         >
           <Header />
-          <div style={{ overflow: "auto" }}>
+          <div style={{ overflow: "auto", flexGrow: 2 }}>
             <Show if={view === ViewEnum.MOCKS}>
               <Mocks />
             </Show>
