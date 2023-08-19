@@ -4,7 +4,7 @@ import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
 import { TbSearch } from "react-icons/tb";
 import {
-  useMockStore,
+  useChromeStore,
   useGlobalStore,
   ViewEnum,
   useGlobalStoreState,
@@ -27,7 +27,7 @@ export const Header = () => {
     viewSelector,
     shallow,
   );
-  const setSelectedMock = useMockStore((state) => state.setSelectedMock);
+  const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
 
   return (
     <Tabs defaultValue={ViewEnum.MOCKS} value={view} onTabChange={setView}>

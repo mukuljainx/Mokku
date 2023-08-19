@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLogStore, useMockStore } from "./store";
+import { useLogStore, useChromeStore } from "./store";
 import { AddMock } from "./Mocks/AddMock/AddMock";
 import { LogDetails } from "./Logs/LogDetails/LogDetails";
 import { Flex } from "@mantine/core";
@@ -10,7 +10,7 @@ enum ModalType {
 }
 
 export const Modal = () => {
-  const selectedMock = useMockStore((state) => state.selectedMock);
+  const selectedMock = useChromeStore((state) => state.selectedMock);
   const selectedLog = useLogStore((state) => state.selectedLog);
   const setSelectedLog = useLogStore((state) => state.setSelectedLog);
   const [order, setOrder] = useState<ModalType[]>([]);

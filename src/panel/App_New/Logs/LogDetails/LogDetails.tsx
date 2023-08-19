@@ -6,7 +6,7 @@ import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
 import { SideDrawer, SideDrawerHeader } from "../../Blocks/SideDrawer";
 import { getMockFromLog } from "../log.util";
-import { useMockStore } from "../../store/useMockStore";
+import { useChromeStore } from "../../store/useMockStore";
 
 interface IProps {
   log: ILog;
@@ -36,7 +36,7 @@ const useStyles = createStyles((theme) => ({
 
 export const LogDetails = ({ log, onClose }: IProps) => {
   const { classes } = useStyles();
-  const setSelectedMock = useMockStore((state) => state.setSelectedMock);
+  const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
   const addMock = () => {
     setSelectedMock(getMockFromLog(log));
   };

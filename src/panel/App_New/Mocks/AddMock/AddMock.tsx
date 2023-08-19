@@ -1,9 +1,9 @@
 import React from "react";
 import { SideDrawer, SideDrawerHeader } from "../../Blocks/SideDrawer";
-import { useMockStore, useMockStoreState } from "../../store/useMockStore";
+import { useChromeStore, useChromeStoreState } from "../../store/useMockStore";
 import { AddMockForm } from "./AddMock.Form";
 
-const useMockStoreSelector = (state: useMockStoreState) => ({
+const useMockStoreSelector = (state: useChromeStoreState) => ({
   store: state.store,
   selectedMock: state.selectedMock,
   setSelectedMock: state.setSelectedMock,
@@ -16,7 +16,7 @@ export const AddMock = () => {
     selectedMock,
     setSelectedMock,
     setStoreProperties,
-  } = useMockStore(useMockStoreSelector);
+  } = useChromeStore(useMockStoreSelector);
 
   return (
     <SideDrawer>

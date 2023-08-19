@@ -13,7 +13,7 @@ import { DisabledPlaceholder } from "./DisabledPlaceholder/DisabledPlaceholder";
 import {
   useGlobalStore,
   useGlobalStoreState,
-  useMockStore,
+  useChromeStore,
   ViewEnum,
 } from "./store";
 import { Notifications } from "@mantine/notifications";
@@ -29,7 +29,7 @@ export const App = (props: useGlobalStoreState["meta"]) => {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
-  const initMockStore = useMockStore((state) => state.init);
+  const initMockStore = useChromeStore((state) => state.init);
 
   useEffect(() => {
     initMockStore();
@@ -45,7 +45,11 @@ export const App = (props: useGlobalStoreState["meta"]) => {
       colorScheme={colorScheme}
       toggleColorScheme={toggleColorScheme}
     >
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{ colorScheme }}
+      >
         <Notifications />
         <Flex
           direction="column"

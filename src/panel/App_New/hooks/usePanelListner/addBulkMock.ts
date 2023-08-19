@@ -1,10 +1,12 @@
 import { addMocks, getStore, updateStoreInDB } from "../../service/store";
-import { useMockStore } from "../../store/useMockStore";
+import { useChromeStore } from "../../store/useMockStore";
 import { IMockResponse, IStore } from "@mokku/types";
 import { notifications } from "@mantine/notifications";
 
 export const useAddBulkMock = () => {
-  const setStoreProperties = useMockStore((state) => state.setStoreProperties);
+  const setStoreProperties = useChromeStore(
+    (state) => state.setStoreProperties,
+  );
 
   const addBulkMock = async (mocks: IMockResponse[]) => {
     const { store } = await getStore();

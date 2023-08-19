@@ -8,7 +8,7 @@ export type StoreProperties = {
   dynamicUrlMap: IDynamicURLMap;
 };
 
-export interface useMockStoreState extends StoreProperties {
+export interface useChromeStoreState extends StoreProperties {
   init: () => void;
   setStoreProperties: (properties: StoreProperties) => void;
   selectedMock?: IMockResponse;
@@ -16,12 +16,13 @@ export interface useMockStoreState extends StoreProperties {
 }
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
-export const useMockStore = create<useMockStoreState>((set, get) => ({
+export const useChromeStore = create<useChromeStoreState>((set, get) => ({
   store: getDefaultStore(),
   dynamicUrlMap: {},
   urlMap: {},
   init: async () => {
     const { dynamicUrlMap, store, urlMap } = await getStore();
+    console.log(811, store);
     set({ dynamicUrlMap, store, urlMap });
   },
   setStoreProperties: ({ dynamicUrlMap, store, urlMap }) => {

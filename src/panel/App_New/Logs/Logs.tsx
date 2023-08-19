@@ -4,7 +4,7 @@ import {
   useGlobalStore,
   useLogStore,
   useLogStoreState,
-  useMockStore,
+  useChromeStore,
 } from "../store";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { ILog } from "../types/mock";
@@ -35,7 +35,7 @@ export const Logs = () => {
       log.request?.url.toLowerCase().includes(search) ||
       log.response?.status.toString().includes(search),
   );
-  const setSelectedMock = useMockStore((state) => state.setSelectedMock);
+  const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
   const schema: TableSchema<ILog> = [
     {
       header: "",

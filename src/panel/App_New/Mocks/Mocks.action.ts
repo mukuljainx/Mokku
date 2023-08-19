@@ -2,17 +2,17 @@ import { notifications } from "@mantine/notifications";
 import { useCallback } from "react";
 import { shallow } from "zustand/shallow";
 import * as storeService from "../service/store";
-import { useMockStore, useMockStoreState } from "../store/useMockStore";
+import { useChromeStore, useChromeStoreState } from "../store/useMockStore";
 import { IMockResponse } from "../types/mock";
 
-const useMockStoreSelector = (state: useMockStoreState) => ({
+const useMockStoreSelector = (state: useChromeStoreState) => ({
   store: state.store,
   setStoreProperties: state.setStoreProperties,
   setSelectedMock: state.setSelectedMock,
 });
 
 export const useMockActions = () => {
-  const { store, setSelectedMock, setStoreProperties } = useMockStore(
+  const { store, setSelectedMock, setStoreProperties } = useChromeStore(
     useMockStoreSelector,
     shallow,
   );

@@ -2,7 +2,7 @@ import React from "react";
 import { ActionIcon, Flex, Switch } from "@mantine/core";
 import { TableSchema, TableWrapper } from "../Blocks/Table";
 import { IMockResponse } from "@mokku/types";
-import { useGlobalStore, useMockStore, useMockStoreState } from "../store";
+import { useGlobalStore, useChromeStore, useChromeStoreState } from "../store";
 import { shallow } from "zustand/shallow";
 import {
   MdDeleteOutline,
@@ -111,7 +111,7 @@ const getSchema = ({
   },
 ];
 
-const useMockStoreSelector = (state: useMockStoreState) => ({
+const useMockStoreSelector = (state: useChromeStoreState) => ({
   store: state.store,
   setSelectedMock: state.setSelectedMock,
   selectedMock: state.selectedMock,
@@ -119,7 +119,7 @@ const useMockStoreSelector = (state: useMockStoreState) => ({
 });
 
 export const Mocks = () => {
-  const { store, selectedMock, setSelectedMock } = useMockStore(
+  const { store, selectedMock, setSelectedMock } = useChromeStore(
     useMockStoreSelector,
     shallow,
   );
