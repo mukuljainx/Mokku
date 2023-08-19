@@ -6,6 +6,8 @@ export const ThemeButton = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
 
+  localStorage.getItem("x1");
+
   return (
     <ActionIcon
       variant="outline"

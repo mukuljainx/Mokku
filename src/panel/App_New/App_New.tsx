@@ -34,7 +34,13 @@ export const App = (props: useGlobalStoreState["meta"]) => {
   useEffect(() => {
     initMockStore();
     setMeta(props);
+    const theme = (localStorage.getItem("theme") || "light") as ColorScheme;
+    setColorScheme(theme);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("theme", colorScheme);
+  }, [colorScheme]);
 
   if (!state.active) {
     return <DisabledPlaceholder />;

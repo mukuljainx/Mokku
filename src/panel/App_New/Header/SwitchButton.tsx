@@ -1,5 +1,5 @@
 import React from "react";
-import { ActionIcon, useMantineColorScheme } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import { ImSwitch } from "react-icons/im";
 import { useGlobalStore } from "../store/useGlobalStore";
 

@@ -17,24 +17,8 @@ const getNetworkMethodMap = () => ({
 
 const storeName = "mokku.extension.main.db";
 
-export const createMock = (mock: IMockResponseRaw) => {
-  return {
-    createdOn: new Date().getTime(),
-    method: mock.method,
-    url: mock.url,
-    status: mock.status || 200,
-    response: mock.response || "",
-    headers: mock.headers || [],
-    delay: mock.delay,
-    id: mock.id,
-    dynamic: mock.dynamic,
-    active: mock.active,
-    description: mock.description,
-    name: mock.name,
-  };
-};
-
 export const getDefaultStore = (): IStore => ({
+  theme: "light",
   active: false,
   mocks: [],
   totalMocksCreated: 0,
@@ -147,6 +131,7 @@ export const addMocks = (
 };
 
 type PartialMockWithId = { id: IMockResponse["id"] } & Partial<IMockResponse>;
+
 export const updateMocks = (
   oldStore: IStore,
   dirtyNewMock: PartialMockWithId | Array<PartialMockWithId>,
@@ -199,3 +184,13 @@ export const deleteMocks = (
 
   return store;
 };
+
+export const storeActions = () => ({
+  deleteMocks,
+  updateMocks,
+  addMocks,
+  getURLMapWithStore,
+  updateStoreInDB,
+  getStore,
+  getDefaultStore,
+});

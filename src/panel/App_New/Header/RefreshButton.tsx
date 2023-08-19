@@ -1,6 +1,6 @@
 import React from "react";
 import { TbRefresh } from "react-icons/tb";
-import { ActionIcon, useMantineColorScheme } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 
 export const RefreshButton = () => {
   return (

@@ -60,6 +60,7 @@ export type IMockResponseRaw = Partial<IMockResponse>;
 
 export interface IStore {
   active: boolean;
+  theme: "dark" | "light";
   mocks: IMockResponse[];
   totalMocksCreated: number;
   activityInfo: {
