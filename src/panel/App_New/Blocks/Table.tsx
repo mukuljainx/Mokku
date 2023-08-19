@@ -19,8 +19,18 @@ export interface TableWrapperProps<T> {
 const useStyles = createStyles((theme) => ({
   selectedRow: {
     background: `${theme.colors[theme.primaryColor][3]} !important`,
+    ...(theme.colorScheme === "dark"
+      ? {
+          color: theme.black,
+        }
+      : {}),
     "&:hover": {
       background: `${theme.colors[theme.primaryColor][3]} !important`,
+      ...(theme.colorScheme === "dark"
+        ? {
+            color: theme.black,
+          }
+        : {}),
     },
   },
   rows: {

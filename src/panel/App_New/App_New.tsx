@@ -43,7 +43,15 @@ export const App = (props: useGlobalStoreState["meta"]) => {
   }, [colorScheme]);
 
   if (!state.active) {
-    return <DisabledPlaceholder />;
+    return (
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{ colorScheme }}
+      >
+        <DisabledPlaceholder />
+      </MantineProvider>
+    );
   }
 
   return (

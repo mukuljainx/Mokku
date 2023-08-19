@@ -1,6 +1,6 @@
 import React from "react";
 import { ILog } from "@mokku/types";
-import { Button, createStyles, Flex, Tabs, Title } from "@mantine/core";
+import { Button, Card, createStyles, Flex, Tabs, Title } from "@mantine/core";
 import { LogDetailsJSON } from "./LogDetails.JSON";
 import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
@@ -32,6 +32,13 @@ const useStyles = createStyles((theme) => ({
   tabs: {
     height: "100%",
   },
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "0 !important",
+    height: "100%",
+    borderRadius: 0,
+  },
 }));
 
 export const LogDetails = ({ log, onClose }: IProps) => {
@@ -42,7 +49,7 @@ export const LogDetails = ({ log, onClose }: IProps) => {
   };
   return (
     <SideDrawer minWidth={480}>
-      <Flex direction="column" style={{ height: "100%" }}>
+      <Card className={classes.card}>
         <SideDrawerHeader>
           <Flex align="center" gap={4}>
             <Title order={6}>Log Details</Title>
@@ -92,7 +99,7 @@ export const LogDetails = ({ log, onClose }: IProps) => {
             </Tabs.Panel>
           </Flex>
         </Tabs>
-      </Flex>
+      </Card>
     </SideDrawer>
   );
 };

@@ -31,6 +31,13 @@ const useStyles = createStyles((theme) => ({
   flexGrow: {
     flexGrow: 2,
   },
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "0 !important",
+    height: "100%",
+    borderRadius: 0,
+  },
   wrapper: {
     padding: 12,
     height: "100%",
@@ -58,7 +65,7 @@ export const AddMockForm = ({
   "store" | "selectedMock" | "setSelectedMock" | "setStoreProperties"
 >) => {
   const {
-    classes: { flexGrow, wrapper, tabs, footer },
+    classes: { flexGrow, wrapper, tabs, footer, card },
   } = useStyles();
 
   const form = useForm<IMockResponseRaw>({
@@ -107,8 +114,8 @@ export const AddMockForm = ({
           });
       })}
     >
-      <Card>
-        <Flex direction="column" style={{ height: "100%" }}>
+      <>
+        <Card className={card}>
           <SideDrawerHeader>
             <Title order={6}>{isNewMock ? "Add Mock" : "Update Mock"}</Title>
             <MdClose
@@ -282,8 +289,8 @@ export const AddMockForm = ({
               {isNewMock ? "Add Mock" : "Update Mock"}
             </Button>
           </Flex>
-        </Flex>
-      </Card>
+        </Card>
+      </>
     </form>
   );
 };
