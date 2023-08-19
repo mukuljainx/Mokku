@@ -1,7 +1,8 @@
 import { notifications } from "@mantine/notifications";
 import { useCallback } from "react";
 import { shallow } from "zustand/shallow";
-import * as storeService from "../service/store";
+import { storeActions } from "../service/storeActions";
+import { useGlobalStore } from "../store/useGlobalStore";
 import { useChromeStore, useChromeStoreState } from "../store/useMockStore";
 import { IMockResponse } from "../types/mock";
 
@@ -16,15 +17,17 @@ export const useMockActions = () => {
     useMockStoreSelector,
     shallow,
   );
+  const tab = useGlobalStore((state) => state.meta.tab);
 
   const toggleMock = useCallback(
     (mockToBeUpdated: IMockResponse) => {
-      const updatedStore = storeService.updateMocks(store, mockToBeUpdated);
+      const updatedStore = storeActions.updateMocks(store, mockToBeUpdated);
       const mockStatus = mockToBeUpdated.active ? "is enabled" : "is disabled";
-      storeService
+      storeActions
         .updateStoreInDB(updatedStore)
         .then(setStoreProperties)
         .then(() => {
+          storeActions.refreshContentStore(tab.id);
           notifications.show({
             title: `"${mockToBeUpdated.name}" is ${mockStatus}`,
             message: `Mock ${mockStatus}`,
@@ -42,12 +45,13 @@ export const useMockActions = () => {
   );
   const deleteMock = useCallback(
     (mockToBeDeleted: IMockResponse) => {
-      const updatedStore = storeService.deleteMocks(store, mockToBeDeleted.id);
+      const updatedStore = storeActions.deleteMocks(store, mockToBeDeleted.id);
 
-      storeService
+      storeActions
         .updateStoreInDB(updatedStore)
         .then(setStoreProperties)
         .then(() => {
+          storeActions.refreshContentStore(tab.id);
           notifications.show({
             title: `"${mockToBeDeleted.name}" mock deleted`,
             message: `Mock "${mockToBeDeleted.name}" is deleted successfully.`,

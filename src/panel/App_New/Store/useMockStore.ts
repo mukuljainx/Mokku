@@ -1,5 +1,5 @@
 import { IStore, IURLMap, IDynamicURLMap, IMockResponse } from "@mokku/types";
-import { getStore, getDefaultStore } from "../service/store";
+import { getStore, getDefaultStore } from "../service/storeActions";
 import { create } from "zustand";
 
 export type StoreProperties = {

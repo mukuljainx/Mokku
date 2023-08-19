@@ -10,7 +10,7 @@ interface IProps {
   onAction: (
     action: "add" | "delete" | "edit",
     mock: IMockResponse,
-    tooltip?: string
+    tooltip?: string,
   ) => void;
   editMock: (mock: IMockResponseRaw) => void;
   duplicateMock: (mock: IMockResponseRaw) => void;
@@ -22,7 +22,7 @@ class Mocks extends React.Component<IProps> {
     this.props.onAction(
       "edit",
       newMock,
-      mock.active ? "Mock disabled." : "Mock enabled."
+      mock.active ? "Mock disabled." : "Mock enabled.",
     );
   };
 

@@ -6,6 +6,7 @@ import {
   IStore,
   IURLMap,
 } from "@mokku/types";
+import messageService from "./messageService";
 
 const getNetworkMethodMap = () => ({
   GET: null,
@@ -185,7 +186,19 @@ export const deleteMocks = (
   return store;
 };
 
-export const storeActions = () => ({
+export const refreshContentStore = (tabId?: number) => {
+  messageService.send(
+    {
+      message: "UPDATE_STORE",
+      from: "PANEL",
+      to: "CONTENT",
+      type: "NOTIFICATION",
+    },
+    tabId,
+  );
+};
+
+export const storeActions = {
   deleteMocks,
   updateMocks,
   addMocks,
@@ -193,4 +206,5 @@ export const storeActions = () => ({
   updateStoreInDB,
   getStore,
   getDefaultStore,
-});
+  refreshContentStore,
+};

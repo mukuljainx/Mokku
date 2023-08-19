@@ -23,9 +23,10 @@ import {
 } from "../../types";
 import { useForm } from "@mantine/form";
 import { MdClose, MdDeleteOutline } from "react-icons/md";
-import * as storeService from "../../service/store";
+import { storeActions } from "../../service/storeActions";
 import { useChromeStoreState } from "../../store/useMockStore";
 import { notifications } from "@mantine/notifications";
+import { useGlobalStore } from "../../store/useGlobalStore";
 
 const useStyles = createStyles((theme) => ({
   flexGrow: {
@@ -67,6 +68,7 @@ export const AddMockForm = ({
   const {
     classes: { flexGrow, wrapper, tabs, footer, card },
   } = useStyles();
+  const tab = useGlobalStore((state) => state.meta.tab);
 
   const form = useForm<IMockResponseRaw>({
     initialValues: {
@@ -88,13 +90,15 @@ export const AddMockForm = ({
         }
 
         const updatedStore = isNewMock
-          ? storeService.addMocks(store, values as IMockResponse)
-          : storeService.updateMocks(store, values as IMockResponse);
+          ? storeActions.addMocks(store, values as IMockResponse)
+          : storeActions.updateMocks(store, values as IMockResponse);
 
-        storeService
+        storeActions
           .updateStoreInDB(updatedStore)
           .then(setStoreProperties)
           .then(() => {
+            storeActions.refreshContentStore(tab.id);
+
             setSelectedMock();
             notifications.show({
               title: `${values.name} mock ${isNewMock ? "added" : "updated"}`,
