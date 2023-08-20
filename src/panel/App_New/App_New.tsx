@@ -18,7 +18,7 @@ import {
 } from "./store";
 import { Notifications } from "@mantine/notifications";
 import { Modal } from "./Modal";
-import { Header } from "./Header/Header";
+import { Header } from "./Header";
 
 export const App = (props: useGlobalStoreState["meta"]) => {
   const state = usePanelListener(props);

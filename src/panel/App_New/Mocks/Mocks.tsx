@@ -74,7 +74,7 @@ const getSchema = ({
     content: (data) => (
       <Flex
         align="center"
-        gap={4}
+        gap="4px"
         onClick={(event) => {
           // this was not working with switch for some unknown reason
           event.stopPropagation();

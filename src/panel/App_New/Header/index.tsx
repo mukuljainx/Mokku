@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { shallow } from "zustand/shallow";
 import { Tabs, Flex, createStyles, Input, Button } from "@mantine/core";
 import { MdAdd } from "react-icons/md";
@@ -14,6 +14,7 @@ import { RefreshButton } from "./RefreshButton";
 import { ClearButton } from "./ClearButton";
 import { RecordButton } from "./RecordButton";
 import { SwitchButton } from "./SwitchButton";
+import { SupportUs } from "./SupportUs";
 
 const viewSelector = (state: useGlobalStoreState) => ({
   view: state.view,
@@ -28,6 +29,7 @@ export const Header = () => {
     shallow,
   );
   const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
+  const [showSupportUs, setShowSupportUs] = useState(false);
 
   return (
     <Tabs defaultValue={ViewEnum.MOCKS} value={view} onTabChange={setView}>
@@ -56,11 +58,21 @@ export const Header = () => {
               {view === "LOGS" ? <ClearButton /> : null}
             </Flex>
           </Flex>
-          <Flex gap={4} style={{ paddingRight: 4 }}>
+          <Flex gap="4px" style={{ paddingRight: 4 }}>
+            <Button
+              onClick={() => setShowSupportUs(true)}
+              size="xs"
+              variant="subtle"
+            >
+              Support Mokku
+            </Button>
             <ThemeButton />
             <RefreshButton />
             <SwitchButton />
           </Flex>
+          {showSupportUs && (
+            <SupportUs onClose={() => setShowSupportUs(false)} />
+          )}
         </Flex>
       </Tabs.List>
     </Tabs>
