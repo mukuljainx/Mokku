@@ -13,7 +13,7 @@ import {
 import JSONInput from "react-json-editor-ajrm";
 import locale from "react-json-editor-ajrm/locale/en";
 import { v4 as uuidv4 } from "uuid";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { SideDrawerHeader } from "../../Blocks/SideDrawer";
 import {
   IMockResponseRaw,
@@ -80,6 +80,7 @@ export const AddMockForm = ({
     },
   });
   const isNewMock = !selectedMock.id;
+  const [jsonError, setJsonError] = useState(false);
 
   return (
     <form
@@ -227,7 +228,11 @@ export const AddMockForm = ({
                     placeholder={JSON.parse(form.values?.response || "{}")}
                     onChange={({ error, jsObject }) => {
                       console.log(error, jsObject);
+                      if (error) {
+                        form.setFieldError("response", true);
+                      }
                       if (!error) {
+                        form.setFieldError("response", false);
                         form.setFieldValue(
                           "response",
                           JSON.stringify(jsObject),

@@ -1,6 +1,14 @@
 import React from "react";
 import { ILog } from "@mokku/types";
-import { Button, Card, createStyles, Flex, Tabs, Title } from "@mantine/core";
+import {
+  Button,
+  Card,
+  createStyles,
+  Flex,
+  Tabs,
+  Text,
+  Title,
+} from "@mantine/core";
 import { LogDetailsJSON } from "./LogDetails.JSON";
 import { MdClose } from "react-icons/md";
 import { LogDetailsHeader } from "./LogDetails.Header";
@@ -39,6 +47,15 @@ const useStyles = createStyles((theme) => ({
     height: "100%",
     borderRadius: 0,
   },
+  urlWrapper: {
+    padding: "4px 8px",
+    borderBottom: `2px solid ${theme.colors.gray[3]}`,
+    overflow: "auto",
+    flexShrink: 0,
+  },
+  jsonWrapper: {
+    maxWidth: "100%",
+  },
 }));
 
 export const LogDetails = ({ log, onClose }: IProps) => {
@@ -59,6 +76,15 @@ export const LogDetails = ({ log, onClose }: IProps) => {
           </Flex>
           <MdClose style={{ cursor: "pointer" }} onClick={onClose} />
         </SideDrawerHeader>
+        <Flex className={classes.urlWrapper}>
+          <Text fz="sm" fw={500}>
+            URL:
+          </Text>
+          <Text style={{ flexShrink: 0 }} fz="sm">
+            {" "}
+            {log.request?.url}
+          </Text>
+        </Flex>
         <Tabs defaultValue="response" className={classes.tabs}>
           <Flex style={{ height: "100%" }} direction="column">
             <Tabs.List className={classes.tabList}>
@@ -71,25 +97,31 @@ export const LogDetails = ({ log, onClose }: IProps) => {
             </Tabs.List>
 
             <Tabs.Panel className={classes.panel} value="response" pt="xs">
-              <LogDetailsJSON
-                id="response"
-                isRequestPending={!log?.response?.response}
-                response={log?.response?.response}
-              />
+              <div className={classes.jsonWrapper}>
+                <LogDetailsJSON
+                  id="response"
+                  isRequestPending={!log?.response?.response}
+                  response={log?.response?.response}
+                />
+              </div>
             </Tabs.Panel>
             <Tabs.Panel className={classes.panel} value="requestBody" pt="xs">
-              <LogDetailsJSON
-                id="request-body"
-                isRequestPending={!log?.response?.response}
-                response={log?.request?.body}
-              />
+              <div className={classes.jsonWrapper}>
+                <LogDetailsJSON
+                  id="request-body"
+                  isRequestPending={!log?.response?.response}
+                  response={log?.request?.body}
+                />
+              </div>
             </Tabs.Panel>
             <Tabs.Panel className={classes.panel} value="queryParams" pt="xs">
-              <LogDetailsJSON
-                id="request-params"
-                isRequestPending={!log?.response?.response}
-                response={log?.request?.queryParams}
-              />
+              <div className={classes.jsonWrapper}>
+                <LogDetailsJSON
+                  id="request-params"
+                  isRequestPending={!log?.response?.response}
+                  response={log?.request?.queryParams}
+                />
+              </div>
             </Tabs.Panel>
             <Tabs.Panel className={classes.panel} value="headers" pt="xs">
               <LogDetailsHeader

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Flex, useMantineTheme, Tooltip } from "@mantine/core";
+import { Button, Flex, useMantineTheme, Tooltip, Text } from "@mantine/core";
 import {
   useGlobalStore,
   useLogStore,
@@ -19,6 +19,15 @@ const useLogStoreSelector = (state: useLogStoreState) => ({
   selectedLog: state.selectedLog,
 });
 
+const getRowColor = (data) => {
+  const status = data.response?.status;
+  if (status) {
+    if (status >= 500 && status < 600) {
+      return "red";
+    }
+  }
+};
+
 export const Logs = () => {
   const {
     colors: { blue },
@@ -31,9 +40,9 @@ export const Logs = () => {
 
   const filteredLogs = logs.filter(
     (log) =>
-      log.request.method.toLowerCase().includes(search) ||
-      log.request?.url.toLowerCase().includes(search) ||
-      log.response?.status.toString().includes(search),
+      (log.request?.method || "").toLowerCase().includes(search) ||
+      (log.request?.url || "").toLowerCase().includes(search) ||
+      (log.response?.status || "").toString().includes(search),
   );
   const setSelectedMock = useChromeStore((state) => state.setSelectedMock);
   const schema: TableSchema<ILog> = [
@@ -57,15 +66,21 @@ export const Logs = () => {
     },
     {
       header: "Method",
-      content: (data) => data.request?.method,
+      content: (data) => (
+        <Text color={getRowColor(data)}>{data.request?.method}</Text>
+      ),
     },
     {
       header: "URL",
-      content: (data) => data.request?.url,
+      content: (data) => (
+        <Text color={getRowColor(data)}>{data.request?.url}</Text>
+      ),
     },
     {
       header: "Status",
-      content: (data) => data.response?.status,
+      content: (data) => (
+        <Text color={getRowColor(data)}>{data.response?.status}</Text>
+      ),
     },
     {
       header: "Action",

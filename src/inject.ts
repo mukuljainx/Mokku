@@ -123,7 +123,7 @@ const getLog = (
       url,
       body,
       queryParams,
-      method: request.method,
+      method: request.method || "GET",
       headers: getHeaders(request.headers),
     },
     response,

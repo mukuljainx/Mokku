@@ -22,7 +22,6 @@ export const useChromeStore = create<useChromeStoreState>((set, get) => ({
   urlMap: {},
   init: async () => {
     const { dynamicUrlMap, store, urlMap } = await getStore();
-    console.log(811, store);
     set({ dynamicUrlMap, store, urlMap });
   },
   setStoreProperties: ({ dynamicUrlMap, store, urlMap }) => {

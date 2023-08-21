@@ -33,7 +33,10 @@ export const LogDetailsJSON = ({ response, isRequestPending, id }: IProps) => {
   if (responseJson.parsed) {
     return (
       <JSONInput
-        style={{ outerBox: { width: "100%" }, container: { width: "100%" } }}
+        style={{
+          outerBox: { width: "100%", display: "flex" },
+          container: { flexGrow: 2 },
+        }}
         id={`log-details-json-${id}`}
         placeholder={JSON.parse(response || "{}")}
         viewOnly
