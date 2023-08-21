@@ -1,5 +1,5 @@
 chrome.devtools.panels.create(
-  "Mokku-2",
+  "Mokku",
   "icon.png",
   "panel.html",
   function (panel) {
