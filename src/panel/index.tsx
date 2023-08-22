@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 
-import { App as AppV2 } from "./App_New/App_New";
+import { App } from "./App_New/App_New";
 import "../dashboard/index.scss";
 
 /**
@@ -41,7 +41,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     }
 
     root.render(
-      <AppV2 host={host} tab={tab} active={active} storeKey={storeKey} />,
+      <App host={host} tab={tab} active={active} storeKey={storeKey} />,
     );
   });
 });
