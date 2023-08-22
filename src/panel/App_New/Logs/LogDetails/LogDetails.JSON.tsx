@@ -1,9 +1,7 @@
 import React from "react";
 import { ILog } from "@mokku/types";
-import { Center, Text } from "@mantine/core";
+import { Center, JsonInput, Text } from "@mantine/core";
 import { getResponse, parseJSONIfPossible } from "./LogDetails.utils";
-import JSONInput from "react-json-editor-ajrm";
-import locale from "react-json-editor-ajrm/locale/en";
 
 interface IProps {
   response: ILog["response"]["response"];
@@ -31,19 +29,8 @@ export const LogDetailsJSON = ({ response, isRequestPending, id }: IProps) => {
   const responseJson = parseJSONIfPossible(response);
 
   if (responseJson.parsed) {
-    return (
-      <JSONInput
-        style={{
-          outerBox: { width: "100%", display: "flex" },
-          container: { flexGrow: 2 },
-        }}
-        id={`log-details-json-${id}`}
-        placeholder={JSON.parse(response || "{}")}
-        viewOnly
-        locale={locale}
-        height="550px"
-      />
-    );
+    const formatted = JSON.stringify(responseJson.json, null, 4);
+    return <JsonInput autosize value={formatted} />;
   }
 
   return (

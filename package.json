@@ -37,11 +37,10 @@
     "react-ace": "^10.1.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
-    "react-json-editor-ajrm": "^2.5.14",
     "styled-components": "^5.1.1",
     "uuid": "^9.0.0",
     "webpack-plugin": "^1.0.5",
-    "xhook": "^1.5.5",
+    "xhook": "1.6.0",
     "zustand": "^4.3.7"
   },
   "devDependencies": {

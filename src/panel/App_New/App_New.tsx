@@ -17,7 +17,7 @@ import {
   ViewEnum,
 } from "./store";
 import { Notifications } from "@mantine/notifications";
-import { Modal } from "./Modal";
+import { Modal } from "./Blocks/Modal";
 import { Header } from "./Header";
 
 export const App = (props: useGlobalStoreState["meta"]) => {

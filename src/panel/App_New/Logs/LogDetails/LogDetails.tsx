@@ -52,6 +52,7 @@ const useStyles = createStyles((theme) => ({
     borderBottom: `2px solid ${theme.colors.gray[3]}`,
     overflow: "auto",
     flexShrink: 0,
+    maxWidth: "100%",
   },
   jsonWrapper: {
     maxWidth: "100%",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLogStore, useChromeStore } from "./store";
-import { AddMock } from "./Mocks/AddMock/AddMock";
-import { LogDetails } from "./Logs/LogDetails/LogDetails";
+import { useLogStore, useChromeStore } from "../store";
+import { AddMock } from "../Mocks/AddMock/AddMock";
+import { LogDetails } from "../Logs/LogDetails/LogDetails";
 import { Flex } from "@mantine/core";
 
 enum ModalType {

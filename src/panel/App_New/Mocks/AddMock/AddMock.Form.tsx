@@ -9,11 +9,10 @@ import {
   Textarea,
   TextInput,
   Title,
+  JsonInput,
 } from "@mantine/core";
-import JSONInput from "react-json-editor-ajrm";
-import locale from "react-json-editor-ajrm/locale/en";
 import { v4 as uuidv4 } from "uuid";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { SideDrawerHeader } from "../../Blocks/SideDrawer";
 import {
   IMockResponseRaw,
@@ -27,6 +26,7 @@ import { storeActions } from "../../service/storeActions";
 import { useChromeStoreState } from "../../store/useMockStore";
 import { notifications } from "@mantine/notifications";
 import { useGlobalStore } from "../../store/useGlobalStore";
+import { isJsonValid } from "./utils";
 
 const useStyles = createStyles((theme) => ({
   flexGrow: {
@@ -80,26 +80,25 @@ export const AddMockForm = ({
     },
   });
   const isNewMock = !selectedMock.id;
-  const [jsonError, setJsonError] = useState(false);
+  const response = form.values["response"];
+  const jsonValid = response ? isJsonValid(response) : true;
 
   return (
     <form
       style={{ height: "100%" }}
       onSubmit={form.onSubmit((values) => {
+        console.log(899, values);
         if (!values.id) {
           values.id = uuidv4();
         }
-
         const updatedStore = isNewMock
           ? storeActions.addMocks(store, values as IMockResponse)
           : storeActions.updateMocks(store, values as IMockResponse);
-
         storeActions
           .updateStoreInDB(updatedStore)
           .then(setStoreProperties)
           .then(() => {
             storeActions.refreshContentStore(tab.id);
-
             setSelectedMock();
             notifications.show({
               title: `${values.name} mock ${isNewMock ? "added" : "updated"}`,
@@ -219,28 +218,12 @@ export const AddMockForm = ({
                 </Tabs.List>
 
                 <Tabs.Panel value="body" pt="xs" className={flexGrow}>
-                  <JSONInput
-                    style={{
-                      outerBox: { width: "100%" },
-                      container: { width: "100%" },
-                    }}
-                    id="mock-response"
-                    placeholder={JSON.parse(form.values?.response || "{}")}
-                    onChange={({ error, jsObject }) => {
-                      console.log(error, jsObject);
-                      if (error) {
-                        form.setFieldError("response", true);
-                      }
-                      if (!error) {
-                        form.setFieldError("response", false);
-                        form.setFieldValue(
-                          "response",
-                          JSON.stringify(jsObject),
-                        );
-                      }
-                    }}
-                    locale={locale}
-                    height="550px"
+                  <JsonInput
+                    placeholder="Response, this will auto resize. You can leave this empty or enter a valid JSON"
+                    formatOnBlur
+                    autosize
+                    minRows={4}
+                    {...form.getInputProps("response")}
                   />
                 </Tabs.Panel>
 
@@ -286,17 +269,22 @@ export const AddMockForm = ({
               </Tabs>
             </Flex>
           </Flex>
-          <Flex className={footer} justify="flex-end" gap={4}>
-            <Button
-              color="red"
-              compact
-              onClick={() => setSelectedMock(undefined)}
-            >
-              Close
-            </Button>
-            <Button compact type="submit">
-              {isNewMock ? "Add Mock" : "Update Mock"}
-            </Button>
+          <Flex className={footer} justify="space-between">
+            <Text color="red">
+              {jsonValid ? "" : "Response JSON not valid"}
+            </Text>
+            <Flex justify="flex-end" gap={4}>
+              <Button
+                color="red"
+                compact
+                onClick={() => setSelectedMock(undefined)}
+              >
+                Close
+              </Button>
+              <Button compact type="submit" disabled={!jsonValid}>
+                {isNewMock ? "Add Mock" : "Update Mock"}
+              </Button>
+            </Flex>
           </Flex>
         </Card>
       </>

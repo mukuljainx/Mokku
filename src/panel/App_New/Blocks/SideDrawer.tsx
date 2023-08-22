@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef } from "react";
 import { createStyles, Flex } from "@mantine/core";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 const MIN_WIDTH = 240;
 
@@ -13,6 +14,12 @@ const useStyles = createStyles((theme) => ({
     height: "100%",
     background: theme.colors.gray[5],
     cursor: "col-resize",
+    "&:hover": {
+      background:
+        theme.colorScheme === "dark"
+          ? theme.colors.gray[2]
+          : theme.colors.gray[6],
+    },
   },
   container: {
     flexGrow: 2,
@@ -75,7 +82,14 @@ export const SideDrawer = ({
 
   useEffect(() => {
     draggerRef.current?.addEventListener("mousedown", onDraggerMouseDown);
+    const containerWidth = Math.min(
+      Math.max(minWidth || MIN_WIDTH),
+      window.innerWidth - 48,
+    );
+    containerRef.current.style.width = `${containerWidth}px`;
   }, []);
+
+  const finalMinWidth = Math.min(minWidth, window.innerWidth - 48);
 
   return (
     <Flex id="side-drawer" className={classes.wrapper}>
@@ -83,7 +97,7 @@ export const SideDrawer = ({
       <div
         ref={containerRef}
         className={classes.container}
-        style={{ minWidth }}
+        style={{ minWidth: finalMinWidth }}
       >
         {children}
       </div>
