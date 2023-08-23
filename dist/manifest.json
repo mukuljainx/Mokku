@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mokku",
   "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
-  "version": "1.8.2",
+  "version": "2.0.0",
   "icons": {
     "16": "mokku-16.png",
     "48": "mokku-48.png",
@@ -19,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/content_script.js", "js/inject.js", "js/panel.js"],
+      "js": ["js/content_script.js", "js/inject.js"],
       "run_at": "document_start"
     }
   ],
