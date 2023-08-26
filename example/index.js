@@ -9,6 +9,11 @@ printToScreen = (response) => {
     undefined,
     4,
   );
+  document.querySelector("#status").textContent = JSON.stringify(
+    response.status,
+    undefined,
+    4,
+  );
 };
 
 function sendAPI() {
@@ -26,7 +31,8 @@ function dynamicSendAPI1() {
       printToScreen(response);
       console.log(response.data);
       console.log(response.headers);
-    });
+    })
+    .catch(console.log);
 }
 
 function dynamicSendAPI2() {
