@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Flex, useMantineTheme, Tooltip, Text } from "@mantine/core";
+import { get } from "lodash";
 import {
   useGlobalStore,
   useLogStore,
@@ -36,6 +37,7 @@ export const Logs = () => {
     useLogStoreSelector,
     shallow,
   );
+  const store = useChromeStore((state) => state.store);
   const search = useGlobalStore((state) => state.search).toLowerCase();
 
   const filteredLogs = logs.filter(
@@ -89,12 +91,21 @@ export const Logs = () => {
           align="center"
           gap={4}
           onClick={(event) => {
-            setSelectedMock(getMockFromLog(data));
             event.stopPropagation();
           }}
         >
-          <Button variant="subtle" compact onClick={() => setSelectedMock({})}>
-            Mock
+          <Button
+            variant="subtle"
+            compact
+            onClick={() => {
+              if (data.isMocked) {
+                setSelectedMock(get(store, data.mockPath, {}));
+              } else {
+                setSelectedMock(getMockFromLog(data));
+              }
+            }}
+          >
+            {data.isMocked ? "Edit" : "Mock"}
           </Button>
         </Flex>
       ),
