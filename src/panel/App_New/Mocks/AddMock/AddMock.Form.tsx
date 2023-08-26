@@ -91,6 +91,11 @@ export const AddMockForm = ({
         if (!values.id) {
           values.id = uuidv4();
         }
+        try {
+          values.status = parseInt(values.status as any);
+        } catch (e) {
+          values.status = 200;
+        }
         const updatedStore = isNewMock
           ? storeActions.addMocks(store, values as IMockResponse)
           : storeActions.updateMocks(store, values as IMockResponse);
