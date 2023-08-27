@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 
-import { App } from "./App_New/App_New";
+import { App } from "./App_New/App";
 import "../dashboard/index.scss";
 
 /**
@@ -30,18 +30,24 @@ const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-  const host = getDomain(tab?.url) || "invalid";
-  const isLocalhost = (tab?.url || "").includes("http://localhost");
-  const storeKey = `mokku.extension.active.${host}`;
+  if (tab) {
+    const host = getDomain(tab?.url) || "invalid";
+    const isLocalhost = (tab?.url || "").includes("http://localhost");
+    const storeKey = `mokku.extension.active.${host}`;
 
-  chrome.storage.local.get([storeKey], (result) => {
-    let active = result[storeKey];
-    if (isLocalhost && active === undefined) {
-      active = true;
-    }
+    chrome.storage.local.get([storeKey], (result) => {
+      let active = result[storeKey];
+      if (isLocalhost && active === undefined) {
+        active = true;
+      }
 
-    root.render(
-      <App host={host} tab={tab} active={active} storeKey={storeKey} />,
-    );
-  });
+      root.render(
+        <App host={host} tab={tab} active={active} storeKey={storeKey} />,
+      );
+    });
+  }
+});
+
+chrome.tabs.query({ active: true, currentWindow: false }, ([tab]) => {
+  debugger;
 });
