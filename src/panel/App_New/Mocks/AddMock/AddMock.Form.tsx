@@ -76,6 +76,7 @@ export const AddMockForm = ({
       status: 200,
       delay: 500,
       method: "GET",
+      active: true,
       ...selectedMock,
     },
   });
