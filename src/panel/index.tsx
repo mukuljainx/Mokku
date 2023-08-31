@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 
 import { App } from "./App_New/App";
 import "../dashboard/index.scss";
+import { MultipleTabsSelector } from "./App_New/MultipleTabsSelector";
+import { AppLoader } from "./App_New/AppLoader";
 
 /**
  * case:
@@ -10,7 +12,7 @@ import "../dashboard/index.scss";
  * https://
  * then till next /
  */
-const getDomain = (url: string) => {
+export const getDomain = (url: string) => {
   if (!url) {
     return "";
   }
@@ -31,23 +33,13 @@ const root = createRoot(rootElement);
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
   if (tab) {
-    const host = getDomain(tab?.url) || "invalid";
-    const isLocalhost = (tab?.url || "").includes("http://localhost");
-    const storeKey = `mokku.extension.active.${host}`;
-
-    chrome.storage.local.get([storeKey], (result) => {
-      let active = result[storeKey];
-      if (isLocalhost && active === undefined) {
-        active = true;
-      }
-
-      root.render(
-        <App host={host} tab={tab} active={active} storeKey={storeKey} />,
-      );
+    root.render(<AppLoader tab={tab} />);
+  } else {
+    // mokku is loaded as separate window
+    // there can we multiple windows which have active tabs
+    // let the user select the right tab as we can't figure this out
+    chrome.tabs.query({ active: true, currentWindow: false }, (tabs) => {
+      root.render(<MultipleTabsSelector tabs={tabs} />);
     });
   }
-});
-
-chrome.tabs.query({ active: true, currentWindow: false }, ([tab]) => {
-  debugger;
 });

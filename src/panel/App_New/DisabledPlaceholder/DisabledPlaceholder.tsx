@@ -12,14 +12,15 @@ const useStyles = createStyles((theme) => ({
 export const DisabledPlaceholder = () => {
   const active = useGlobalStore((state) => state.meta.active);
   const storeKey = useGlobalStore((state) => state.meta.storeKey);
+  const tab = useGlobalStore((state) => state.meta.tab);
+
+  console.log("DISABLED", storeKey);
 
   const { classes } = useStyles();
   const onClick = () => {
     chrome.storage.local.set({ [storeKey]: !active }, () => {
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.update(tabs[0].id, { url: tabs[0].url });
-        location.reload();
-      });
+      chrome.tabs.update(tab.id, { url: tab.url });
+      location.reload();
     });
   };
 
