@@ -45,8 +45,16 @@ function dynamicSendAPI2() {
     });
 }
 
-function sendAPI2() {
-  axios.get("https://demo5468585.mockable.io/events").then((response) => {
+function sendAPI409() {
+  axios.get("http://demo6210424.mockable.io/409").then((response) => {
+    printToScreen(response);
+    console.log(response.data);
+    console.log(response.headers);
+  });
+}
+
+function sendAPI404() {
+  axios.get("http://demo6210424.mockable.io/404").then((response) => {
     printToScreen(response);
     console.log(response.data);
     console.log(response.headers);
