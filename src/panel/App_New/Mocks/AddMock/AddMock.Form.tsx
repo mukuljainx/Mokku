@@ -254,11 +254,13 @@ export const AddMockForm = ({
                     {form.values.headers?.map((_, index) => (
                       <Flex gap={12} align="center" key={index}>
                         <TextInput
+                          required
                           placeholder="Name"
                           className={flexGrow}
                           {...form.getInputProps(`headers.${index}.name`)}
                         />
                         <TextInput
+                          required
                           placeholder="Value"
                           className={flexGrow}
                           {...form.getInputProps(`headers.${index}.value`)}
