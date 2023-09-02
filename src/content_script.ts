@@ -1,10 +1,18 @@
 import { get } from "lodash";
+import * as Sentry from "@sentry/browser";
+import { Integrations } from "@sentry/tracing";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
 import { getStore } from "./services/store";
 import { IDynamicURLMap, ILog, IMockResponse } from "./interface/mock";
 import messageService from "./services/message";
+
+Sentry.init({
+  dsn:
+    "https://295710d47ec2a821111e6d0c6542417d@o4505806318469120.ingest.sentry.io/4505806320697344",
+  tracesSampleRate: 1.0,
+});
 
 const init = () => {
   let store, urlMap, dynamicUrlMap: IDynamicURLMap;

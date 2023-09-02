@@ -2,7 +2,7 @@ class MessageBus {
   _defaultListner: (data: any) => void;
   _collector = {};
   constructor() {
-    this._defaultListner = console.log;
+    this._defaultListner = () => {};
     this._collector = {};
   }
 

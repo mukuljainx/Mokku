@@ -29,12 +29,10 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
   const host = getDomain(tab.url) || "invalid";
   const isLocalhost = (tab.url || "").includes("http://localhost");
   const storeKey = `mokku.extension.active.${host}`;
-  console.log("AppLoader", { storeKey });
 
   useEffect(() => {
     chrome.storage.local.get([storeKey], (result) => {
       let tempActive = result[storeKey];
-      console.log("APP Loader", { active });
       if (isLocalhost && active === undefined) {
         tempActive = true;
       }

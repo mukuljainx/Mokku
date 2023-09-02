@@ -1,5 +1,5 @@
 export const isValidJSON = (
-  json: string
+  json: string,
 ): { error?: string; position?: number; lineNumber?: number } => {
   try {
     JSON.parse(json);
@@ -46,8 +46,11 @@ export const getError = (errors: Record<string, string | string[]>) => {
 };
 
 export const getHeaders = (headers: Record<string, string>) => {
-  return Object.keys(headers).map((name) => ({
-    name,
-    value: headers[name],
-  }));
+  if (typeof headers === "object") {
+    return Object.keys(headers).map((name) => ({
+      name,
+      value: headers[name],
+    }));
+  }
+  return [];
 };
