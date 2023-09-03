@@ -82,7 +82,7 @@ export type IDB = Record<DBNameType, IStore>;
 
 export interface IURLMap {
   [url: string]: {
-    [method: string]: string;
+    [method: string]: string[];
   };
 }
 

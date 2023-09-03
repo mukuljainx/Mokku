@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import xhook from "xhook";
 import { v4 as uuidv4 } from "uuid";
 import { parse } from "query-string";
@@ -8,6 +9,12 @@ import { IEventMessage } from "./interface/message";
 import { IMockResponse, ILog } from "./interface/mock";
 import { getHeaders } from "./services/helper";
 import messageService from "./services/message";
+
+Sentry.init({
+  dsn:
+    "https://295710d47ec2a821111e6d0c6542417d@o4505806318469120.ingest.sentry.io/4505806320697344",
+  tracesSampleRate: 1.0,
+});
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();

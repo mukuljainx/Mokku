@@ -9,11 +9,11 @@ import {
 import messageService from "./messageService";
 
 const getNetworkMethodMap = () => ({
-  GET: null,
-  POST: null,
-  PATCH: null,
-  PUT: null,
-  DELETE: null,
+  GET: [],
+  POST: [],
+  PATCH: [],
+  PUT: [],
+  DELETE: [],
 });
 
 const storeName = "mokku.extension.main.db";
@@ -93,7 +93,7 @@ export const getURLMapWithStore = (store: IStore) => {
     }
 
     if (urlMap[mock.url]) {
-      urlMap[mock.url][mock.method] = `mocks[${index}]`;
+      urlMap[mock.url][mock.method].push(`mocks[${index}]`);
     }
   });
 
@@ -105,7 +105,7 @@ export const getURLMapWithStore = (store: IStore) => {
       }
 
       if (urlMap[mock.url]) {
-        urlMap[mock.url][mock.method] = `${collection}.mocks[${index}]`;
+        urlMap[mock.url][mock.method].push(`${collection}.mocks[${index}]`);
       }
     });
   });

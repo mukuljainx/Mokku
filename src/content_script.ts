@@ -1,12 +1,11 @@
 import { get } from "lodash";
 import * as Sentry from "@sentry/browser";
-import { Integrations } from "@sentry/tracing";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
-import { getStore } from "./services/store";
-import { IDynamicURLMap, ILog, IMockResponse } from "./interface/mock";
+import { IDynamicURLMap, ILog } from "./interface/mock";
 import messageService from "./services/message";
+import { getStore } from "./panel/App_New/service/storeActions";
 
 Sentry.init({
   dsn:
@@ -34,7 +33,7 @@ const init = () => {
     const key = url1.split("/").length;
     // match all dynamics route
     const stack = dynamicUrlMap[key];
-    if (!stack) return;
+    if (!stack) return [];
 
     let i = 0;
     while (i < stack.length) {
@@ -42,10 +41,12 @@ const init = () => {
       // action are introduced
       const s = stack[i];
       if (s.method === method && !!s.match(url1)) {
-        return s.getterKey;
+        return [s.getterKey];
       }
       i++;
     }
+
+    return [];
   };
 
   const updateStore = () => {
@@ -56,19 +57,37 @@ const init = () => {
     });
   };
 
-  const getMock = (path: string) => {
-    return get(store, path, null);
+  const getActiveMockWithPath = (paths: string[]) => {
+    let mock = null;
+    let path = null;
+    paths.some((tempPath) => {
+      const tempMock = get(store, tempPath, null);
+      if (tempMock.active) {
+        mock = tempMock;
+        path = path;
+        return true;
+      }
+      return false;
+    });
+
+    if (mock) {
+      return { mock, path };
+    }
+    return { mock: null, path: null };
   };
 
   messageService.listen("CONTENT", (data: IEventMessage) => {
     if (data.type === "LOG") {
       const message = data.message as ILog;
-      const mockPath = getMockPath(message.request.url, message.request.method);
-      const mock = getMock(mockPath) as IMockResponse;
+      const mockPaths = getMockPath(
+        message.request.url,
+        message.request.method,
+      );
+      const { mock, path } = getActiveMockWithPath(mockPaths);
 
       if (mock) {
         message.isMocked = mock.active;
-        message.mockPath = mockPath;
+        message.mockPath = path;
       }
 
       messageService.send({
@@ -94,8 +113,8 @@ const init = () => {
     };
 
     const request = (data.message as ILog).request;
-    const mockPath = getMockPath(request.url, request.method);
-    const mock = getMock(mockPath) as IMockResponse;
+    const mockPaths = getMockPath(request.url, request.method);
+    const { mock } = getActiveMockWithPath(mockPaths);
 
     if (mock && mock.active) {
       (response.message as ILog).mockResponse = mock;
