@@ -22,8 +22,8 @@ const useLogStoreSelector = (state: useLogStoreState) => ({
 
 const getRowColor = (data) => {
   const status = data.response?.status;
-  if (status) {
-    if (status >= 500 && status < 600) {
+  if (status !== undefined) {
+    if ((status >= 500 && status < 600) || status === 0) {
       return "red";
     }
   }
