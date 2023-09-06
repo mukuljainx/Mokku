@@ -7,12 +7,6 @@ import { IDynamicURLMap, ILog } from "./interface/mock";
 import messageService from "./services/message";
 import { getStore } from "./panel/App_New/service/storeActions";
 
-Sentry.init({
-  dsn:
-    "https://295710d47ec2a821111e6d0c6542417d@o4505806318469120.ingest.sentry.io/4505806320697344",
-  tracesSampleRate: 1.0,
-});
-
 const init = () => {
   let store, urlMap, dynamicUrlMap: IDynamicURLMap;
   getStore().then((a) => {
