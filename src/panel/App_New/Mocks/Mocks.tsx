@@ -136,10 +136,10 @@ export const Mocks = () => {
 
   const filteredMocks = store.mocks.filter(
     (mock) =>
-      mock.name.toLowerCase().includes(search) ||
-      mock.url.toLowerCase().includes(search) ||
-      mock.method.toLowerCase().includes(search) ||
-      mock.status.toString().includes(search),
+      (mock?.name || "").toLowerCase().includes(search) ||
+      (mock?.url || "").toLowerCase().includes(search) ||
+      (mock?.method || "").toLowerCase().includes(search) ||
+      (mock?.status || "").toString().includes(search),
   );
 
   if (store.mocks.length === 0) {
