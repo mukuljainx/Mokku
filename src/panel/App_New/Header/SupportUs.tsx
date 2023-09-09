@@ -90,11 +90,11 @@ export const SupportUs = ({ onClose }: { onClose: () => void }) => {
               style={{ width: 240, marginBottom: 12 }}
               onClick={() =>
                 chrome.tabs.create({
-                  url: "https://github.com/mukuljainx/mokku",
+                  url: "https://github.com/mukuljainx/mokku-bug-trakcer/issues",
                 })
               }
             >
-              Star on Github
+              Raise Issue on Github
             </Button>
             <Button
               size="xs"
