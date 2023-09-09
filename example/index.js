@@ -16,10 +16,18 @@ printToScreen = (response) => {
   );
 };
 
-function sendAPI() {
+function sendAPI200() {
   axios.get("http://demo6210424.mockable.io/a").then((response) => {
     printToScreen(response);
     console.log(response.data);
+    console.log(response.headers);
+  });
+}
+
+function fetchAPI200() {
+  fetch("http://demo6210424.mockable.io/a").then((response) => {
+    printToScreen(response);
+    response.json().then(console.log);
     console.log(response.headers);
   });
 }
