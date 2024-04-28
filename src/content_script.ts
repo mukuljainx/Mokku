@@ -5,7 +5,7 @@ import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
 import { IDynamicURLMap, ILog } from "./interface/mock";
 import messageService from "./services/message";
-import { getStore } from "./panel/App_New/service/storeActions";
+import { getStore } from "./panel/App/service/storeActions";
 
 const init = () => {
   let store, urlMap, dynamicUrlMap: IDynamicURLMap;

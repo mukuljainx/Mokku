@@ -11,8 +11,8 @@
     "noEmitOnError": true,
     "esModuleInterop": true,
     "paths": {
-      "@mokku/types": ["src/panel/App_New/types"],
-      "@mokku/store": ["src/panel/App_New/store"]
+      "@mokku/types": ["src/panel/App/types"],
+      "@mokku/store": ["src/panel/App/store"]
     }
   }
 }

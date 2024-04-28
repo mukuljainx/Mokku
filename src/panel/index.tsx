@@ -3,8 +3,8 @@ import * as Sentry from "@sentry/react";
 import { createRoot } from "react-dom/client";
 
 import "../dashboard/index.scss";
-import { MultipleTabsSelector } from "./App_New/MultipleTabsSelector";
-import { AppLoader } from "./App_New/AppLoader";
+import { MultipleTabsSelector } from "./App/MultipleTabsSelector";
+import { AppLoader } from "./App/AppLoader";
 
 // enable sentry
 Sentry.init({
