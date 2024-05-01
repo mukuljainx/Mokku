@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { App } from "./App";
+import { AppProvider } from "./AppProvider";
 
 /**
  * case:
@@ -42,7 +42,9 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
   }, []);
 
   if (!loading) {
-    return <App host={host} tab={tab} active={active} storeKey={storeKey} />;
+    return (
+      <AppProvider host={host} tab={tab} active={active} storeKey={storeKey} />
+    );
   }
 
   return null;
