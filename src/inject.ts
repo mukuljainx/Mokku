@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser";
 import xhook from "xhook";
 import { v4 as uuidv4 } from "uuid";
 import { parse } from "query-string";

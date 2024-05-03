@@ -1,5 +1,4 @@
 import { get } from "lodash";
-import * as Sentry from "@sentry/browser";
 
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
