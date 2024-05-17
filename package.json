@@ -1,6 +1,6 @@
 {
   "name": "Mokku",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
   "main": "index.js",
   "scripts": {
