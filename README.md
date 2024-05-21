@@ -1,3 +1,20 @@
+# Important Update
+
+### Ads
+Mokku will show **ads now**, they will be harmless. You can alaways check the code. I will list all the ads in an issue for easier tracking for everyone. 
+Right we are showing only one form https://www.chatplayground.ai 
+
+### Mokku is changing
+Mokku is in transiton form Panel based extention to full page dashboard. For more better ease of use and more features.
+
+### GraphQL
+GraphQL support is next in the list.
+
+### Premium Version
+Ads free and exclusive features.
+
+
+
 # Mokku
 
 > Mock API calls seamlessly
