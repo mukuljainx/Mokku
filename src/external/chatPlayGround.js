@@ -2,9 +2,10 @@ function createBanner() {
   const banner = document.createElement("div");
 
   banner.innerHTML = `
+  <div style="align-items: center;width: 350px;height: fit-content;padding: 10px;background-color: #fff;border: 1px solid #ccc; border-radius: 7px;box-shadow: 1px 1px 5px #e1e1e1;transform: scale(1.15);">
     <a
       id="chatplayground-banner"
-      style="display: flex;align-items: center;width: 350px;height: fit-content;padding: 10px;background-color: #fff;border: 1px solid #ccc;color: #222;border-radius: 7px;box-shadow: 1px 1px 5px #e1e1e1;transform: scale(1.15);"
+      style="display: flex; color: #222;"
       href="https://www.chatplayground.ai/mokku"
       target="_blank"
     >
@@ -16,11 +17,14 @@ function createBanner() {
         <p style="margin: 0; font-size: 0.8rem;font-weight: 800;">ChatPlayground.ai</p>
         <p style="margin: 0;color: #555;">
         Achieve Better AI Answers 73% of the Time with Multiple AI Chatbots
-
           <span style="color: rgb(50, 104, 206);margin-left: 5px;text-decoration: underline;">Get Started</span>
         </p>
       </div>
-    </a>
+      </a>
+      <div>
+      <p style="margin-bottom:0">Ad powered by <a href="https://chromewebstore.google.com/detail/mokku/llflfcikklhgamfmnjkgpdadpmdplmji?hl=en" target="_blank">Mokku</a>, Learn more about the ad <a href="https://github.com/mukuljainx/Mokku/discussions/127#discussion-6709120" target="_blank">here</a></p>
+      </div>
+      </div>
   `;
 
   // Append the banner to the body
