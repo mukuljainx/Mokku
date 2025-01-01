@@ -11,10 +11,6 @@ module.exports = {
     devtool: path.join(__dirname, srcDir + "devtool.ts"),
     panel: path.join(__dirname, srcDir + "panel/index.tsx"),
     inject: path.join(__dirname, srcDir + "inject.ts"),
-    chat_play_ground: path.join(
-      __dirname,
-      srcDir + "external/chatPlayGround.js",
-    ),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
