@@ -92,36 +92,55 @@ xhook.before(function (request, callback) {
 });
 
 const getLog = (
-  request: Omit<ILog["request"], "headers"> & {
+  request: Omit<ILog["request"], "headers" | "url"> & {
     headers: Record<string, string>;
+    url: Request | URL | string;
     mokku?: {
       id: string;
     };
   },
   response?: ILog["response"],
 ): IEventMessage["message"] => {
-  const separator = request.url.indexOf("?");
-  const url = separator !== -1 ? request.url.substr(0, separator) : request.url;
+  let requestUrl = "";
+  let requestBody = {};
+
+  // url
+  if (request.url instanceof URL) {
+    requestUrl = request.url.href;
+  } else if (request.url instanceof Request) {
+    requestUrl = request.url.url;
+  } else {
+    requestUrl = request.url as string;
+  }
+
+  // @ts-ignore
+  if (request.body instanceof ReadableStream) {
+    requestBody = "Unsupported body type!";
+  } else {
+    requestBody = request.body;
+  }
+
+  const separator = requestUrl.indexOf("?");
+
+  const url = separator !== -1 ? requestUrl.substr(0, separator) : requestUrl;
   const queryParams =
     separator !== -1
-      ? JSON.stringify(parse(request.url.substr(separator)))
+      ? JSON.stringify(parse(requestUrl.substr(separator)))
       : undefined;
 
-  let body = request.body;
-
   try {
-    if (typeof body === "object") {
-      const stringifiedBody = JSON.stringify(body);
-      body = stringifiedBody;
+    if (typeof requestBody === "object") {
+      const stringifiedBody = JSON.stringify(requestBody);
+      requestBody = stringifiedBody;
     }
   } catch (e) {
-    body = "Unsupported body type!";
+    requestBody = "Unsupported body type!";
   }
 
   return {
     request: {
       url,
-      body,
+      body: requestBody,
       queryParams,
       method: request.method || "GET",
       headers: getHeaders(request.headers),

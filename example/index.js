@@ -17,15 +17,40 @@ printToScreen = (response) => {
 };
 
 function sendAPI200() {
-  axios.get("http://demo6210424.mockable.io/a").then((response) => {
+  axios.get("http://demo5488429.mockable.io/a").then((response) => {
     printToScreen(response);
     console.log(response.data);
     console.log(response.headers);
   });
 }
 
+// with url object
+function sendAPIWithUrlObject200() {
+  const urlInstance = new URL("/a", "http://demo5488429.mockable.io");
+  console.log(urlInstance.href);
+
+  axios.get(urlInstance).then((response) => {
+    printToScreen(response);
+    console.log(response.data);
+    console.log(response.headers);
+  });
+}
+
+// with Request object
+function sendAPIWithRequestObject200() {
+  const request = new Request("http://demo5488429.mockable.io/a?z=444", {
+    method: "GET",
+  });
+
+  fetch(request)
+    .then((response) => {
+      printToScreen(response);
+    })
+    .catch(console.log);
+}
+
 function fetchAPI200() {
-  fetch("http://demo6210424.mockable.io/a").then((response) => {
+  fetch("http://demo5488429.mockable.io/a").then((response) => {
     printToScreen(response);
     response.json().then(console.log);
     console.log(response.headers);
@@ -34,7 +59,7 @@ function fetchAPI200() {
 
 function dynamicSendAPI1() {
   axios
-    .get("http://demo5468585.mockable.io/patients/empi/P032/goals/ff2")
+    .get("http://demo5488429.mockable.io/patients/empi/P032/goals/ff2")
     .then((response) => {
       printToScreen(response);
       console.log(response.data);
@@ -45,7 +70,7 @@ function dynamicSendAPI1() {
 
 function dynamicSendAPI2() {
   axios
-    .get("http://demo5468585.mockable.io/patients/empi/P012/goals/ff24")
+    .get("http://demo5488429.mockable.io/patients/empi/P012/goals/ff24")
     .then((response) => {
       printToScreen(response);
       console.log(response.data);
@@ -89,6 +114,15 @@ function postReq() {
       console.log(response.data);
       console.log(response.headers);
     });
+}
+
+function postReqWithRequest() {
+  const request1 = new Request("https://demo5468585.mockable.io/events", {
+    method: "POST",
+    body: JSON.stringify({ username: "example" }),
+  });
+
+  fetch(request1).then(console.log);
 }
 
 function uploadFile(event) {

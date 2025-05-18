@@ -27,7 +27,7 @@
   "background": {
     "service_worker": "js/background.js"
   },
-  "permissions": ["storage", "activeTab", "tabs", "webRequest"],
+  "permissions": ["storage", "activeTab", "tabs"],
 
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
