@@ -4,191 +4,250 @@ import { parse } from "query-string";
 
 import IdFactory from "./services/idFactory";
 import MessageBus from "./services/message/messageBus";
-import { IEventMessage } from "./interface/message";
+import { IEventMessage } from "@mokku/types";
 import { IMockResponse, ILog } from "./interface/mock";
 import { getHeaders } from "./services/helper";
-import messageService from "./services/message";
+import { IMethod } from "@mokku/types";
+import { messageService } from "./panel/App/service";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
 
 messageService.listen("HOOK", (data) => {
-  messageBus.dispatch(data.id, data.message);
+    messageBus.dispatch(data.id, data.message);
 });
 
 /**
  * Promisify post message from window to window
  * ackRequired, if false, no id will be assigned hence, no method will be added in message
  * message id was not the problem but function in message bus was
+ * @returns A promise that resolves with the response message if ackRequired is true, otherwise undefined.
  */
 const postMessage = (
-  message: IEventMessage["message"],
-  type: IEventMessage["type"],
-  ackRequired,
-) => {
-  const messageId = ackRequired ? messageIdFactory.getId() : null;
+    message: IEventMessage["message"],
+    type: IEventMessage["type"],
+    ackRequired: boolean,
+): Promise<any> | undefined => {
+    const messageId = ackRequired ? messageIdFactory.getId() : null;
 
-  const messageObject: IEventMessage = {
-    id: messageId,
-    message,
-    to: "CONTENT",
-    from: "HOOK",
-    extensionName: "MOKKU",
-    type,
-  };
+    const messageObject: IEventMessage = {
+        id: messageId,
+        message,
+        to: "CONTENT",
+        from: "HOOK",
+        extensionName: "MOKKU",
+        type,
+    };
 
-  messageService.send(messageObject);
+    messageService.send(messageObject);
 
-  if (messageId !== null) {
-    return new Promise((reslove) => {
-      messageBus.addLister(messageId, reslove);
-    });
-  }
+    if (messageId !== null) {
+        return new Promise((resolve) => {
+            messageBus.addLister(messageId, resolve);
+        });
+    }
+    return undefined;
 };
 
-xhook.before(function (request, callback) {
-  request.mokku = {
-    id: uuidv4(),
-  };
+// Helper to convert request body to a string representation
+function getRequestBodyAsString(body: any): string | undefined {
+    if (body === null || body === undefined) {
+        return undefined;
+    }
+    if (
+        typeof ReadableStream !== "undefined" &&
+        body instanceof ReadableStream
+    ) {
+        return "Unsupported body type: ReadableStream";
+    }
+    try {
+        // JSON.stringify is primarily for plain objects/arrays.
+        if (
+            typeof body === "object" &&
+            !(body instanceof FormData) &&
+            !(body instanceof Blob) &&
+            !(body instanceof ArrayBuffer) &&
+            !(body instanceof URLSearchParams)
+        ) {
+            return JSON.stringify(body);
+        }
+        return String(body); // Fallback for primitives, FormData, etc.
+    } catch (e) {
+        console.error("Mokku Inject: Error stringifying request body", e);
+        return "Unsupported body type: Error during stringification";
+    }
+}
 
-  const data: IEventMessage["message"] = getLog(request);
-  postMessage(data, "LOG", false);
+// Helper to parse URL and extract query parameters
+function parseUrlAndQuery(
+    requestUrlInput: Request | URL | string,
+): { url: string; queryParams?: string } {
+    let requestUrlStr = "";
+    if (requestUrlInput instanceof URL) {
+        requestUrlStr = requestUrlInput.href;
+    } else if (
+        typeof Request !== "undefined" &&
+        requestUrlInput instanceof Request
+    ) {
+        requestUrlStr = requestUrlInput.url;
+    } else {
+        requestUrlStr = requestUrlInput as string;
+    }
 
-  postMessage(data, "NOTIFICATION", true)
-    .then((data: { mockResponse: IMockResponse }) => {
-      if (data && data.mockResponse) {
-        const mock = data.mockResponse;
+    const separator = requestUrlStr.indexOf("?");
+    const url =
+        separator !== -1
+            ? requestUrlStr.substring(0, separator)
+            : requestUrlStr;
+    const queryParams =
+        separator !== -1
+            ? JSON.stringify(parse(requestUrlStr.substring(separator)))
+            : undefined;
+    return { url, queryParams };
+}
 
-        const headers = mock.headers
-          ? mock.headers.reduce<Record<string, string>>((final, header) => {
-              final[header.name] = header.value;
-              return final;
-            }, {})
-          : {
-              "content-type": "application/json; charset=UTF-8",
-            };
+const getLogObject = (
+    request: {
+        headers: Record<string, string>;
+        url: Request | URL | string;
+        method?: string;
+        body?: any;
+        mokku?: {
+            id: string;
+        };
+    },
+    response?: ILog["response"],
+): ILog => {
+    const { url, queryParams } = parseUrlAndQuery(request.url);
+    const requestBody = getRequestBodyAsString(request.body);
 
-        const finalResponse = {
-          status: mock.status,
-          text: mock.response ? mock.response : "",
-          headers,
-          type: "json",
+    return {
+        id: request.mokku?.id as any, // Preserving original behavior of string ID, casting due to ILog.id: number.
+        request: {
+            url,
+            body: requestBody,
+            queryParams,
+            method: (request.method?.toUpperCase() || "GET") as IMethod,
+            headers: getHeaders(request.headers),
+        },
+        response,
+    };
+};
+
+async function processMockingRequest(
+    request: any,
+    callback: (response?: any) => void,
+) {
+    const logEntry = getLogObject(request);
+
+    // Send initial log (fire and forget)
+    postMessage(logEntry, "LOG", false);
+
+    try {
+        const mockServiceResponsePromise = postMessage(
+            logEntry,
+            "CHECK_MOCK",
+            true,
+        );
+        if (!mockServiceResponsePromise) {
+            // Should not happen if ackRequired is true
+            callback();
+            return;
+        }
+        const mockServiceResponse = (await mockServiceResponsePromise) as {
+            mockResponse?: IMockResponse;
         };
 
-        if (mock.delay) {
-          setTimeout(() => {
-            callback(finalResponse);
-          }, mock.delay);
+        if (mockServiceResponse && mockServiceResponse.mockResponse) {
+            const mock = mockServiceResponse.mockResponse;
+
+            const headers = mock.headers
+                ? mock.headers.reduce<Record<string, string>>(
+                      (final, header) => {
+                          final[header.name] = header.value;
+                          return final;
+                      },
+                      {},
+                  )
+                : { "content-type": "application/json; charset=UTF-8" }; // Default headers
+
+            const finalMockedResponse = {
+                status: mock.status,
+                text: mock.response ?? "",
+                headers,
+            };
+
+            if (mock.delay && mock.delay > 0) {
+                setTimeout(() => {
+                    callback(finalMockedResponse);
+                }, mock.delay);
+            } else {
+                callback(finalMockedResponse);
+            }
         } else {
-          callback(finalResponse);
+            callback(); // No mock, proceed with original request
         }
-      } else {
-        callback();
-      }
-    })
-    .catch(() => {
-      console.log("something went wrong!");
-    });
+    } catch (error) {
+        console.error("Mokku Inject: Error during mock processing:", error);
+        callback(); // Proceed with original request on error
+    }
+}
+
+xhook.before(function (request, callback) {
+    // Ensure a unique ID is associated with the request object for logging/correlation.
+    if (!request.mokku) {
+        request.mokku = { id: uuidv4() };
+    }
+    processMockingRequest(request, callback);
 });
 
-const getLog = (
-  request: Omit<ILog["request"], "headers" | "url"> & {
-    headers: Record<string, string>;
-    url: Request | URL | string;
-    mokku?: {
-      id: string;
-    };
-  },
-  response?: ILog["response"],
-): IEventMessage["message"] => {
-  let requestUrl = "";
-  let requestBody = {};
+async function sendLogAfterRequest(request: any, originalResponse: any) {
+    let responseText: string | undefined;
+    const responseStatus: number = originalResponse.status || 0;
+    const responseHeaders: Record<string, string> =
+        originalResponse.headers || {};
 
-  // url
-  if (request.url instanceof URL) {
-    requestUrl = request.url.href;
-  } else if (request.url instanceof Request) {
-    requestUrl = request.url.url;
-  } else {
-    requestUrl = request.url as string;
-  }
-
-  // @ts-ignore
-  if (request.body instanceof ReadableStream) {
-    requestBody = "Unsupported body type!";
-  } else {
-    requestBody = request.body;
-  }
-
-  const separator = requestUrl.indexOf("?");
-
-  const url = separator !== -1 ? requestUrl.substr(0, separator) : requestUrl;
-  const queryParams =
-    separator !== -1
-      ? JSON.stringify(parse(requestUrl.substr(separator)))
-      : undefined;
-
-  try {
-    if (typeof requestBody === "object") {
-      const stringifiedBody = JSON.stringify(requestBody);
-      requestBody = stringifiedBody;
+    try {
+        if (typeof originalResponse.clone === "function") {
+            // Likely a Fetch API Response
+            const clonedResponse = originalResponse.clone();
+            responseText = await clonedResponse.text();
+        } else if (typeof originalResponse.text === "string") {
+            // Direct text property
+            responseText = originalResponse.text;
+        } else if (originalResponse.data) {
+            // Fallback to data property
+            responseText =
+                typeof originalResponse.data === "string"
+                    ? originalResponse.data
+                    : JSON.stringify(originalResponse.data);
+        } else {
+            responseText = "Mokku: Unable to determine response body.";
+        }
+    } catch (error) {
+        console.error(
+            "Mokku Inject: Error extracting response text in xhook.after:",
+            error,
+        );
+        responseText = "Mokku: Error processing response text.";
     }
-  } catch (e) {
-    requestBody = "Unsupported body type!";
-  }
 
-  return {
-    request: {
-      url,
-      body: requestBody,
-      queryParams,
-      method: request.method || "GET",
-      headers: getHeaders(request.headers),
-    },
-    response,
-    id: request.mokku?.id,
-  };
-};
+    const logEntry = getLogObject(request, {
+        status: responseStatus,
+        response: responseText,
+        headers: getHeaders(responseHeaders),
+    });
+    postMessage(logEntry, "LOG", false);
+}
 
 xhook.after(function (request, originalResponse) {
-  try {
-    if (typeof originalResponse.clone === "function") {
-      const response = originalResponse.clone();
-      if (typeof response.text === "string") {
-        const data: IEventMessage["message"] = getLog(request, {
-          status: response.status,
-          response: response.text,
-          headers: getHeaders(response.headers),
-        });
-        postMessage(data, "LOG", false);
-      } else {
-        response.text().then((streamedResponse) => {
-          const data: IEventMessage["message"] = getLog(request, {
-            status: response.status,
-            response: streamedResponse,
-            headers: getHeaders(response.headers),
-          });
-          postMessage(data, "LOG", false);
-        });
-      }
-    } else {
-      const data: IEventMessage["message"] = getLog(request, {
-        status: originalResponse.status,
-        response:
-          typeof originalResponse.text === "string"
-            ? originalResponse.text
-            : "Cannot parse response, logging libraries can cause this.",
-        headers: getHeaders(originalResponse.headers),
-      });
-      postMessage(data, "LOG", false);
+    // Ensure request.mokku.id is available (should be set in 'before' hook)
+    if (!request.mokku) {
+        // This case should ideally not be hit if 'before' always runs and sets it.
+        request.mokku = { id: uuidv4() };
+        console.warn(
+            "Mokku Inject: request.mokku.id was not set in xhook.before, new ID generated in xhook.after.",
+        );
     }
-  } catch (error) {
-    const data: IEventMessage["message"] = getLog(request, {
-      status: 0,
-      response: undefined,
-      headers: [],
-    });
-    postMessage(data, "LOG", false);
-    console.log("INJECT_ERROR", error);
-  }
+    sendLogAfterRequest(request, originalResponse);
 });

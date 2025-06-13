@@ -1,18 +1,19 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "module": "commonjs",
-    "target": "es6",
-    "jsx": "react",
-    "noImplicitAny": false,
-    "sourceMap": false,
-    "rootDir": "src",
-    "outDir": "dist/js",
-    "noEmitOnError": true,
-    "esModuleInterop": true,
-    "paths": {
-      "@mokku/types": ["src/panel/App/types"],
-      "@mokku/store": ["src/panel/App/store"]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "commonjs",
+        "target": "es6",
+        "jsx": "react",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "rootDir": "src",
+        "outDir": "dist/js",
+        "noEmitOnError": true,
+        "esModuleInterop": true,
+        "paths": {
+            "@mokku/types": ["src/panel/App/types"],
+            "@mokku/store": ["src/panel/App/store"],
+            "@ui": ["./*"]
+        }
     }
-  }
 }
