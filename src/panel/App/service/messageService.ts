@@ -21,6 +21,7 @@ const tunnelMap = {
     "CONTENT:SERVICE_WORKER": "runtime",
     "PANEL:CONTENT": "tab",
     "SERVICE_WORKER:CONTENT": "runtime",
+    "SERVICE_WORKER:PANEL": "runtime",
 };
 
 const send = (props: IEventMessage, tabId?: number) => {

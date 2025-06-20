@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AppProvider } from "./AppProvider";
 import { getDomain } from "../../utils/getDomain";
+import { PanelProvider } from "../../mokku-web-app-connector/panel/PanelProvider";
 
 export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
     const [loading, setLoading] = useState(true);
@@ -19,6 +20,8 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
             setLoading(false);
         });
     }, []);
+
+    return <PanelProvider />;
 
     if (!loading) {
         return (

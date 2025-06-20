@@ -1,5 +1,4 @@
 import xhook from "xhook";
-import { v4 as uuidv4 } from "uuid";
 import { parse } from "query-string";
 
 import IdFactory from "./services/idFactory";
@@ -12,6 +11,7 @@ import { messageService } from "./panel/App/service";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
+const logIdFactory = new IdFactory();
 
 messageService.listen("HOOK", (data) => {
     messageBus.dispatch(data.id, data.message);
@@ -113,7 +113,7 @@ const getLogObject = (
         method?: string;
         body?: any;
         mokku?: {
-            id: string;
+            id: number;
         };
     },
     response?: ILog["response"],
@@ -122,7 +122,7 @@ const getLogObject = (
     const requestBody = getRequestBodyAsString(request.body);
 
     return {
-        id: request.mokku?.id as any, // Preserving original behavior of string ID, casting due to ILog.id: number.
+        id: request.mokku?.id, // Preserving original behavior of string ID, casting due to ILog.id: number.
         request: {
             url,
             body: requestBody,
@@ -157,6 +157,7 @@ async function processMockingRequest(
         const mockServiceResponse = (await mockServiceResponsePromise) as {
             mockResponse?: IMockResponse;
         };
+        console.log("Hook: ", mockServiceResponse);
 
         if (mockServiceResponse && mockServiceResponse.mockResponse) {
             const mock = mockServiceResponse.mockResponse;
@@ -196,7 +197,7 @@ async function processMockingRequest(
 xhook.before(function (request, callback) {
     // Ensure a unique ID is associated with the request object for logging/correlation.
     if (!request.mokku) {
-        request.mokku = { id: uuidv4() };
+        request.mokku = { id: logIdFactory.getId() };
     }
     processMockingRequest(request, callback);
 });
@@ -244,7 +245,7 @@ xhook.after(function (request, originalResponse) {
     // Ensure request.mokku.id is available (should be set in 'before' hook)
     if (!request.mokku) {
         // This case should ideally not be hit if 'before' always runs and sets it.
-        request.mokku = { id: uuidv4() };
+        request.mokku = { id: logIdFactory.getId() };
         console.warn(
             "Mokku Inject: request.mokku.id was not set in xhook.before, new ID generated in xhook.after.",
         );

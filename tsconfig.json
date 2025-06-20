@@ -13,7 +13,7 @@
         "paths": {
             "@mokku/types": ["src/panel/App/types"],
             "@mokku/store": ["src/panel/App/store"],
-            "@ui": ["./*"]
+            "@shadcn/*": ["src/shadcn/*"]
         }
     }
 }

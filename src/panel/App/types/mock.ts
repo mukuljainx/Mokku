@@ -29,7 +29,7 @@ export interface ILog {
         headers: Headers;
     };
     mockResponse?: IMockResponse;
-    id: number | string;
+    id: number;
     // if the API response is mocked
     isMocked?: boolean;
     // will be used to fetch mock from store
@@ -38,7 +38,7 @@ export interface ILog {
 
 export interface IMockResponse {
     localId?: number;
-    method: MethodEnum;
+    method: IMethod;
     createdOn: number;
     url: string;
     status: number;
