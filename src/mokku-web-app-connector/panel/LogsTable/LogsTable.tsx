@@ -93,11 +93,26 @@ export const LogsTable = ({
                         <option value="5xx">5xx Server Error</option>
                     </select>
                 </div>
-                <LogsTableRows
-                    filteredData={filteredData}
-                    search={search}
-                    setSearch={setSearch}
-                />
+                {filteredData.length === 0 && data.length === 0 && (
+                    <div className="logs-empty-state-container">
+                        <p>
+                            No Logs! Perform a request or reload the page to see
+                            logs here.
+                        </p>
+                    </div>
+                )}
+                {filteredData.length === 0 && data.length > 0 && (
+                    <div className="logs-empty-state-container">
+                        <p>No Logs! Try removing the applied filters.</p>
+                    </div>
+                )}
+                {filteredData.length > 0 && (
+                    <LogsTableRows
+                        filteredData={filteredData}
+                        search={search}
+                        setSearch={setSearch}
+                    />
+                )}
             </div>
         </div>
     );

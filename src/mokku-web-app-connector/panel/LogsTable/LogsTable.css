@@ -223,6 +223,7 @@
 .logs-table-virtualized-container {
     overflow: scroll;
     flex-grow: 1;
+    position: relative;
 }
 
 .logs-table-element {
@@ -419,4 +420,130 @@
 .logs-table-mock-status-cell {
     color: white;
     padding: 0.75rem 0.5rem;
+}
+
+.logs-empty-state-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+    font-size: 1rem;
+}
+
+/* Log Details Container */
+.log-details-container {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-gray-800);
+    border: 1px solid var(--color-gray-700);
+    box-shadow: var(--shadow-2xl);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Section (URL and Close Button) */
+.log-details-header {
+    padding-left: 0.5rem;
+    height: 50px;
+    gap: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-gray-700);
+    background-color: var(--color-gray-900);
+}
+
+.log-details-url {
+    flex-grow: 1;
+    font-family: var(--font-family-mono);
+    color: var(--color-gray-100);
+    font-size: 0.875rem; /* text-sm */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 1rem;
+}
+
+.log-details-close-button {
+    background: none;
+    border: none;
+    color: var(--color-gray-400);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.log-details-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-gray-100);
+}
+
+/* Tabs Section */
+.log-details-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-gray-700);
+    background-color: var(--color-gray-800);
+}
+
+.log-details-tab-button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    border: none;
+    color: var(--color-gray-400);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    text-align: center;
+    border-bottom: 2px solid transparent; /* For active indicator */
+}
+
+.log-details-tab-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-gray-300);
+}
+
+.log-details-tab-button.active {
+    color: var(--color-blue-400);
+    border-bottom-color: var(--color-blue-400);
+    background-color: rgba(59, 130, 246, 0.1); /* blue-500 with 10% opacity */
+}
+
+/* Content Section */
+.log-details-content {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto; /* Enable scrolling for content */
+    color: var(--color-gray-300);
+}
+
+.log-details-content h3 {
+    color: var(--color-gray-100);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-gray-700);
+    padding-bottom: 0.25rem;
+    margin-top: 1rem;
+}
+
+.log-details-content h3:first-child {
+    margin-top: 0;
+}
+
+.log-details-code-block {
+    background-color: var(--color-gray-900);
+    border: 1px solid var(--color-gray-700);
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    font-family: var(--font-family-mono);
+    font-size: 0.875rem;
+    white-space: pre-wrap; /* Preserve whitespace and wrap long lines */
+    word-break: break-all; /* Break long words */
+    color: var(--color-gray-300);
+    max-height: 300px; /* Limit height of code blocks */
+    overflow-y: auto; /* Enable scrolling for code blocks */
 }

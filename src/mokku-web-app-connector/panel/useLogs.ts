@@ -15,7 +15,6 @@ export const useLogs = () => {
 
     useEffect(() => {
         messageService.listen("PANEL", (data) => {
-            console.log(data.type, { data });
             if (data.type === "LOG") {
                 const log = data.message as ILog;
                 if (!idSetRef.current.has(log.id)) {
@@ -41,8 +40,6 @@ export const useLogs = () => {
             }
         });
     }, []);
-
-    console.log("logsMap", logsMap);
 
     return { logs, logsMap, clearData };
 };

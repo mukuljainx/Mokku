@@ -13,6 +13,8 @@ import { MdNetworkWifi2Bar } from "react-icons/md";
 
 import { ILog } from "@mokku/types";
 import * as React from "react";
+import { SidebarDraggable } from "../SidebarDraggable/SidebarDraggable";
+import { LogDetails } from "./LogDetails";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
@@ -25,6 +27,8 @@ export const LogsTableRows = ({
     search,
     setSearch,
 }: LogsTableRowsProps) => {
+    const [log, setLog] = React.useState<ILog>();
+
     const columns = React.useMemo(
         () => [
             {
@@ -137,79 +141,100 @@ export const LogsTableRows = ({
         });
     };
 
+    const openLog = (event: React.MouseEvent) => {
+        const index = event.currentTarget.getAttribute("data-log-index");
+        setLog(filteredData[index]);
+        console.log(filteredData[index]);
+    };
+
     return (
-        <div
-            ref={tableContainerRef}
-            className="logs-table-virtualized-container"
-        >
-            <table className="logs-table-element">
-                <thead className="logs-table-head">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header, index) => (
-                                <th
-                                    key={header.id}
-                                    scope="col"
-                                    className={`logs-table-th cell-${columns[index].id}`}
-                                >
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                              header.column.columnDef.header,
-                                              header.getContext(),
-                                          )}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody
-                    className="logs-table-body"
-                    style={{
-                        height: `${totalSize}px`,
-                        position: "relative",
-                    }}
-                >
-                    {paddingTop > 0 && (
-                        <tr style={{ height: `${paddingTop}px` }}>
-                            <td colSpan={columns.length} />
-                        </tr>
-                    )}
-                    {virtualRows.map((virtualRow) => {
-                        const row = rows[virtualRow.index];
-                        return (
-                            <tr
-                                key={row.id}
-                                className="logs-table-row"
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    transform: `translateY(${virtualRow.start}px)`,
-                                }}
-                            >
-                                {row.getVisibleCells().map((cell, index) => (
-                                    <td
-                                        key={cell.id}
-                                        className={`logs-table-td  cell-${columns[index].id}`}
+        <>
+            <div
+                ref={tableContainerRef}
+                className="logs-table-virtualized-container"
+            >
+                {log && (
+                    <SidebarDraggable>
+                        <LogDetails
+                            log={log}
+                            onClose={() => setLog(undefined)}
+                        />
+                    </SidebarDraggable>
+                )}
+                <table className="logs-table-element">
+                    <thead className="logs-table-head">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header, index) => (
+                                    <th
+                                        key={header.id}
+                                        scope="col"
+                                        className={`logs-table-th cell-${columns[index].id}`}
                                     >
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext(),
-                                        )}
-                                    </td>
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                  header.column.columnDef
+                                                      .header,
+                                                  header.getContext(),
+                                              )}
+                                    </th>
                                 ))}
                             </tr>
-                        );
-                    })}
-                    {paddingBottom > 0 && (
-                        <tr style={{ height: `${paddingBottom}px` }}>
-                            <td colSpan={columns.length} />
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
+                        ))}
+                    </thead>
+                    <tbody
+                        className="logs-table-body"
+                        style={{
+                            height: `${totalSize}px`,
+                            position: "relative",
+                        }}
+                    >
+                        {paddingTop > 0 && (
+                            <tr style={{ height: `${paddingTop}px` }}>
+                                <td colSpan={columns.length} />
+                            </tr>
+                        )}
+                        {virtualRows.map((virtualRow) => {
+                            const row = rows[virtualRow.index];
+                            return (
+                                <tr
+                                    onClick={openLog}
+                                    data-log-index={virtualRow.index}
+                                    key={row.id}
+                                    className="logs-table-row"
+                                    style={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        transform: `translateY(${virtualRow.start}px)`,
+                                    }}
+                                >
+                                    {row
+                                        .getVisibleCells()
+                                        .map((cell, index) => (
+                                            <td
+                                                key={cell.id}
+                                                className={`logs-table-td  cell-${columns[index].id}`}
+                                            >
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext(),
+                                                )}
+                                            </td>
+                                        ))}
+                                </tr>
+                            );
+                        })}
+                        {paddingBottom > 0 && (
+                            <tr style={{ height: `${paddingBottom}px` }}>
+                                <td colSpan={columns.length} />
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </>
     );
 };
