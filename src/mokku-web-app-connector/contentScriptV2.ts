@@ -51,6 +51,8 @@ export const contentScriptV2 = () => {
                     message: {
                         isMocked: true,
                         id: message.id,
+                        projectId: mock.projectId,
+                        mockId: mock.id,
                     },
                     id: message.id,
                 });

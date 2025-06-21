@@ -9,5 +9,5 @@ export const PanelV2 = () => {
         logsMap,
     ]);
 
-    return <LogsTable data={data} clearData={clearData} />;
+    return <LogsTable data={data} clearData={clearData} logMap={logsMap} />;
 };

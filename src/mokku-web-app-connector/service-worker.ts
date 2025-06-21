@@ -1,4 +1,4 @@
-import { IEventMessage, ILog } from "@mokku/types";
+import { IEventMessage, ILog, IMockResponse } from "@mokku/types";
 import { messageService } from "../panel/App/service";
 import { db, DynamicUrlEntry } from "./db";
 import { ApiCallDetails, Mock } from "./types";
@@ -47,7 +47,7 @@ chrome.runtime.onConnect.addListener((port) => {
         port.onMessage.addListener(async (data: IEventMessage) => {
             if (data.type === "CHECK_MOCK") {
                 const message = data.message as ILog;
-                let mock = undefined;
+                let mock: IMockResponse | undefined = undefined;
 
                 // 1. check for static
                 mock = await db.findStaticMock(

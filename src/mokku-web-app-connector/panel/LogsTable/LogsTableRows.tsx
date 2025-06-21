@@ -15,17 +15,20 @@ import { ILog } from "@mokku/types";
 import * as React from "react";
 import { SidebarDraggable } from "../SidebarDraggable/SidebarDraggable";
 import { LogDetails } from "./LogDetails";
+import { urlConstants } from "../../constants";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
+    logMap: Record<string, ILog>;
 }
 
 export const LogsTableRows = ({
     filteredData,
     search,
     setSearch,
+    logMap,
 }: LogsTableRowsProps) => {
     const [log, setLog] = React.useState<ILog>();
 
@@ -35,11 +38,17 @@ export const LogsTableRows = ({
                 accessorKey: "isMocked",
                 id: "mock-status",
                 header: "",
-                cell: (info) => (
-                    <span className="logs-table-mock-status-cell">
-                        {info.getValue() ? <FiCpu /> : <MdNetworkWifi2Bar />}
-                    </span>
-                ),
+                cell: (info) => {
+                    return (
+                        <span className="logs-table-mock-status-cell">
+                            {info.getValue() ? (
+                                <FiCpu />
+                            ) : (
+                                <MdNetworkWifi2Bar />
+                            )}
+                        </span>
+                    );
+                },
             },
             {
                 accessorKey: "request.method",
@@ -68,11 +77,16 @@ export const LogsTableRows = ({
                 header: () => (
                     <div className="logs-table-action-header">Action</div>
                 ),
-                cell: () => (
+                cell: (info) => (
                     <div className="logs-table-action-cell">
                         <button
+                            data-log-index={info.row.index}
                             className="logs-table-mock-button"
-                            onClick={onActionClick}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                onActionClick(info.row);
+                            }}
                         >
                             Mock
                         </button>
@@ -114,17 +128,14 @@ export const LogsTableRows = ({
             ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
             : 0;
 
-    const onActionClick = () => {
-        chrome.tabs.query({ url: "http://localhost:5173/*" }, (tabs) => {
-            console.log(tabs);
-
-            // chrome.tabs.highlight(
-            //     {
-            //         tabs: tabs[0].index,
-            //         windowId: tabs[0].windowId,
-            //     },
-            //     console.log,
-            // );
+    const onActionClick = (log: ILog) => {
+        chrome.tabs.query({ url: urlConstants.getQueryUrl() }, (tabs) => {
+            if (tabs.length === 0) {
+                chrome.tabs.create({
+                    url: urlConstants.getNewMockUrl(log.projectId),
+                });
+                return;
+            }
             chrome.windows.update(
                 tabs[0].windowId,
                 {
@@ -134,7 +145,7 @@ export const LogsTableRows = ({
                     chrome.tabs.update(tabs[0].id, {
                         active: true,
                         highlighted: true,
-                        url: "http://localhost:5173/mock",
+                        url: urlConstants.getNewMockUrl(log.projectId),
                     });
                 },
             );

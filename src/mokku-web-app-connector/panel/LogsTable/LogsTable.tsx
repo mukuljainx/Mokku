@@ -9,9 +9,11 @@ import { LogsTableRows } from "./LogsTableRows";
 export const LogsTable = ({
     data,
     clearData,
+    logMap,
 }: {
     data: ILog[];
     clearData: () => void;
+    logMap: Record<string, ILog>;
 }) => {
     const [search, setSearch] = React.useState("");
     const [methodFilter, setMethodFilter] = useState("All");
@@ -67,7 +69,7 @@ export const LogsTable = ({
                             type="text"
                             value={search ?? ""}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search all columns..."
+                            placeholder="Search all logs..."
                             className="logs-table-search-input"
                         />
                     </div>
@@ -108,6 +110,7 @@ export const LogsTable = ({
                 )}
                 {filteredData.length > 0 && (
                     <LogsTableRows
+                        logMap={logMap}
                         filteredData={filteredData}
                         search={search}
                         setSearch={setSearch}

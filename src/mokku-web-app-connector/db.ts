@@ -4,7 +4,7 @@ import { IMockResponse, IMethod } from "@mokku/types";
 // Define a stricter type for objects stored in Dexie.
 // This ensures 'dynamic' is always a boolean for reliable indexing
 // and clarifies the role of 'localId' vs the original 'id'.
-interface StoredMock extends Omit<IMockResponse, "dynamic" | "id"> {
+interface StoredMock extends IMockResponse {
     localId?: number; // Dexie's auto-incremented primary key
     dynamicKey: number;
 }

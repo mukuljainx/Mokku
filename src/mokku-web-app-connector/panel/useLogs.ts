@@ -41,5 +41,7 @@ export const useLogs = () => {
         });
     }, []);
 
+    console.log(logsMap);
+
     return { logs, logsMap, clearData };
 };

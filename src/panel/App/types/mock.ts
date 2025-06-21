@@ -34,6 +34,10 @@ export interface ILog {
     isMocked?: boolean;
     // will be used to fetch mock from store
     mockPath?: string;
+    // mock's id in in server
+    mockId?: string;
+    // mock's projectId in in server
+    projectId?: string;
 }
 
 export interface IMockResponse {
