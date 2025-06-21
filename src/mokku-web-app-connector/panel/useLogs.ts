@@ -15,20 +15,34 @@ export const useLogs = () => {
 
     useEffect(() => {
         messageService.listen("PANEL", (data) => {
+            console.log(data.type, { data });
             if (data.type === "LOG") {
                 const log = data.message as ILog;
-                console.log(811, log);
                 if (!idSetRef.current.has(log.id)) {
                     idSetRef.current.add(log.id);
                     setLogs((logs) => [log.id, ...logs]);
                 }
                 setLogsMap((logsMap) => ({
                     ...logsMap,
-                    [log.id]: log,
+                    [log.id]: { ...logsMap[log.id], ...log },
                 }));
+            } else if (data.type === "LOG_MOCK_STATUS") {
+                const log = data.message as ILog;
+                const id = log.id;
+                if (idSetRef.current.has(id)) {
+                    setLogsMap((logsMap) => ({
+                        ...logsMap,
+                        [id]: {
+                            ...logsMap[id],
+                            isMocked: log.isMocked,
+                        },
+                    }));
+                }
             }
         });
     }, []);
+
+    console.log("logsMap", logsMap);
 
     return { logs, logsMap, clearData };
 };

@@ -203,6 +203,7 @@ xhook.before(function (request, callback) {
 });
 
 async function sendLogAfterRequest(request: any, originalResponse: any) {
+    console.log("sendLogAfterRequest", request, originalResponse);
     let responseText: string | undefined;
     const responseStatus: number = originalResponse.status || 0;
     const responseHeaders: Record<string, string> =

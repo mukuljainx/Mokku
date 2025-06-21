@@ -46,10 +46,15 @@
     --color-blue-700: #1d4ed8;
     --color-blue-600-t30: rgba(37, 99, 235, 0.3); /* 30% opacity */
 
+    --color-red-300: #ef4444;
     --color-red-400: #f87171;
     --color-red-500-t30: rgba(239, 68, 68, 0.3); /* EF4444 */
     --color-red-600-t20: rgba(220, 38, 38, 0.2); /* DC2626 */
     --color-red-600-t30: rgba(220, 38, 38, 0.3);
+
+    --color-green-300: #65a30d;
+
+    --color-yellow-300: #facc15;
 
     --font-family-sans: ui-sans-serif, system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
@@ -233,7 +238,7 @@
 }
 
 .logs-table-th {
-    padding: 0.75rem 1.5rem; /* px-6 py-3 */
+    padding: 0.75rem 0.5rem; /* px-6 py-3 */
     text-align: left;
     font-size: 0.75rem; /* text-xs */
     font-weight: 700; /* font-bold */
@@ -246,13 +251,18 @@
     position: relative; /* For virtualizer */
 }
 
+.logs-table-row,
+.logs-table-head {
+    border-bottom: 1px solid var(--color-gray-700);
+}
+
 .logs-table-row:hover {
     background-color: rgba(55, 65, 81, 0.5); /* hover:bg-gray-700/50 */
     transition: background-color 0.15s ease-in-out;
 }
 
 .logs-table-td {
-    padding: 1rem 1.5rem; /* px-6 py-4 */
+    padding: 0.75rem 0.5rem;
     white-space: nowrap;
 }
 
@@ -268,7 +278,7 @@
 }
 
 .logs-table-mock-button {
-    padding: 0.5rem 1rem; /* px-4 py-2 */
+    padding: 0.4rem 1rem;
     background-color: var(--color-blue-600);
     color: white;
     border-radius: 0.375rem; /* rounded-md */
@@ -323,6 +333,7 @@
 }
 
 .logs-table-element tr {
+    height: 50px;
     display: flex;
     align-items: center;
 }
@@ -330,6 +341,10 @@
 .logs-table-element .cell-status,
 .logs-table-element .cell-method {
     width: 100px;
+}
+
+.cell-mock-status {
+    width: 50px;
 }
 
 .logs-table-element .cell-action {
@@ -344,4 +359,64 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+/* status badge */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.625rem; /* py-1 px-2.5 */
+    font-size: 0.75rem; /* text-xs */
+    line-height: 1.25rem; /* leading-5 */
+    font-weight: 600; /* font-semibold */
+    border-radius: 9999px; /* rounded-full */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Modifier classes for status colors */
+.status-badge--default {
+    background-color: rgba(
+        107,
+        114,
+        128,
+        0.2
+    ); /* Uses --color-gray-500 with 20% opacity */
+    color: var(--color-gray-300);
+}
+
+.status-badge--success {
+    background-color: rgba(
+        34,
+        197,
+        94,
+        0.2
+    ); /* Uses --color-green-500 with 20% opacity */
+    color: var(--color-green-300);
+}
+
+.status-badge--client-error {
+    background-color: rgba(
+        234,
+        179,
+        8,
+        0.2
+    ); /* Uses --color-yellow-500 with 20% opacity */
+    color: var(--color-yellow-300);
+}
+
+.status-badge--server-error {
+    background-color: rgba(
+        239,
+        68,
+        68,
+        0.2
+    ); /* Uses --color-red-500 with 20% opacity */
+    color: var(--color-red-300);
+}
+
+.logs-table-mock-status-cell {
+    color: white;
+    padding: 0.75rem 0.5rem;
 }

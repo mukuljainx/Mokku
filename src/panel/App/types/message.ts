@@ -7,7 +7,7 @@ export interface IEventMessage {
     from: Process;
     extensionName: "MOKKU";
     id?: number;
-    type?: "LOG" | "NOTIFICATION" | "INIT" | "CHECK_MOCK";
+    type?: "LOG" | "NOTIFICATION" | "INIT" | "CHECK_MOCK" | "LOG_MOCK_STATUS";
     message: ILog | Record<string, any> | string | number;
     origin?: Process;
 }

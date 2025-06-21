@@ -47,7 +47,11 @@ export const contentScriptV2 = () => {
                     from: "CONTENT",
                     to: "PANEL",
                     extensionName: "MOKKU",
-                    message,
+                    type: "LOG_MOCK_STATUS",
+                    message: {
+                        isMocked: true,
+                        id: message.id,
+                    },
                     id: message.id,
                 });
             }
