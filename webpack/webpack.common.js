@@ -5,7 +5,6 @@ const srcDir = "../src/";
 
 module.exports = {
     entry: {
-        options: path.join(__dirname, srcDir + "options.ts"),
         background: path.join(__dirname, srcDir + "background.ts"),
         content_script: path.join(__dirname, srcDir + "content_script.ts"),
         wep_app_content_script: path.join(

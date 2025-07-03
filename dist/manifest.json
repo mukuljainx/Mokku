@@ -9,9 +9,6 @@
         "128": "mokku-128.png",
         "512": "mokku-512.png"
     },
-    "options_ui": {
-        "page": "options.html"
-    },
     "action": {
         "default_icon": "mokku-16.png",
         "default_popup": "popup.html"
