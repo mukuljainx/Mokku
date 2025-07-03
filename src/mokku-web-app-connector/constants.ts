@@ -1,7 +1,9 @@
 const getOriginUrl = () => "http://localhost:5173";
 
 const getNewMockUrl = (projectId?: string) =>
-    getOriginUrl() + (projectId ? `/${projectId}/create-mock` : "/create-mock");
+    getOriginUrl() +
+    (projectId ? `/${projectId}` : "") +
+    "/create-mock?source=MOKKU";
 
 const getQueryUrl = () => getOriginUrl() + "/*";
 

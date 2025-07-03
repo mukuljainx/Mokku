@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ILog } from "@mokku/types";
+import { parseJSONIfPossible } from "../parseJson";
 
 interface LogDetailsProps {
     log: ILog;
@@ -12,15 +13,24 @@ const CodeBlock = ({
 }: {
     code?: string | null;
     placeholder: string;
-}) => (
-    <>
-        {code ? (
-            <pre className="log-details-code-block">{code}</pre>
-        ) : (
-            <span>{placeholder}</span>
-        )}
-    </>
-);
+}) => {
+    const { json, original, parsed } = parseJSONIfPossible(code || "");
+
+    let content = parsed ? JSON.stringify(json, null, 2) : original;
+    if (typeof content !== "string") {
+        content = JSON.stringify(content, null, 2);
+    }
+
+    return (
+        <>
+            {code ? (
+                <pre className="log-details-code-block">{content}</pre>
+            ) : (
+                <span>{placeholder}</span>
+            )}
+        </>
+    );
+};
 
 export const LogDetails = ({ log, onClose }: LogDetailsProps) => {
     const { request, response } = log;

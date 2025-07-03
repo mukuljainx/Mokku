@@ -77,21 +77,37 @@ export const LogsTableRows = ({
                 header: () => (
                     <div className="logs-table-action-header">Action</div>
                 ),
-                cell: (info) => (
-                    <div className="logs-table-action-cell">
-                        <button
-                            data-log-index={info.row.index}
-                            className="logs-table-mock-button"
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                event.preventDefault();
-                                onActionClick(info.row);
-                            }}
-                        >
-                            Mock
-                        </button>
-                    </div>
-                ),
+                cell: (info) => {
+                    return (
+                        <div className="logs-table-action-cell">
+                            {info.row.original.isMocked ? (
+                                <button
+                                    data-log-index={info.row.index}
+                                    className="logs-table-mock-button"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        onActionClick(info.row.original);
+                                    }}
+                                >
+                                    Edit Mock
+                                </button>
+                            ) : (
+                                <button
+                                    data-log-index={info.row.index}
+                                    className="logs-table-mock-button"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        onActionClick(info.row.original);
+                                    }}
+                                >
+                                    Mock
+                                </button>
+                            )}
+                        </div>
+                    );
+                },
             },
         ],
         [],
@@ -130,10 +146,22 @@ export const LogsTableRows = ({
 
     const onActionClick = (log: ILog) => {
         chrome.tabs.query({ url: urlConstants.getQueryUrl() }, (tabs) => {
+            const sendMockToTab = (tab: chrome.tabs.Tab) => {
+                setTimeout(() => {
+                    chrome.tabs.sendMessage(tab.id, {
+                        type: "NEW_MOCK",
+                        data: log,
+                    });
+                }, 500);
+            };
+
             if (tabs.length === 0) {
-                chrome.tabs.create({
-                    url: urlConstants.getNewMockUrl(log.projectId),
-                });
+                chrome.tabs.create(
+                    {
+                        url: urlConstants.getNewMockUrl(log.projectId),
+                    },
+                    sendMockToTab,
+                );
                 return;
             }
             chrome.windows.update(
@@ -142,11 +170,15 @@ export const LogsTableRows = ({
                     focused: true,
                 },
                 () => {
-                    chrome.tabs.update(tabs[0].id, {
-                        active: true,
-                        highlighted: true,
-                        url: urlConstants.getNewMockUrl(log.projectId),
-                    });
+                    chrome.tabs.update(
+                        tabs[0].id,
+                        {
+                            active: true,
+                            highlighted: true,
+                            url: urlConstants.getNewMockUrl(log.projectId),
+                        },
+                        sendMockToTab,
+                    );
                 },
             );
         });
@@ -155,7 +187,6 @@ export const LogsTableRows = ({
     const openLog = (event: React.MouseEvent) => {
         const index = event.currentTarget.getAttribute("data-log-index");
         setLog(filteredData[index]);
-        console.log(filteredData[index]);
     };
 
     return (

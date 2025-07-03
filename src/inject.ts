@@ -7,7 +7,7 @@ import { IEventMessage } from "@mokku/types";
 import { IMockResponse, ILog } from "./interface/mock";
 import { getHeaders } from "./services/helper";
 import { IMethod } from "@mokku/types";
-import { messageService } from "./panel/App/service";
+import { messageService } from "./panel/App/service/messageService";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
@@ -16,6 +16,8 @@ const logIdFactory = new IdFactory();
 messageService.listen("HOOK", (data) => {
     messageBus.dispatch(data.id, data.message);
 });
+
+console.log("HOOK INJECTED");
 
 /**
  * Promisify post message from window to window

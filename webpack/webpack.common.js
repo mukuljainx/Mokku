@@ -8,6 +8,10 @@ module.exports = {
         options: path.join(__dirname, srcDir + "options.ts"),
         background: path.join(__dirname, srcDir + "background.ts"),
         content_script: path.join(__dirname, srcDir + "content_script.ts"),
+        wep_app_content_script: path.join(
+            __dirname,
+            srcDir + "mokku-web-app-connector/wep_app_content_script.ts",
+        ),
         devtool: path.join(__dirname, srcDir + "devtool.ts"),
         panel: path.join(__dirname, srcDir + "panel/index.tsx"),
         inject: path.join(__dirname, srcDir + "inject.ts"),

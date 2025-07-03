@@ -21,6 +21,11 @@
             "matches": ["<all_urls>"],
             "js": ["js/content_script.js", "js/inject.js"],
             "run_at": "document_start"
+        },
+        {
+            "matches": ["http://localhost:5173/*"],
+            "js": ["js/wep_app_content_script.js"],
+            "run_at": "document_start"
         }
     ],
     "devtools_page": "devtool.html",

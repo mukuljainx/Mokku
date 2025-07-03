@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import messageService from "../../panel/App/service/messageService";
+import { messageService } from "../../panel/App/service/messageService";
 import { ILog } from "@mokku/types";
 
 export const useLogs = () => {

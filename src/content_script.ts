@@ -3,8 +3,8 @@ import { get } from "lodash";
 import inject from "./contentScript/injectToDom";
 import { IEventMessage } from "./interface/message";
 import { IDynamicURLMap, ILog } from "./interface/mock";
-import { getStore } from "./panel/App/service/storeActions";
-import { messageService } from "./panel/App/service";
+// import { getStore } from "./panel/App/service/storeActions";
+// import { messageService } from "./panel/App/service";
 import { contentScriptV2 } from "./mokku-web-app-connector/contentScriptV2";
 
 // const init = () => {

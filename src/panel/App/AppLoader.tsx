@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { AppProvider } from "./AppProvider";
 import { getDomain } from "../../utils/getDomain";
 import { PanelProvider } from "../../mokku-web-app-connector/panel/PanelProvider";
 
@@ -22,17 +21,4 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
     }, []);
 
     return <PanelProvider />;
-
-    if (!loading) {
-        return (
-            <AppProvider
-                host={host}
-                tab={tab}
-                active={active}
-                storeKey={storeKey}
-            />
-        );
-    }
-
-    return null;
 };

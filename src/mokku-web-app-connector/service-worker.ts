@@ -1,7 +1,7 @@
 import { IEventMessage, ILog, IMockResponse } from "@mokku/types";
-import { messageService } from "../panel/App/service";
+import { messageService } from "../panel/App/service/messageService";
 import { db, DynamicUrlEntry } from "./db";
-import { ApiCallDetails, Mock } from "./types";
+import { parseJSONIfPossible } from "./panel/parseJson";
 
 let dynamicUrlPatterns: DynamicUrlEntry[] = [];
 
@@ -46,57 +46,93 @@ chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "mokku-content-script") {
         port.onMessage.addListener(async (data: IEventMessage) => {
             if (data.type === "CHECK_MOCK") {
-                const message = data.message as ILog;
+                const log = data.message as ILog;
                 let mock: IMockResponse | undefined = undefined;
 
-                // 1. check for static
-                mock = await db.findStaticMock(
-                    message.request.url,
-                    message.request.method,
-                );
-
-                // check with pathname
-                if (!mock) {
-                    const pathname = new URL(message.request.url).pathname;
-                    mock = await db.findStaticMock(
-                        pathname,
-                        message.request.method,
+                /**
+                 * 1. check for graphql mock
+                 */
+                if (log.request?.method === "POST") {
+                    const { json, parsed } = parseJSONIfPossible(
+                        log.request.body,
                     );
-                }
 
-                if (!mock) {
-                    // check with dynamic mocks
-                    const dynamicMatch = findMatchingDynamicUrl(
-                        message.request.url,
-                        message.request.method,
-                    );
-                    if (dynamicMatch) {
-                        mock = await db.findMockById(dynamicMatch.localId);
+                    if (parsed) {
+                        if (
+                            json.operationName &&
+                            typeof json.operationName === "string"
+                        ) {
+                            mock = await db.findGraphQLMock({
+                                url: log.request.url,
+                                operationName: json.operationName,
+                            });
+                        }
                     }
                 }
 
-                console.log("mock", mock);
+                // if no mock or mock is inactive
+                // 2. check for static
+                if (!mock || !mock.active) {
+                    const staticMock = await db.findStaticMock(
+                        log.request.url,
+                        log.request.method,
+                    );
+
+                    // either we didn't had the mock
+                    // if we had the mock it was inactive
+                    if (!mock || staticMock.active) {
+                        mock = staticMock;
+                    }
+                }
+                // 3. check with pathname
+                if (!mock || !mock.active) {
+                    const pathname = new URL(log.request.url).pathname;
+                    const pathnameMock = await db.findStaticMock(
+                        pathname,
+                        log.request.method,
+                    );
+
+                    if (!mock || pathnameMock.active) {
+                        mock = pathnameMock;
+                    }
+                }
+
+                // 4. check with dynamic mocks
+                if (!mock || !mock.active) {
+                    const dynamicMatch = findMatchingDynamicUrl(
+                        log.request.url,
+                        log.request.method,
+                    );
+
+                    if (dynamicMatch) {
+                        const dynamicMock = await db.findMockById(
+                            dynamicMatch.localId,
+                        );
+
+                        if (!mock || dynamicMock.active) {
+                            mock = dynamicMock;
+                        }
+                    }
+                }
 
                 if (mock) {
                     port.postMessage({
                         mockResponse: mock,
                         id: data.id,
-                        request: message.request,
+                        request: log.request,
                     });
                 } else {
                     //todo: inform the panel
                     port.postMessage({
                         mockResponse: null,
                         id: data.id,
-                        request: message.request,
+                        request: log.request,
                     });
                 }
             }
         });
     }
 });
-
-console.log(db.getAllMocks().then(console.log).catch(console.log));
 
 chrome.runtime.onMessageExternal.addListener(
     (request, sender, sendResponse) => {

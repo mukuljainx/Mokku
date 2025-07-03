@@ -1,10 +1,9 @@
 import { get } from "lodash";
 
 import inject from "../contentScript/injectToDom";
-import { IEventMessage } from "@mokku/types";
+import { IEventMessage, IMockResponse } from "@mokku/types";
 import { IDynamicURLMap, ILog } from "../interface/mock";
-import { getStore } from "../panel/App/service/storeActions";
-import { messageService } from "../panel/App/service";
+import { messageService } from "../panel/App/service/messageService";
 import { runFunction } from "./functionExecutor";
 
 console.log("Content Script v2");
@@ -14,7 +13,7 @@ export const contentScriptV2 = () => {
     const init = () => {
         port.onMessage.addListener(async (message) => {
             // messaged received from service worker
-            const mock = message?.mockResponse;
+            const mock = message?.mockResponse as IMockResponse;
             const request = message?.request;
 
             if (!mock) {
@@ -26,13 +25,17 @@ export const contentScriptV2 = () => {
                     id: message.id,
                 });
             } else {
-                if (mock.type === "FUNCTION" && mock.function && mock.active) {
+                if (
+                    mock.responseType === "FUNCTION" &&
+                    mock.function &&
+                    mock.active
+                ) {
                     const result = await runFunction(
                         mock.function,
                         request.queryParams,
                         request.body,
                     );
-                    mock.response = result;
+                    mock.response = result as string;
                 }
 
                 messageService.send({

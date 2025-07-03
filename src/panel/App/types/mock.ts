@@ -52,7 +52,7 @@ export interface IMockResponse {
     name?: string;
     id: string;
     projectId?: string;
-    type?: "STATIC" | "FUNCTION";
+    responseType?: "STATIC" | "FUNCTION";
     function?: string;
     dynamic?: boolean;
     active: boolean;

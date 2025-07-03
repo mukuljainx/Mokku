@@ -83,4 +83,4 @@ const listen = (
     }
 };
 
-export default { send, listen };
+export const messageService = { send, listen };

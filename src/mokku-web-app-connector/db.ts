@@ -42,6 +42,21 @@ const getDynamicUrlPatterns = async (): Promise<DynamicUrlEntry[]> => {
     }));
 };
 
+const getSortedMockByActive = (mocks: StoredMock[]) =>
+    mocks.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0));
+
+const findGraphQLMock = async ({
+    url,
+    operationName,
+}: {
+    url: string;
+    operationName: string;
+}): Promise<StoredMock | undefined> => {
+    const mocks = await localDb.mocks.where({ url, operationName }).toArray();
+    const sortedMocks = getSortedMockByActive(mocks);
+    return sortedMocks[0];
+};
+
 const findStaticMock = async (
     url: string,
     method: IMethod, // Original function signature included method, but query didn't use it.
@@ -49,12 +64,11 @@ const findStaticMock = async (
 ): Promise<StoredMock | undefined> => {
     // Find active, non-dynamic mocks matching the URL.
     // This query uses the [url+dynamic] compound index.
-    return (
-        localDb.mocks
-            .where({ url, dynamicKey: 0, method })
-            // .filter((mock) => mock.active === true) // Ensure only active mocks are considered
-            .first()
-    );
+    const mocks = await localDb.mocks
+        .where({ url, dynamicKey: 0, method })
+        .toArray();
+    const sortedMocks = getSortedMockByActive(mocks);
+    return sortedMocks[0];
 };
 
 const getAllMocks = async (): Promise<StoredMock[]> => {
@@ -82,4 +96,5 @@ export const db = {
     findMockById,
     addMock,
     getAllMocks,
+    findGraphQLMock,
 };
