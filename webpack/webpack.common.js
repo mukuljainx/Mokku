@@ -2,18 +2,16 @@ const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = "../src/";
+const scripts = "../src/scripts/";
 
 module.exports = {
     entry: {
-        background: path.join(__dirname, srcDir + "background.ts"),
-        content_script: path.join(__dirname, srcDir + "content_script.ts"),
-        wep_app_content_script: path.join(
-            __dirname,
-            srcDir + "mokku-web-app-connector/wep_app_content_script.ts",
-        ),
+        background: path.join(__dirname, scripts + "serviceWorker.ts"),
+        content_script: path.join(__dirname, scripts + "content.ts"),
+        wep_app_content_script: path.join(__dirname, scripts + "app.ts"),
+        inject: path.join(__dirname, scripts + "inject.ts"),
         devtool: path.join(__dirname, srcDir + "devtool.ts"),
         panel: path.join(__dirname, srcDir + "panel/index.tsx"),
-        inject: path.join(__dirname, srcDir + "inject.ts"),
     },
     output: {
         path: path.join(__dirname, "../dist/js"),
@@ -55,6 +53,9 @@ module.exports = {
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
+        alias: {
+            "@": path.join(__dirname, srcDir),
+        },
     },
     plugins: [
         // exclude locale files in moment

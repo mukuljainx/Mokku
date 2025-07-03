@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { getDomain } from "../../utils/getDomain";
-import { Home } from "../screens/Home";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { getDomain } from "@/lib/domain";
+import { Home } from "./Home";
+// import { PanelProvider } from "../../mokku-web-app-connector/panel/PanelProvider";
 
 export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const [active, setActive] = useState(false);
     const host = getDomain(tab.url) || "invalid";
     const isLocalhost = (tab.url || "").includes("http://localhost");
@@ -16,9 +18,22 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
                 tempActive = true;
             }
             setActive(tempActive);
-            setLoading(false);
+            // setLoading(false);
         });
     }, []);
 
     return <Home />;
+
+    // if (!loading) {
+    //     return (
+    //         <AppProvider
+    //             host={host}
+    //             tab={tab}
+    //             active={active}
+    //             storeKey={storeKey}
+    //         />
+    //     );
+    // }
+
+    // return null;
 };

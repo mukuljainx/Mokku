@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "./src",
         "module": "commonjs",
         "target": "es6",
         "jsx": "react",
@@ -11,9 +11,7 @@
         "noEmitOnError": true,
         "esModuleInterop": true,
         "paths": {
-            "@mokku/types": ["src/panel/App/types"],
-            "@mokku/store": ["src/panel/App/store"],
-            "@shadcn/*": ["src/shadcn/*"]
+            "@/*": ["./*"]
         }
     }
 }
