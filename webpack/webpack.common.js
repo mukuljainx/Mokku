@@ -8,7 +8,7 @@ module.exports = {
     entry: {
         background: path.join(__dirname, scripts + "serviceWorker.ts"),
         content_script: path.join(__dirname, scripts + "content.ts"),
-        wep_app_content_script: path.join(__dirname, scripts + "app.ts"),
+        app: path.join(__dirname, scripts + "app.ts"),
         inject: path.join(__dirname, scripts + "inject.ts"),
         devtool: path.join(__dirname, srcDir + "devtool.ts"),
         panel: path.join(__dirname, srcDir + "panel/index.tsx"),
@@ -17,12 +17,6 @@ module.exports = {
         path: path.join(__dirname, "../dist/js"),
         filename: "[name].js",
     },
-    // optimization: {
-    //   splitChunks: {
-    //     name: "vendor",
-    //     chunks: "initial",
-    //   },
-    // },
     module: {
         rules: [
             {
@@ -32,14 +26,7 @@ module.exports = {
             },
             {
                 test: /\.(sa|sc|c)ss$/,
-                use: [
-                    // Creates `style` nodes from JS strings
-                    "style-loader",
-                    // Translates CSS into CommonJS
-                    "css-loader",
-                    // Compiles Sass to CSS
-                    "sass-loader",
-                ],
+                use: [`style-loader`, "css-loader", "postcss-loader"],
             },
             {
                 test: /\.(png|jpe?g|gif|ttf)$/i,

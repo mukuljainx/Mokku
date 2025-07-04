@@ -25,8 +25,8 @@ export const SidebarDraggable = ({
         if (!containerRef.current) {
             return;
         }
-        const elementRightEdge =
-            containerRef.current.getBoundingClientRect().right;
+        const elementRightEdge = containerRef.current.getBoundingClientRect()
+            .right;
         const width = Math.max(
             minWidth || minWidth,
             elementRightEdge - mousePosition,
@@ -65,7 +65,7 @@ export const SidebarDraggable = ({
 
     return (
         <div
-            className="sidebar-draggable-container"
+            className="sidebar-draggable-container bg-background"
             style={{
                 minWidth: minWidth,
                 maxWidth: "calc(100% - 24px)",
@@ -77,7 +77,7 @@ export const SidebarDraggable = ({
                 className="sidebar-draggable-container-handler"
                 ref={draggerRef}
             >
-                <div className="sidebar-draggable-container-handler-visible" />
+                <div className="sidebar-draggable-container-handler-visible bg-blue-300" />
             </div>
             <div className="sidebar-draggable-container-content">
                 {children}

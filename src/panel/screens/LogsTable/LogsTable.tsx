@@ -1,9 +1,17 @@
 import React, { useMemo, useState } from "react";
 import { allMethods } from "./constant";
-import "./LogsTable.css";
 import { LogsTableRows } from "./LogsTableRows";
 import { ILog } from "@/types";
-import { RefreshCcw, Search, Trash2 } from "lucide-react";
+import { LayoutTemplate, RefreshCcw, Search, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export const LogsTable = ({
     data,
@@ -13,18 +21,18 @@ export const LogsTable = ({
     clearData: () => void;
 }) => {
     const [search, setSearch] = React.useState("");
-    const [methodFilter, setMethodFilter] = useState("All");
-    const [statusFilter, setStatusFilter] = useState("All");
+    const [methodFilter, setMethodFilter] = useState("ALL");
+    const [statusFilter, setStatusFilter] = useState("ALL");
 
     // Derived/Memoized data for performance, applying local filters before TanStack's global filter
     const filteredData = useMemo(() => {
         let result = data;
-        if (methodFilter !== "All") {
+        if (methodFilter !== "ALL") {
             result = result.filter(
                 (log) => log.request?.method === methodFilter,
             );
         }
-        if (statusFilter !== "All") {
+        if (statusFilter !== "ALL") {
             const statusPrefix = statusFilter.slice(0, 1); // e.g., '2' for '2xx'
             result = result.filter((log) =>
                 String(log.response?.status).startsWith(statusPrefix),
@@ -36,73 +44,91 @@ export const LogsTable = ({
     return (
         <div className="logs-table-page-container">
             <div className="logs-table-main-box">
-                {/* Header */}
-                <header className="logs-table-header-section">
+                <header className="flex justify-between items-center border-b p-2">
                     <div className="logs-table-header-title-group">
-                        <h1 className="logs-table-title">Mokku Logs</h1>
+                        <h1 className="text-lg font-bold">Mokku Logs</h1>
                     </div>
-                    <div className="logs-table-header-action-group">
-                        <button
+                    <div className="flex items-center gap-1">
+                        <Button
+                            size="sm"
                             onClick={clearData}
-                            className="logs-table-clear-button"
+                            className="logs-table-clear-Button"
                         >
                             <Trash2 />
                             <span>Clear</span>
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            size="sm"
                             onClick={() => window.location.reload()}
-                            className="logs-table-refresh-button"
+                            className="logs-table-refresh-Button"
                         >
                             <RefreshCcw />
-                        </button>
+                        </Button>
                     </div>
                 </header>
 
                 {/* Filters */}
-                <div className="logs-table-filters-section">
-                    <div className="logs-table-search-container">
-                        <Search className="search-icon" />
-                        <input
+                <div className="flex gap-2 p-2">
+                    <div className="relative flex items-center">
+                        <Search className="absolute size-4 ml-2" />
+                        <Input
                             type="text"
                             value={search ?? ""}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search all logs..."
-                            className="logs-table-search-input"
+                            className="pl-7"
                         />
                     </div>
-                    <select
-                        value={methodFilter}
-                        onChange={(e) => setMethodFilter(e.target.value)}
-                        className="logs-table-select-filter"
-                    >
-                        <option>All</option>
-                        {allMethods.map((m) => (
-                            <option key={m}>{m}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="logs-table-select-filter"
-                    >
-                        <option>All</option>
-                        <option value="2xx">2xx Success</option>
-                        <option value="3xx">3xx Redirection</option>
-                        <option value="4xx">4xx Client Error</option>
-                        <option value="5xx">5xx Server Error</option>
-                    </select>
+                    <Select onValueChange={(value) => setMethodFilter(value)}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="ALL">All</SelectItem>
+                            {allMethods.map((method) => (
+                                <SelectItem key={method} value={method}>
+                                    {method}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Select onValueChange={(value) => setStatusFilter(value)}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="ALL">All</SelectItem>
+                            <SelectItem value="2xx">2xx Success</SelectItem>
+                            <SelectItem value="3xx">3xx Redirection</SelectItem>
+                            <SelectItem value="4xx">
+                                4xx Client Error
+                            </SelectItem>
+                            <SelectItem value="5xx">
+                                5xx Server Error
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
                 {filteredData.length === 0 && data.length === 0 && (
                     <div className="logs-empty-state-container">
-                        <p>
-                            No Logs! Perform a request or reload the page to see
-                            logs here.
-                        </p>
+                        <div className="flex flex-col items-center gap-2">
+                            <LayoutTemplate />
+                            <p className="text-sm">
+                                No Logs! Perform a request or reload the page to
+                                see logs here.
+                            </p>
+                        </div>
                     </div>
                 )}
                 {filteredData.length === 0 && data.length > 0 && (
-                    <div className="logs-empty-state-container">
-                        <p>No Logs! Try removing the applied filters.</p>
+                    <div className="logs-empty-state-container mx-2 py-10 text-center border rounded-sm">
+                        <div className="flex flex-col items-center gap-2">
+                            <LayoutTemplate />
+                            <p className="text-sm">
+                                No Logs! Try removing the applied filters.
+                            </p>
+                        </div>
                     </div>
                 )}
                 {filteredData.length > 0 && (

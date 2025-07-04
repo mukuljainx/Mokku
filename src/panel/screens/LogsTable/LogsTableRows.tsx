@@ -16,6 +16,16 @@ import { LogDetails } from "./LogDetails";
 import { ILog } from "@/types";
 import { Cpu, Server } from "lucide-react";
 import { urlConstants } from "@/lib";
+import { Button } from "@/components/ui/button";
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableRow,
+    TableCell,
+    TableHead,
+} from "@/components/ui/table";
+import "./LogsTableRow.css";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
@@ -30,6 +40,10 @@ export const LogsTableRows = ({
 }: LogsTableRowsProps) => {
     const [log, setLog] = React.useState<ILog>();
 
+    // React.useEffect(() => {
+    //     setLog(filteredData[0]);
+    // }, [filteredData]);
+
     const columns: ColumnDef<ILog, any>[] = React.useMemo(
         () => [
             {
@@ -39,7 +53,11 @@ export const LogsTableRows = ({
                 cell: (info) => {
                     return (
                         <span className="logs-table-mock-status-cell">
-                            {info.getValue() ? <Cpu /> : <Server />}
+                            {info.getValue() ? (
+                                <Cpu className="size-5" />
+                            ) : (
+                                <Server className="size-5" />
+                            )}
                         </span>
                     );
                 },
@@ -75,9 +93,11 @@ export const LogsTableRows = ({
                     return (
                         <div className="logs-table-action-cell">
                             {info.row.original.isMocked ? (
-                                <button
+                                <Button
+                                    variant="outline"
+                                    size="sm"
                                     data-log-index={info.row.index}
-                                    className="logs-table-mock-button"
+                                    className="logs-table-mock-Button"
                                     onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
@@ -85,11 +105,12 @@ export const LogsTableRows = ({
                                     }}
                                 >
                                     Edit Mock
-                                </button>
+                                </Button>
                             ) : (
-                                <button
+                                <Button
+                                    size="sm"
                                     data-log-index={info.row.index}
-                                    className="logs-table-mock-button"
+                                    className="logs-table-mock-Button"
                                     onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
@@ -97,7 +118,7 @@ export const LogsTableRows = ({
                                     }}
                                 >
                                     Mock
-                                </button>
+                                </Button>
                             )}
                         </div>
                     );
@@ -186,7 +207,7 @@ export const LogsTableRows = ({
         const index = parseInt(
             event.currentTarget.getAttribute("data-log-index") || "",
         );
-        if (index && !isNaN(index)) {
+        if (index !== null && index !== undefined && !isNaN(index)) {
             setLog(filteredData[index]);
         }
     };
@@ -195,24 +216,28 @@ export const LogsTableRows = ({
         <>
             <div
                 ref={tableContainerRef}
-                className="logs-table-virtualized-container"
+                className="logs-table-virtualized-container m-2 border rounded-sm"
             >
                 {log && (
-                    <SidebarDraggable>
+                    <SidebarDraggable width="80%" minWidth={120}>
                         <LogDetails
                             log={log}
                             onClose={() => setLog(undefined)}
                         />
                     </SidebarDraggable>
                 )}
-                <table className="logs-table-element">
-                    <thead className="logs-table-head">
+                <Table className="w-full logs-table-element">
+                    <TableHeader className="sticky top-0 z-50 w-full">
+                        {/* <TableRow className="logs-table-head flex sticky top-0 z-50"> */}
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <tr key={headerGroup.id}>
+                            <TableRow
+                                key={headerGroup.id}
+                                className="logs-table-head w-full"
+                            >
                                 {headerGroup.headers.map((header, index) => (
-                                    <th
+                                    <TableHead
                                         key={header.id}
-                                        scope="col"
+                                        // scope="col"
                                         className={`logs-table-th cell-${columns[index].id}`}
                                     >
                                         {header.isPlaceholder
@@ -222,12 +247,13 @@ export const LogsTableRows = ({
                                                       .header,
                                                   header.getContext(),
                                               )}
-                                    </th>
+                                    </TableHead>
                                 ))}
-                            </tr>
+                            </TableRow>
                         ))}
-                    </thead>
-                    <tbody
+                        {/* </TableRow> */}
+                    </TableHeader>
+                    <TableBody
                         className="logs-table-body"
                         style={{
                             height: `${totalSize}px`,
@@ -235,14 +261,14 @@ export const LogsTableRows = ({
                         }}
                     >
                         {paddingTop > 0 && (
-                            <tr style={{ height: `${paddingTop}px` }}>
-                                <td colSpan={columns.length} />
-                            </tr>
+                            <TableRow style={{ height: `${paddingTop}px` }}>
+                                <TableCell colSpan={columns.length} />
+                            </TableRow>
                         )}
                         {virtualRows.map((virtualRow) => {
                             const row = rows[virtualRow.index];
                             return (
-                                <tr
+                                <TableRow
                                     onClick={openLog}
                                     data-log-index={virtualRow.index}
                                     key={row.id}
@@ -258,7 +284,7 @@ export const LogsTableRows = ({
                                     {row
                                         .getVisibleCells()
                                         .map((cell, index) => (
-                                            <td
+                                            <TableCell
                                                 key={cell.id}
                                                 className={`logs-table-td  cell-${columns[index].id}`}
                                             >
@@ -266,9 +292,9 @@ export const LogsTableRows = ({
                                                     cell.column.columnDef.cell,
                                                     cell.getContext(),
                                                 )}
-                                            </td>
+                                            </TableCell>
                                         ))}
-                                </tr>
+                                </TableRow>
                             );
                         })}
                         {paddingBottom > 0 && (
@@ -276,8 +302,8 @@ export const LogsTableRows = ({
                                 <td colSpan={columns.length} />
                             </tr>
                         )}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
             </div>
         </>
     );

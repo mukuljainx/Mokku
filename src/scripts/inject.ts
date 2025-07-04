@@ -17,7 +17,7 @@ messageService.listen("HOOK", (data) => {
     }
 });
 
-console.log("Hook v2");
+console.log("Hook v2.1");
 
 /**
  * Promisify post message from window to window

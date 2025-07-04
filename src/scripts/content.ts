@@ -88,6 +88,7 @@ export const contentScriptV2 = () => {
             }
 
             if (active) {
+                console.log("active script");
                 // injects script to page's DOM
                 inject();
                 init();

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 
-import "../dashboard/index.scss";
+import "@/output.css";
 import { MultipleTabsSelector } from "./App/MultipleTabsSelector";
 import { AppLoader } from "./App/AppLoader";
 
