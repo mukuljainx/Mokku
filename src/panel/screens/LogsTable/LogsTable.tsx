@@ -44,9 +44,55 @@ export const LogsTable = ({
     return (
         <div className="logs-table-page-container">
             <div className="logs-table-main-box">
-                <header className="flex justify-between items-center border-b p-2">
-                    <div className="logs-table-header-title-group">
-                        <h1 className="text-lg font-bold">Mokku Logs</h1>
+                {/* Filters */}
+                <div className="flex justify-between p-2">
+                    <div className="flex gap-2">
+                        <div className="relative flex items-center">
+                            <Search className="absolute size-4 ml-2" />
+                            <Input
+                                type="text"
+                                value={search ?? ""}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search all logs..."
+                                className="pl-7"
+                            />
+                        </div>
+                        <Select
+                            onValueChange={(value) => setMethodFilter(value)}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select Method" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ALL">All</SelectItem>
+                                {allMethods.map((method) => (
+                                    <SelectItem key={method} value={method}>
+                                        {method}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Select
+                            onValueChange={(value) => setStatusFilter(value)}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ALL">All</SelectItem>
+                                <SelectItem value="2xx">2xx Success</SelectItem>
+                                <SelectItem value="3xx">
+                                    3xx Redirection
+                                </SelectItem>
+                                <SelectItem value="4xx">
+                                    4xx Client Error
+                                </SelectItem>
+                                <SelectItem value="5xx">
+                                    5xx Server Error
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="flex items-center gap-1">
                         <Button
@@ -65,50 +111,6 @@ export const LogsTable = ({
                             <RefreshCcw />
                         </Button>
                     </div>
-                </header>
-
-                {/* Filters */}
-                <div className="flex gap-2 p-2">
-                    <div className="relative flex items-center">
-                        <Search className="absolute size-4 ml-2" />
-                        <Input
-                            type="text"
-                            value={search ?? ""}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search all logs..."
-                            className="pl-7"
-                        />
-                    </div>
-                    <Select onValueChange={(value) => setMethodFilter(value)}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select Method" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="ALL">All</SelectItem>
-                            {allMethods.map((method) => (
-                                <SelectItem key={method} value={method}>
-                                    {method}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select onValueChange={(value) => setStatusFilter(value)}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="ALL">All</SelectItem>
-                            <SelectItem value="2xx">2xx Success</SelectItem>
-                            <SelectItem value="3xx">3xx Redirection</SelectItem>
-                            <SelectItem value="4xx">
-                                4xx Client Error
-                            </SelectItem>
-                            <SelectItem value="5xx">
-                                5xx Server Error
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
                 </div>
                 {filteredData.length === 0 && data.length === 0 && (
                     <div className="logs-empty-state-container">

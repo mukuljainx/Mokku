@@ -216,7 +216,7 @@ export const LogsTableRows = ({
         <>
             <div
                 ref={tableContainerRef}
-                className="logs-table-virtualized-container m-2 border rounded-sm"
+                className="logs-table-virtualized-container mx-2 border rounded-sm"
             >
                 {log && (
                     <SidebarDraggable width="80%" minWidth={120}>
