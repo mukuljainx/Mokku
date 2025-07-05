@@ -158,5 +158,5 @@ export const Home = () => {
         logsMap,
     ]);
 
-    return <LogsTable data={data} clearData={clearData} />;
+    return <LogsTable data={mock} clearData={clearData} />;
 };

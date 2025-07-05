@@ -5,6 +5,7 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
+    SortingState,
     useReactTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -13,7 +14,7 @@ import * as React from "react";
 import { SidebarDraggable } from "../SidebarDraggable/SidebarDraggable";
 import { LogDetails } from "./LogDetails";
 import { ILog } from "@/types";
-import { Cpu, Server } from "lucide-react";
+import { Cpu, Server, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { urlConstants } from "@/lib";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import "./LogsTableRow.css";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { SortableHeader } from "./SortableHeader";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
@@ -69,13 +71,17 @@ export const LogsTableRows = ({
             {
                 accessorKey: "request.method",
                 id: "method",
-                header: "Method",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="Method" />
+                ),
                 cell: (info) => info.getValue(),
             },
             {
                 accessorKey: "request.url",
                 id: "url",
-                header: "URL",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="URL" />
+                ),
                 cell: (info) => (
                     <span className="logs-table-url-cell">
                         {info.getValue()}
@@ -85,7 +91,9 @@ export const LogsTableRows = ({
             {
                 accessorKey: "response.status",
                 id: "status",
-                header: "Status",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="Status" />
+                ),
                 cell: (info) => <StatusBadge status={info.getValue()} />,
             },
             {
@@ -133,10 +141,16 @@ export const LogsTableRows = ({
         [],
     );
 
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+
     const table = useReactTable({
         data: filteredData,
         columns,
-        state: { globalFilter: search },
+        state: {
+            globalFilter: search,
+            sorting,
+        },
+        onSortingChange: setSorting,
         onGlobalFilterChange: setSearch,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
