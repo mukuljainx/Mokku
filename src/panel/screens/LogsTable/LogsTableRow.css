@@ -1,6 +1,7 @@
 .logs-table-element th {
     display: flex;
     align-items: center;
+    padding: 0;
 }
 
 .logs-table-element tr {
@@ -20,7 +21,8 @@
 }
 
 .logs-table-element .cell-action {
-    min-width: 120px;
+    min-width: 116px;
+    padding: 0 8px;
 }
 
 .logs-table-element .cell-url {

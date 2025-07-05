@@ -7,6 +7,7 @@ import {
     getSortedRowModel,
     SortingState,
     useReactTable,
+    VisibilityState,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
@@ -14,7 +15,7 @@ import * as React from "react";
 import { SidebarDraggable } from "../SidebarDraggable/SidebarDraggable";
 import { LogDetails } from "./LogDetails";
 import { ILog } from "@/types";
-import { Cpu, Server, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Cpu, Server } from "lucide-react";
 import { urlConstants } from "@/lib";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,7 @@ import {
 import "./LogsTableRow.css";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { SortableHeader } from "./SortableHeader";
+import { ColumnSelector } from "./ColumnSelector";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
@@ -41,6 +43,50 @@ export const LogsTableRows = ({
     setSearch,
 }: LogsTableRowsProps) => {
     const [log, setLog] = React.useState<ILog>();
+    const [
+        columnVisibility,
+        setColumnVisibility,
+    ] = React.useState<VisibilityState>({
+        "mock-status": true,
+        method: true,
+        url: true,
+        status: true,
+        action: true,
+    });
+
+    const toggleColumn = React.useCallback((columnId: string) => {
+        setColumnVisibility((prev) => ({
+            ...prev,
+            [columnId]: !prev[columnId],
+        }));
+    }, []);
+
+    const columnConfig = React.useMemo(
+        () => [
+            // {
+            //     id: "mock-status",
+            //     label: "Status",
+            //     isVisible: columnVisibility["mock-status"],
+            // },
+            {
+                id: "method",
+                label: "Method",
+                isVisible: columnVisibility["method"],
+            },
+            { id: "url", label: "URL", isVisible: columnVisibility["url"] },
+            {
+                id: "status",
+                label: "Status",
+                isVisible: columnVisibility["status"],
+            },
+            // {
+            //     id: "action",
+            //     label: "Action",
+            //     isVisible: columnVisibility["action"],
+            // },
+        ],
+        [columnVisibility],
+    );
 
     // React.useEffect(() => {
     //     setLog(filteredData[0]);
@@ -99,12 +145,18 @@ export const LogsTableRows = ({
             {
                 id: "action",
                 header: () => (
-                    <div className="logs-table-action-header">Action</div>
+                    <div className="logs-table-action-header flex justify-between items-center w-full gap-2">
+                        Action
+                        <ColumnSelector
+                            columns={columnConfig}
+                            onColumnToggle={toggleColumn}
+                        />
+                    </div>
                 ),
                 cell: (info) => {
                     return (
                         <div className="logs-table-action-cell">
-                            {!info.row.original.isMocked ? (
+                            {info.row.original.isMocked ? (
                                 <Button
                                     variant="outline"
                                     size="sm"
@@ -130,7 +182,7 @@ export const LogsTableRows = ({
                                         onActionClick(info.row.original);
                                     }}
                                 >
-                                    Mock
+                                    Add Mock
                                 </Button>
                             )}
                         </div>
@@ -149,8 +201,10 @@ export const LogsTableRows = ({
         state: {
             globalFilter: search,
             sorting,
+            columnVisibility,
         },
         onSortingChange: setSorting,
+        onColumnVisibilityChange: setColumnVisibility,
         onGlobalFilterChange: setSearch,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -232,102 +286,94 @@ export const LogsTableRows = ({
     };
 
     return (
-        <>
-            <div
-                ref={tableContainerRef}
-                className="logs-table-virtualized-container border rounded-sm"
-            >
-                {log && (
-                    <SidebarDraggable
-                        onClose={() => setLog(undefined)}
-                        width="80%"
-                        minWidth={120}
-                    >
-                        <LogDetails
-                            log={log}
-                            onClose={() => setLog(undefined)}
-                        />
-                    </SidebarDraggable>
-                )}
-                <Table className="w-full logs-table-element">
-                    <TableHeader className="sticky top-0 z-50 w-full">
-                        {/* <TableRow className="logs-table-head flex sticky top-0 z-50"> */}
-                        {table.getHeaderGroups().map((headerGroup) => (
+        <div
+            ref={tableContainerRef}
+            className="logs-table-virtualized-container border rounded-sm"
+        >
+            {log && (
+                <SidebarDraggable
+                    onClose={() => setLog(undefined)}
+                    width="80%"
+                    minWidth={120}
+                >
+                    <LogDetails log={log} onClose={() => setLog(undefined)} />
+                </SidebarDraggable>
+            )}
+            <Table className="w-full logs-table-element">
+                <TableHeader className="sticky top-0 z-50 w-full">
+                    {/* <TableRow className="logs-table-head flex sticky top-0 z-50"> */}
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow
+                            key={headerGroup.id}
+                            className="logs-table-head w-full"
+                        >
+                            {headerGroup.headers.map((header, index) => (
+                                <TableHead
+                                    key={header.id}
+                                    // scope="col"
+                                    className={`logs-table-th cell-${columns[index].id}`}
+                                >
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(
+                                              header.column.columnDef.header,
+                                              header.getContext(),
+                                          )}
+                                </TableHead>
+                            ))}
+                        </TableRow>
+                    ))}
+                    {/* </TableRow> */}
+                </TableHeader>
+                <TableBody
+                    className="logs-table-body"
+                    style={{
+                        height: `${totalSize}px`,
+                        position: "relative",
+                    }}
+                >
+                    {paddingTop > 0 && (
+                        <TableRow style={{ height: `${paddingTop}px` }}>
+                            <TableCell colSpan={columns.length} />
+                        </TableRow>
+                    )}
+                    {virtualRows.map((virtualRow) => {
+                        const row = rows[virtualRow.index];
+                        return (
                             <TableRow
-                                key={headerGroup.id}
-                                className="logs-table-head w-full"
+                                onClick={openLog}
+                                data-log-index={virtualRow.index}
+                                key={row.id}
+                                className="logs-table-row cursor-pointer odd:bg-gray-50 hover:bg-gray-200"
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    transform: `translateY(${virtualRow.start}px)`,
+                                }}
                             >
-                                {headerGroup.headers.map((header, index) => (
-                                    <TableHead
-                                        key={header.id}
-                                        // scope="col"
-                                        className={`logs-table-th cell-${columns[index].id}`}
+                                {row.getVisibleCells().map((cell, index) => (
+                                    <TableCell
+                                        key={cell.id}
+                                        className={`logs-table-td  cell-${columns[index].id}`}
                                     >
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                  header.column.columnDef
-                                                      .header,
-                                                  header.getContext(),
-                                              )}
-                                    </TableHead>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext(),
+                                        )}
+                                    </TableCell>
                                 ))}
                             </TableRow>
-                        ))}
-                        {/* </TableRow> */}
-                    </TableHeader>
-                    <TableBody
-                        className="logs-table-body"
-                        style={{
-                            height: `${totalSize}px`,
-                            position: "relative",
-                        }}
-                    >
-                        {paddingTop > 0 && (
-                            <TableRow style={{ height: `${paddingTop}px` }}>
-                                <TableCell colSpan={columns.length} />
-                            </TableRow>
-                        )}
-                        {virtualRows.map((virtualRow) => {
-                            const row = rows[virtualRow.index];
-                            return (
-                                <TableRow
-                                    onClick={openLog}
-                                    data-log-index={virtualRow.index}
-                                    key={row.id}
-                                    className="logs-table-row cursor-pointer odd:bg-gray-50 hover:bg-gray-200"
-                                    style={{
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        width: "100%",
-                                        transform: `translateY(${virtualRow.start}px)`,
-                                    }}
-                                >
-                                    {row
-                                        .getVisibleCells()
-                                        .map((cell, index) => (
-                                            <TableCell
-                                                key={cell.id}
-                                                className={`logs-table-td  cell-${columns[index].id}`}
-                                            >
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext(),
-                                                )}
-                                            </TableCell>
-                                        ))}
-                                </TableRow>
-                            );
-                        })}
-                        {paddingBottom > 0 && (
-                            <tr style={{ height: `${paddingBottom}px` }}>
-                                <td colSpan={columns.length} />
-                            </tr>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-        </>
+                        );
+                    })}
+                    {paddingBottom > 0 && (
+                        <tr style={{ height: `${paddingBottom}px` }}>
+                            <td colSpan={columns.length} />
+                        </tr>
+                    )}
+                </TableBody>
+            </Table>
+        </div>
     );
 };

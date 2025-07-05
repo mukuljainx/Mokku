@@ -122,6 +122,7 @@ const mock: ILog[] = [
     },
     {
         id: 4,
+        isMocked: true,
         request: {
             time: 0,
             url: "http://demo5488429.mockable.io/a",

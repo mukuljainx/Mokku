@@ -16,7 +16,7 @@ export const SortableHeader = ({
             variant="ghost"
             size="sm"
             onClick={() => column.toggleSorting()}
-            className="text-sm flex gap-1 items-center"
+            className="text-sm flex gap-1 items-center px-2"
         >
             <span>{name}</span>
             {column.getIsSorted() === "asc" ? (
