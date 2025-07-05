@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getDomain } from "../../utils/getDomain";
 import { Home } from "../screens/Home";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
     const [loading, setLoading] = useState(true);
@@ -20,5 +21,9 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
         });
     }, []);
 
-    return <Home />;
+    return (
+        <TooltipProvider>
+            <Home />
+        </TooltipProvider>
+    );
 };

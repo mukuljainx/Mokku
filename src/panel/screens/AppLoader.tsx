@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { getDomain } from "@/lib/domain";
 import { Home } from "./Home";
+import { TooltipProvider } from "@/components/ui/tooltip";
 // import { PanelProvider } from "../../mokku-web-app-connector/panel/PanelProvider";
 
 export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
@@ -22,7 +23,11 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
         });
     }, []);
 
-    return <Home />;
+    return (
+        <TooltipProvider>
+            <Home />
+        </TooltipProvider>
+    );
 
     // if (!loading) {
     //     return (

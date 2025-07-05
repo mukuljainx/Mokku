@@ -17,8 +17,6 @@ messageService.listen("HOOK", (data) => {
     }
 });
 
-console.log("Hook v2.1");
-
 /**
  * Promisify post message from window to window
  * ackRequired, if false, no id will be assigned hence, no method will be added in message
@@ -134,6 +132,7 @@ const getLogObject = (
             queryParams,
             method: (request.method?.toUpperCase() || "GET") as IMethod,
             headers: getHeaders(request.headers),
+            time: Date.now(),
         },
         response,
     };
@@ -246,6 +245,7 @@ async function sendLogAfterRequest(request: any, originalResponse: any) {
         status: responseStatus,
         response: responseText,
         headers: getHeaders(responseHeaders),
+        time: Date.now(),
     });
     postMessage(logEntry, "LOG", false);
 }

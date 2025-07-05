@@ -1,5 +1,4 @@
 import { StatusBadge } from "./StatusBadge";
-import { MethodBadge } from "./MethodBadge";
 import {
     ColumnDef,
     flexRender,
@@ -26,6 +25,7 @@ import {
     TableHead,
 } from "@/components/ui/table";
 import "./LogsTableRow.css";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
@@ -52,11 +52,15 @@ export const LogsTableRows = ({
                 header: "",
                 cell: (info) => {
                     return (
-                        <span className="logs-table-mock-status-cell">
+                        <span className="logs-table-mock-status-cell flex items-center justify-center">
                             {info.getValue() ? (
-                                <Cpu className="size-5" />
+                                <SimpleTooltip content="Mocked call">
+                                    <Cpu className="size-4 text-blue-400" />
+                                </SimpleTooltip>
                             ) : (
-                                <Server className="size-5" />
+                                <SimpleTooltip content="Network call">
+                                    <Server className="size-4 text-gray-600" />
+                                </SimpleTooltip>
                             )}
                         </span>
                     );
@@ -66,7 +70,7 @@ export const LogsTableRows = ({
                 accessorKey: "request.method",
                 id: "method",
                 header: "Method",
-                cell: (info) => <MethodBadge method={info.getValue()} />,
+                cell: (info) => info.getValue(),
             },
             {
                 accessorKey: "request.url",
@@ -92,12 +96,12 @@ export const LogsTableRows = ({
                 cell: (info) => {
                     return (
                         <div className="logs-table-action-cell">
-                            {info.row.original.isMocked ? (
+                            {!info.row.original.isMocked ? (
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     data-log-index={info.row.index}
-                                    className="logs-table-mock-Button"
+                                    className="px-4"
                                     onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
@@ -108,9 +112,10 @@ export const LogsTableRows = ({
                                 </Button>
                             ) : (
                                 <Button
+                                    variant="outline"
                                     size="sm"
                                     data-log-index={info.row.index}
-                                    className="logs-table-mock-Button"
+                                    className="px-4"
                                     onClick={(event) => {
                                         event.stopPropagation();
                                         event.preventDefault();
@@ -216,10 +221,14 @@ export const LogsTableRows = ({
         <>
             <div
                 ref={tableContainerRef}
-                className="logs-table-virtualized-container mx-2 border rounded-sm"
+                className="logs-table-virtualized-container border rounded-sm"
             >
                 {log && (
-                    <SidebarDraggable width="80%" minWidth={120}>
+                    <SidebarDraggable
+                        onClose={() => setLog(undefined)}
+                        width="80%"
+                        minWidth={120}
+                    >
                         <LogDetails
                             log={log}
                             onClose={() => setLog(undefined)}
@@ -272,7 +281,7 @@ export const LogsTableRows = ({
                                     onClick={openLog}
                                     data-log-index={virtualRow.index}
                                     key={row.id}
-                                    className="logs-table-row"
+                                    className="logs-table-row cursor-pointer odd:bg-gray-50 hover:bg-gray-200"
                                     style={{
                                         position: "absolute",
                                         top: 0,

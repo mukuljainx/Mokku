@@ -22,11 +22,13 @@ export interface ILog {
         body?: string;
         queryParams?: string;
         headers: Headers;
+        time: number;
     };
     response?: {
         status: number;
         response: string;
         headers: Headers;
+        time: number;
     };
     mockResponse?: IMockResponse;
     id: number;

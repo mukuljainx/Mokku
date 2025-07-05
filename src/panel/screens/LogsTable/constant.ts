@@ -1,4 +1,4 @@
-export const allMethods = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"];
+export const allMethods = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
 export const allStatuses = {
     200: "OK",
     201: "Created",

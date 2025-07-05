@@ -5,6 +5,7 @@ interface SidebarDraggableProps {
     children: React.ReactNode;
     minWidth?: number;
     width?: string;
+    onClose?: () => void;
 }
 
 let prevWidth: string | undefined | number;
@@ -13,6 +14,7 @@ export const SidebarDraggable = ({
     children,
     minWidth = 16,
     width = "40%",
+    onClose,
 }: SidebarDraggableProps) => {
     const draggerRef = React.useRef<HTMLDivElement>(null);
     const containerRef = React.useRef<HTMLDivElement>(null);
@@ -49,6 +51,7 @@ export const SidebarDraggable = ({
 
     React.useEffect(() => {
         draggerRef.current?.addEventListener("mousedown", onDraggerMouseDown);
+
         const containerWidth = prevWidth || width;
         if (containerRef.current) {
             containerRef.current.style.width = `${containerWidth}px`;
@@ -62,6 +65,19 @@ export const SidebarDraggable = ({
             );
         };
     }, [minWidth]);
+
+    React.useEffect(() => {
+        const handleClose = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                onClose?.();
+            }
+        };
+        document.addEventListener("keydown", handleClose, true);
+        return () => document.removeEventListener("keydown", handleClose);
+    }, []);
 
     return (
         <div

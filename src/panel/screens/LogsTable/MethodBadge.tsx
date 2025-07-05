@@ -14,13 +14,5 @@ export const MethodBadge = ({
 }: {
     method: keyof typeof methodColors;
 }) => {
-    return (
-        <span
-            className={`text-sm font-medium ${
-                methodColors[method] || "text-gray-300"
-            }`}
-        >
-            {method}
-        </span>
-    );
+    return <span className={`text-sm text-blue-400`}>{method}</span>;
 };
