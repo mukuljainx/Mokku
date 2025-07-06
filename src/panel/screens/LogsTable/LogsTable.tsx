@@ -7,7 +7,9 @@ import { LogTableFilter } from "./LogTableFilter";
 export const LogsTable = ({
     data,
     clearData,
+    baseTime,
 }: {
+    baseTime?: number;
     data: ILog[];
     clearData: () => void;
 }) => {
@@ -66,6 +68,7 @@ export const LogsTable = ({
                 )}
                 {filteredData.length > 0 && (
                     <LogsTableRows
+                        baseTime={baseTime}
                         filteredData={filteredData}
                         search={search}
                         setSearch={setSearch}

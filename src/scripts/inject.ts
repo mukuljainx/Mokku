@@ -132,7 +132,7 @@ const getLogObject = (
             queryParams,
             method: (request.method?.toUpperCase() || "GET") as IMethod,
             headers: getHeaders(request.headers),
-            time: Date.now(),
+            time: Date.now().valueOf(), // Using valueOf() to ensure it's a number
         },
         response,
     };
@@ -245,7 +245,7 @@ async function sendLogAfterRequest(request: any, originalResponse: any) {
         status: responseStatus,
         response: responseText,
         headers: getHeaders(responseHeaders),
-        time: Date.now(),
+        time: Date.now().valueOf(),
     });
     postMessage(logEntry, "LOG", false);
 }

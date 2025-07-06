@@ -28,12 +28,14 @@ interface LogsTableRowsProps {
     filteredData: ILog[];
     search: string;
     setSearch: React.Dispatch<React.SetStateAction<string>>;
+    baseTime?: number;
 }
 
 export const LogsTableRows = ({
     filteredData,
     search,
     setSearch,
+    baseTime,
 }: LogsTableRowsProps) => {
     const [log, setLog] = React.useState<ILog>();
     const [
@@ -45,6 +47,8 @@ export const LogsTableRows = ({
         url: true,
         status: true,
         action: true,
+        "request-time": true,
+        "response-time": true,
     });
 
     const toggleColumn = React.useCallback((columnId: string) => {
@@ -57,6 +61,7 @@ export const LogsTableRows = ({
     const columns = useLogTableColumns({
         columnVisibility,
         toggleColumn,
+        baseTime,
     });
 
     const [sorting, setSorting] = React.useState<SortingState>([]);

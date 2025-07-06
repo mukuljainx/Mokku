@@ -8,13 +8,16 @@ import { Button } from "@/components/ui/button";
 import { ColumnSelector } from "./ColumnSelector";
 import { StatusBadge } from "./StatusBadge";
 import { urlConstants } from "@/lib";
+import { TimeRender } from "./TimeRender";
 
 export const useLogTableColumns = ({
     columnVisibility,
     toggleColumn,
+    baseTime,
 }: {
     columnVisibility: Record<string, boolean>;
     toggleColumn: (columnId: string) => void;
+    baseTime?: number;
 }) => {
     const onActionClick = (log: ILog) => {
         chrome.tabs.query({ url: urlConstants.getQueryUrl() }, (tabs) => {
@@ -74,6 +77,16 @@ export const useLogTableColumns = ({
             },
             { id: "url", label: "URL", isVisible: columnVisibility["url"] },
             {
+                id: "request-time",
+                label: "Start Time",
+                isVisible: columnVisibility["request-time"],
+            },
+            {
+                id: "response-time",
+                label: "End Time",
+                isVisible: columnVisibility["response-time"],
+            },
+            {
                 id: "status",
                 label: "Status",
                 isVisible: columnVisibility["status"],
@@ -81,8 +94,6 @@ export const useLogTableColumns = ({
         ],
         [columnVisibility],
     );
-
-    console.log("Column Config:", columnConfig);
 
     const columns: ColumnDef<ILog, any>[] = React.useMemo(
         () => [
@@ -135,6 +146,26 @@ export const useLogTableColumns = ({
                 cell: (info) => <StatusBadge status={info.getValue()} />,
             },
             {
+                accessorKey: "request.time",
+                id: "request-time",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="Start Time" />
+                ),
+                cell: (info) => (
+                    <TimeRender time={info.getValue()} baseTime={baseTime} />
+                ),
+            },
+            {
+                accessorKey: "response.time",
+                id: "response-time",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="End Time" />
+                ),
+                cell: (info) => (
+                    <TimeRender time={info.getValue()} baseTime={baseTime} />
+                ),
+            },
+            {
                 id: "action",
                 header: () => (
                     <div className="logs-table-action-header flex justify-between items-center w-full gap-2">
@@ -182,7 +213,7 @@ export const useLogTableColumns = ({
                 },
             },
         ],
-        [columnConfig],
+        [columnConfig, baseTime],
     );
 
     return columns;

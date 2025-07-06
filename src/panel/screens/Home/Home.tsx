@@ -153,11 +153,12 @@ const mock: ILog[] = [
 ];
 
 export const Home = () => {
-    const { logs, logsMap, clearData } = useLogs();
+    const { logs, logsMap, clearData, baseTime } = useLogs();
+
     const data = React.useMemo(() => logs.map((id) => logsMap[id]), [
         logs,
         logsMap,
     ]);
 
-    return <LogsTable data={mock} clearData={clearData} />;
+    return <LogsTable baseTime={baseTime} data={data} clearData={clearData} />;
 };

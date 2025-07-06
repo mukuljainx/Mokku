@@ -2,12 +2,14 @@
     display: flex;
     align-items: center;
     padding: 0;
+    justify-content: space-between;
 }
 
 .logs-table-element tr {
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .logs-table-element .cell-status,
@@ -36,4 +38,9 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.logs-table-element .cell-request-time,
+.logs-table-element .cell-response-time {
+    min-width: 100px;
 }
