@@ -22,7 +22,7 @@ import {
     TableHead,
 } from "@/components/ui/table";
 import "./LogsTableRow.css";
-import { useColumns } from "./LogTableCoumns";
+import { useLogTableColumns } from "./useLogTableColumns";
 
 interface LogsTableRowsProps {
     filteredData: ILog[];
@@ -54,7 +54,7 @@ export const LogsTableRows = ({
         }));
     }, []);
 
-    const columns = useColumns({
+    const columns = useLogTableColumns({
         columnVisibility,
         toggleColumn,
     });
@@ -123,7 +123,6 @@ export const LogsTableRows = ({
             )}
             <Table className="w-full logs-table-element">
                 <TableHeader className="sticky top-0 z-50 w-full">
-                    {/* <TableRow className="logs-table-head flex sticky top-0 z-50"> */}
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow
                             key={headerGroup.id}
@@ -133,7 +132,7 @@ export const LogsTableRows = ({
                                 <TableHead
                                     key={header.id}
                                     // scope="col"
-                                    className={`logs-table-th cell-${columns[index].id}`}
+                                    className={`logs-table-th cell-${header.id}`}
                                 >
                                     {header.isPlaceholder
                                         ? null
@@ -145,7 +144,6 @@ export const LogsTableRows = ({
                             ))}
                         </TableRow>
                     ))}
-                    {/* </TableRow> */}
                 </TableHeader>
                 <TableBody
                     className="logs-table-body"
@@ -175,10 +173,10 @@ export const LogsTableRows = ({
                                     transform: `translateY(${virtualRow.start}px)`,
                                 }}
                             >
-                                {row.getVisibleCells().map((cell, index) => (
+                                {row.getVisibleCells().map((cell) => (
                                     <TableCell
                                         key={cell.id}
-                                        className={`logs-table-td  cell-${columns[index].id}`}
+                                        className={`logs-table-td  cell-${cell.column.id}`}
                                     >
                                         {flexRender(
                                             cell.column.columnDef.cell,

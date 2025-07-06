@@ -9,7 +9,7 @@ import { ColumnSelector } from "./ColumnSelector";
 import { StatusBadge } from "./StatusBadge";
 import { urlConstants } from "@/lib";
 
-export const useColumns = ({
+export const useLogTableColumns = ({
     columnVisibility,
     toggleColumn,
 }: {
@@ -81,6 +81,8 @@ export const useColumns = ({
         ],
         [columnVisibility],
     );
+
+    console.log("Column Config:", columnConfig);
 
     const columns: ColumnDef<ILog, any>[] = React.useMemo(
         () => [
@@ -180,7 +182,7 @@ export const useColumns = ({
                 },
             },
         ],
-        [],
+        [columnConfig],
     );
 
     return columns;
