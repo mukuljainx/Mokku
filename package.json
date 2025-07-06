@@ -86,6 +86,7 @@
         "@types/query-string": "^6.3.0",
         "@types/react": "19.1.8",
         "@types/react-dom": "19.1.6",
+        "@types/xhook": "^1.5.3",
         "copy-webpack-plugin": "^5.1.1",
         "css-loader": "^3.5.3",
         "docsify-cli": "^4.4.1",

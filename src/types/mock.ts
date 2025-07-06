@@ -59,6 +59,7 @@ export interface IMockResponse {
     dynamic?: boolean;
     active: boolean;
     description: string;
+    responseBodyType?: "json" | "text" | "xml" | "html" | "binary";
 }
 
 export type IMockResponseRaw = Partial<IMockResponse>;

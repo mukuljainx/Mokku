@@ -152,3 +152,6 @@ chrome.runtime.onMessageExternal.addListener((request, sender) => {
     // This is important if you need to do some work before sending the response.
     return true;
 });
+
+
+console.log(911,db.getAllMocks());

@@ -160,5 +160,7 @@ export const Home = () => {
         logsMap,
     ]);
 
+    console.log("Home: Rendered with data", data);
+
     return <LogsTable baseTime={baseTime} data={data} clearData={clearData} />;
 };
