@@ -1,0 +1,187 @@
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { ILog } from "@/types";
+import { ColumnDef } from "@tanstack/react-table";
+import { Cpu, Server } from "lucide-react";
+import React from "react";
+import { SortableHeader } from "./SortableHeader";
+import { Button } from "@/components/ui/button";
+import { ColumnSelector } from "./ColumnSelector";
+import { StatusBadge } from "./StatusBadge";
+import { urlConstants } from "@/lib";
+
+export const useColumns = ({
+    columnVisibility,
+    toggleColumn,
+}: {
+    columnVisibility: Record<string, boolean>;
+    toggleColumn: (columnId: string) => void;
+}) => {
+    const onActionClick = (log: ILog) => {
+        chrome.tabs.query({ url: urlConstants.getQueryUrl() }, (tabs) => {
+            const sendMockToTab = (tab?: chrome.tabs.Tab) => {
+                setTimeout(() => {
+                    if (tab?.id) {
+                        chrome.tabs.sendMessage(tab.id, {
+                            type: "NEW_MOCK",
+                            data: log,
+                        });
+                    }
+                }, 500);
+            };
+
+            if (tabs.length === 0) {
+                chrome.tabs.create(
+                    {
+                        url: urlConstants.getNewMockUrl(log.projectId),
+                    },
+                    sendMockToTab,
+                );
+                return;
+            }
+            chrome.windows.update(
+                tabs[0].windowId,
+                {
+                    focused: true,
+                },
+                () => {
+                    if (tabs[0].id) {
+                        chrome.tabs.update(
+                            tabs[0].id,
+                            {
+                                active: true,
+                                highlighted: true,
+                                url: urlConstants.getNewMockUrl(log.projectId),
+                            },
+                            sendMockToTab,
+                        );
+                    }
+                },
+            );
+        });
+    };
+
+    const columnConfig = React.useMemo(
+        () => [
+            {
+                id: "mock-status",
+                label: "Mocked Status",
+                isVisible: columnVisibility["mock-status"],
+            },
+            {
+                id: "method",
+                label: "Method",
+                isVisible: columnVisibility["method"],
+            },
+            { id: "url", label: "URL", isVisible: columnVisibility["url"] },
+            {
+                id: "status",
+                label: "Status",
+                isVisible: columnVisibility["status"],
+            },
+        ],
+        [columnVisibility],
+    );
+
+    const columns: ColumnDef<ILog, any>[] = React.useMemo(
+        () => [
+            {
+                accessorKey: "isMocked",
+                id: "mock-status",
+                header: "",
+                cell: (info) => {
+                    return (
+                        <span className="logs-table-mock-status-cell flex items-center justify-center">
+                            {info.getValue() ? (
+                                <SimpleTooltip content="Mocked call">
+                                    <Cpu className="size-4 text-blue-400" />
+                                </SimpleTooltip>
+                            ) : (
+                                <SimpleTooltip content="Network call">
+                                    <Server className="size-4 text-gray-600" />
+                                </SimpleTooltip>
+                            )}
+                        </span>
+                    );
+                },
+            },
+            {
+                accessorKey: "request.method",
+                id: "method",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="Method" />
+                ),
+                cell: (info) => info.getValue(),
+            },
+            {
+                accessorKey: "request.url",
+                id: "url",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="URL" />
+                ),
+                cell: (info) => (
+                    <span className="logs-table-url-cell">
+                        {info.getValue()}
+                    </span>
+                ),
+            },
+            {
+                accessorKey: "response.status",
+                id: "status",
+                header: ({ column }) => (
+                    <SortableHeader column={column} name="Status" />
+                ),
+                cell: (info) => <StatusBadge status={info.getValue()} />,
+            },
+            {
+                id: "action",
+                header: () => (
+                    <div className="logs-table-action-header flex justify-between items-center w-full gap-2">
+                        Action
+                        <ColumnSelector
+                            columns={columnConfig}
+                            onColumnToggle={toggleColumn}
+                        />
+                    </div>
+                ),
+                cell: (info) => {
+                    return (
+                        <div className="logs-table-action-cell">
+                            {info.row.original.isMocked ? (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    data-log-index={info.row.index}
+                                    className="px-4"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        onActionClick(info.row.original);
+                                    }}
+                                >
+                                    Edit Mock
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    data-log-index={info.row.index}
+                                    className="px-4"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        onActionClick(info.row.original);
+                                    }}
+                                >
+                                    Add Mock
+                                </Button>
+                            )}
+                        </div>
+                    );
+                },
+            },
+        ],
+        [],
+    );
+
+    return columns;
+};
