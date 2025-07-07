@@ -1,5 +1,13 @@
 import { Input } from "@/components/ui/input";
-import { CircleStop, RefreshCcw, Search, Trash2 } from "lucide-react";
+import {
+    CircleStop,
+    CircleX,
+    ExternalLink,
+    RefreshCcw,
+    Search,
+    SquareArrowOutUpRight,
+    Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -11,6 +19,8 @@ import {
 import React from "react";
 import { allMethods } from "./constant";
 import { MokkuActionMenu } from "../MokkuActionMenu";
+import { openApp } from "@/services/app";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 
 interface LogTableFilterProps {
     search?: string;
@@ -29,7 +39,7 @@ export const LogTableFilter = ({
 }: LogTableFilterProps) => (
     <div className="flex justify-between flex-wrap gap-2 py-2">
         <div className="flex gap-2 flex-wrap">
-            <div className="relative flex items-center !h-8">
+            <div className="relative flex items-center !h-8 w-40">
                 <Search className="absolute size-4 ml-2" />
                 <Input
                     type="text"
@@ -40,7 +50,7 @@ export const LogTableFilter = ({
                 />
             </div>
             <Select onValueChange={(value) => setMethodFilter(value)}>
-                <SelectTrigger className="w-[180px] !h-8">
+                <SelectTrigger className="w-36 !h-8">
                     <SelectValue placeholder="Select Method" />
                 </SelectTrigger>
                 <SelectContent>
@@ -54,7 +64,7 @@ export const LogTableFilter = ({
             </Select>
 
             <Select onValueChange={(value) => setStatusFilter(value)}>
-                <SelectTrigger className="w-[180px] !h-8">
+                <SelectTrigger className="w-36 !h-8">
                     <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -65,33 +75,22 @@ export const LogTableFilter = ({
                     <SelectItem value="5xx">5xx Server Error</SelectItem>
                 </SelectContent>
             </Select>
-            <Button
-                size="sm"
-                onClick={clearData}
-                className="logs-table-clear-Button text-red-500 border border-red-500 bg-transparent hover:bg-red-500 hover:text-white"
-            >
-                <Trash2 />
-                Clear logs
-            </Button>
+            <SimpleTooltip asChild content="Clear Logs">
+                <Button
+                    size="sm"
+                    onClick={clearData}
+                    className="logs-table-clear-Button text-red-500 border border-red-500 bg-transparent hover:bg-red-500 hover:text-white"
+                >
+                    <CircleX />
+                </Button>
+            </SimpleTooltip>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
-            <MokkuActionMenu />
-            {/* <Button
-                variant="outline"
-                size="sm"
-                // className="logs-table-clear-Button text-red-500 border border-red-500 bg-transparent hover:bg-red-500 hover:text-white"
-                onClick={() => window.location.reload()}
-            >
-                <RefreshCcw />
+            <Button variant="outline" size="sm" onClick={() => openApp()}>
+                Open App
+                <SquareArrowOutUpRight />
             </Button>
-            <Button
-                variant="outline"
-                size="sm"
-                // className="logs-table-clear-Button text-red-500 border border-red-500 bg-transparent hover:bg-red-500 hover:text-white"
-                onClick={() => window.location.reload()}
-            >
-                <CircleStop />
-            </Button> */}
+            <MokkuActionMenu />
         </div>
     </div>
 );

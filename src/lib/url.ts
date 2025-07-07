@@ -7,8 +7,11 @@ const getNewMockUrl = (projectId?: string) =>
 
 const getQueryUrl = () => getOriginUrl() + "/*";
 
+const getProjectsUrl = () => getOriginUrl() + "/projects?source=MOKKU";
+
 export const urlConstants = {
     getOriginUrl,
     getNewMockUrl,
     getQueryUrl,
+    getProjectsUrl,
 };

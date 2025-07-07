@@ -9,6 +9,7 @@ import { ColumnSelector } from "./ColumnSelector";
 import { StatusBadge } from "./StatusBadge";
 import { urlConstants } from "@/lib";
 import { TimeRender } from "./TimeRender";
+import { openApp } from "@/services/app";
 
 export const useLogTableColumns = ({
     columnVisibility,
@@ -32,34 +33,9 @@ export const useLogTableColumns = ({
                 }, 500);
             };
 
-            if (tabs.length === 0) {
-                chrome.tabs.create(
-                    {
-                        url: urlConstants.getNewMockUrl(log.projectId),
-                    },
-                    sendMockToTab,
-                );
-                return;
-            }
-            chrome.windows.update(
-                tabs[0].windowId,
-                {
-                    focused: true,
-                },
-                () => {
-                    if (tabs[0].id) {
-                        chrome.tabs.update(
-                            tabs[0].id,
-                            {
-                                active: true,
-                                highlighted: true,
-                                url: urlConstants.getNewMockUrl(log.projectId),
-                            },
-                            sendMockToTab,
-                        );
-                    }
-                },
-            );
+            const projectUrl = urlConstants.getNewMockUrl(log.projectId);
+
+            openApp({ onSuccess: sendMockToTab, url: projectUrl });
         });
     };
 

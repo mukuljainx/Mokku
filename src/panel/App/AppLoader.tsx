@@ -18,12 +18,17 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
     useEffect(() => {
         if (!active) {
             chrome.storage.local.get([storeKey], (result) => {
-                console.log({ result, isLocalhost });
                 let tempActive = result[storeKey] || false;
-                if (isLocalhost && active === false) {
-                    tempActive = true;
+                if (tempActive === false) {
+                    setActive(false);
+                    setLoading(false);
+                    return;
                 }
-                setActive(tempActive);
+
+                // if tempActive is undefined, check if it's localhost
+                if (isLocalhost) {
+                    setActive(true);
+                }
                 setLoading(false);
             });
         }

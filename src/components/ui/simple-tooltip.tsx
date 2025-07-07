@@ -17,7 +17,7 @@ export const SimpleTooltip = ({
 }) => {
     return (
         <Tooltip>
-            <TooltipTrigger asChild={false} className={className}>
+            <TooltipTrigger asChild={asChild} className={className}>
                 {children}
             </TooltipTrigger>
             <TooltipContent className="max-w-80" portal={true}>
