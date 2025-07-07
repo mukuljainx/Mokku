@@ -146,6 +146,8 @@ export const useLogTableColumns = ({
                 header: ({ column }) => (
                     <SortableHeader column={column} name="Status" />
                 ),
+                accessorFn: (row) =>
+                    row.response?.status?.toString() ?? "pending",
                 cell: (info) => <StatusBadge status={info.getValue()} />,
             },
             {
@@ -160,6 +162,7 @@ export const useLogTableColumns = ({
             },
             {
                 accessorKey: "response.time",
+                accessorFn: (row) => row.response?.time,
                 id: "response-time",
                 header: ({ column }) => (
                     <SortableHeader column={column} name="End Time" />

@@ -76,7 +76,7 @@ xhook.before(function (request, callback) {
         ?.then((mockServiceResponse) => {
             if (mockServiceResponse?.mockResponse) {
                 const mock = mockServiceResponse.mockResponse as IMockResponse;
-                console.log("Mokku Inject: Mock response found:", mock);
+                console.error("Mokku Inject: Mock response found:", mock);
 
                 const headers = mock.headers
                     ? mock.headers.reduce<Record<string, string>>(
@@ -122,8 +122,6 @@ xhook.after(async function (request, originalResponse) {
     }
 
     const responseLog = await getLogResponse(originalResponse);
-
-    console.log({ responseLog });
 
     const logEntry = {
         id: request.mokku.id,

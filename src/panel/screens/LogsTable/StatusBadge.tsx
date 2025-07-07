@@ -3,13 +3,18 @@ import { cn } from "@/lib";
 import * as React from "react";
 
 export const StatusBadge = ({ status }: { status: string }) => {
+    if (!status || status === "pending") {
+        return <Badge className="bg-gray-100 text-gray-700">Pending</Badge>;
+    }
+
     const statusCode = parseInt(status, 10);
     let badgeStatus = ""; // Default gray badge
-    // Green for 2xx
-    // Green for 3xx
+
+    // Green for 2xx and 3xx
     if (statusCode >= 200 && statusCode < 400) badgeStatus = "success";
     // Yellow for 4xx
     else if (statusCode >= 400 && statusCode < 500) badgeStatus = "warning";
+    // Red for 5xx
     else if (statusCode >= 500) badgeStatus = "danger";
 
     return (

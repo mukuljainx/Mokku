@@ -3,7 +3,6 @@ import inject from "./injectToDom";
 import { IEventMessage, IMockResponse } from "@/types";
 import { messageService } from "@/lib";
 
-console.log("Content Script v.2");
 const port = chrome.runtime.connect({ name: "mokku-content-script" });
 
 export const contentScriptV2 = () => {
@@ -60,13 +59,11 @@ export const contentScriptV2 = () => {
         });
 
         messageService.listen("CONTENT", (data: IEventMessage) => {
-            console.log(11, data);
             if (data.type === "CHECK_MOCK") {
                 port.postMessage(data);
             }
 
             if (data.type === "LOG") {
-                console.log("LOG RECEVIED");
                 messageService.send({
                     ...data,
                     from: "CONTENT",
