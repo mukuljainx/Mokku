@@ -15,10 +15,6 @@ chrome.tabs.get(chrome.devtools.inspectedWindow.tabId, (tab) => {
         // This should not happen as we are getting tabId from devtools
         // but to make things safe here
         chrome.tabs.query({ active: true, currentWindow: false }, (tabs) => {
-            console.log(
-                911,
-                tabs.map(({ id, url }) => ({ id, url })),
-            );
             root.render(<MultipleTabsSelector tabs={tabs} />);
         });
     }

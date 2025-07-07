@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { RefreshCcw, Search, Trash2 } from "lucide-react";
+import { CircleStop, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import React from "react";
 import { allMethods } from "./constant";
+import { MokkuActionMenu } from "../MokkuActionMenu";
 
 interface LogTableFilterProps {
     search?: string;
@@ -64,8 +65,6 @@ export const LogTableFilter = ({
                     <SelectItem value="5xx">5xx Server Error</SelectItem>
                 </SelectContent>
             </Select>
-        </div>
-        <div className="flex items-center gap-1 flex-wrap">
             <Button
                 size="sm"
                 onClick={clearData}
@@ -74,7 +73,10 @@ export const LogTableFilter = ({
                 <Trash2 />
                 Clear logs
             </Button>
-            <Button
+        </div>
+        <div className="flex items-center gap-1 flex-wrap">
+            <MokkuActionMenu />
+            {/* <Button
                 variant="outline"
                 size="sm"
                 // className="logs-table-clear-Button text-red-500 border border-red-500 bg-transparent hover:bg-red-500 hover:text-white"
@@ -82,6 +84,14 @@ export const LogTableFilter = ({
             >
                 <RefreshCcw />
             </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                // className="logs-table-clear-Button text-red-500 border border-red-500 bg-transparent hover:bg-red-500 hover:text-white"
+                onClick={() => window.location.reload()}
+            >
+                <CircleStop />
+            </Button> */}
         </div>
     </div>
 );

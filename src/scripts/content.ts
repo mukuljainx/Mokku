@@ -71,6 +71,13 @@ export const contentScriptV2 = () => {
                 });
             }
         });
+
+        messageService.listen("PANEL", (data: IEventMessage) => {
+            if (data.type === "MOKKU_ACTIVATED") {
+                inject();
+                init();
+            }
+        });
     };
 
     const host = location.host;
@@ -85,7 +92,6 @@ export const contentScriptV2 = () => {
             }
 
             if (active) {
-                console.log("active script");
                 // injects script to page's DOM
                 inject();
                 init();
