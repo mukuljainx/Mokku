@@ -1,3 +1,5 @@
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { Info } from "lucide-react";
 import React from "react";
 
 export const TimeRender: React.FC<{
@@ -10,5 +12,18 @@ export const TimeRender: React.FC<{
 
     const adjustedTime = baseTime ? time - baseTime : time;
     const formattedTime = adjustedTime;
-    return <>{formattedTime}</>;
+    return (
+        <div
+            title={formattedTime + " ms"}
+            className="w-full flex items-center gap-1"
+        >
+            <div className="text-ellipsis overflow-hidden">{formattedTime}</div>{" "}
+            ms
+            {formattedTime === 0 && (
+                <SimpleTooltip content="This is the base time for all log entries. It is subtracted from the request time to show the time taken from the first request.">
+                    <Info className="size-3" />
+                </SimpleTooltip>
+            )}
+        </div>
+    );
 };

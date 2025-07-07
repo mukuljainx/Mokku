@@ -20,8 +20,8 @@ export const SimpleTooltip = ({
             <TooltipTrigger asChild={false} className={className}>
                 {children}
             </TooltipTrigger>
-            <TooltipContent portal={true}>
-                <p className="max-w-80">{content}</p>
+            <TooltipContent className="max-w-80" portal={true}>
+                <p >{content}</p>
             </TooltipContent>
         </Tooltip>
     );

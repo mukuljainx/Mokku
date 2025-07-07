@@ -21,7 +21,7 @@ import {
     TableCell,
     TableHead,
 } from "@/components/ui/table";
-import "./LogsTableRow.css";
+import "./LogsTableRow.scss";
 import { useLogTableColumns } from "./useLogTableColumns";
 
 interface LogsTableRowsProps {
@@ -47,8 +47,8 @@ export const LogsTableRows = ({
         url: true,
         status: true,
         action: true,
-        "request-time": true,
-        "response-time": true,
+        "request-time": false,
+        "response-time": false,
     });
 
     const toggleColumn = React.useCallback((columnId: string) => {

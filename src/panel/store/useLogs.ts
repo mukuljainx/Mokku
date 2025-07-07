@@ -17,7 +17,6 @@ export const useLogs = () => {
 
     useEffect(() => {
         messageService.listen("PANEL", (data) => {
-            console.log("panel data", data);
             if (data.type === "LOG") {
                 const log = data.message as ILog;
                 const logId = log.id;

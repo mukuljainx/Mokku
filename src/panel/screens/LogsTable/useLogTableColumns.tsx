@@ -132,7 +132,10 @@ export const useLogTableColumns = ({
                     <SortableHeader column={column} name="URL" />
                 ),
                 cell: (info) => (
-                    <span className="logs-table-url-cell">
+                    <span
+                        title={info.getValue()}
+                        className="logs-table-url-cell"
+                    >
                         {info.getValue()}
                     </span>
                 ),

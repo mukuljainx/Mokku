@@ -29,9 +29,16 @@
 
 .logs-table-element .cell-url {
     flex-grow: 2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+}
+
+.logs-table-element {
+    .cell-url,
+    .cell-request-time,
+    .cell-response-time {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 .logs-table-header-action-group {
@@ -43,4 +50,5 @@
 .logs-table-element .cell-request-time,
 .logs-table-element .cell-response-time {
     min-width: 100px;
+    max-width: 100px;
 }
