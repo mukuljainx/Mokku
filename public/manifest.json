@@ -23,7 +23,7 @@
         {
             "matches": ["http://localhost:5173/*"],
             "js": ["js/app.js"],
-            "run_at": "document_start"
+            "run_at": "document_idle"
         }
     ],
     "devtools_page": "devtool.html",

@@ -9,7 +9,7 @@ import { ColumnSelector } from "./ColumnSelector";
 import { StatusBadge } from "./StatusBadge";
 import { urlConstants } from "@/lib";
 import { TimeRender } from "./TimeRender";
-import { openApp } from "@/services/app";
+import { openApp, sendMessageToApp } from "@/services/app";
 
 export const useLogTableColumns = ({
     columnVisibility,
@@ -25,8 +25,8 @@ export const useLogTableColumns = ({
             const sendMockToTab = (tab?: chrome.tabs.Tab) => {
                 setTimeout(() => {
                     if (tab?.id) {
-                        chrome.tabs.sendMessage(tab.id, {
-                            type: "NEW_MOCK",
+                        sendMessageToApp(tab.id, {
+                            type: "ADD_EDIT_MOCK",
                             data: log,
                         });
                     }

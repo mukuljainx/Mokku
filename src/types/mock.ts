@@ -80,6 +80,7 @@ export interface IStore {
             active: boolean;
         }
     >;
+    isMigrated: boolean;
 }
 
 export type DBNameType = "mokku.extension.main.db";

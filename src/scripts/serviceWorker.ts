@@ -1,6 +1,8 @@
-import { IEventMessage, ILog, IMockResponse } from "@/types";
+import { APP_MESSAGE_TYPE, IEventMessage, ILog, IMockResponse } from "@/types";
 import { db, type DynamicUrlEntry } from "@/services";
 import { parseJSONIfPossible } from "@/lib/parseJson";
+import { getStore } from "@/services/oldDb";
+import { sendMessageToApp } from "@/services/app";
 
 let dynamicUrlPatterns: DynamicUrlEntry[] = [];
 
@@ -144,7 +146,24 @@ chrome.runtime.onMessageExternal.addListener((request, sender) => {
     console.log("Received message from:", sender.url);
     console.log("Message:", request);
 
-    if (request.type === "NEW_MOCK") {
+    const tabId = sender.tab?.id;
+    const type = request.type as APP_MESSAGE_TYPE;
+
+    if(type === 'APP_CONNECTED' ) {
+        // check if there are mocks in oldDb
+        getStore().then(({store}) => {
+            if(store.mocks.length >0){
+                sendMessageToApp(tabId, {
+                    type: "MIGRATE_MOCKS",
+                    data: store.mocks,
+                });
+            }
+        })
+            
+
+    }
+
+    if (type === "NEW_MOCK") {
         db.addMock(request.data);
     }
 

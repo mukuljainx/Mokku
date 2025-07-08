@@ -1,4 +1,5 @@
 import { urlConstants } from "@/lib";
+import { APP_MESSAGE_TYPE } from "@/types";
 
 export const openApp = ({
     onSuccess,
@@ -37,4 +38,15 @@ export const openApp = ({
             },
         );
     });
+};
+
+export const sendMessageToApp = (
+    tabId: chrome.tabs.Tab["id"],
+    message: { type: APP_MESSAGE_TYPE; data: unknown },
+) => {
+    if (tabId === undefined) {
+        console.error("sendMessageToApp: tabId is undefined");
+        return;
+    }
+    return chrome.tabs.sendMessage(tabId, message);
 };
