@@ -1,7 +1,7 @@
 const inject = () => {
     // Inject Script to user's DOM
     const s = document.createElement("script");
-    s.src = chrome.runtime.getURL("js/inject.js");
+    s.src = chrome.runtime.getURL("js/hook.js");
     (document.head || document.documentElement).appendChild(s);
 };
 

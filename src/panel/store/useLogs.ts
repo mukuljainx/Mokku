@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ILog } from "@/types";
-import { messageService } from "@/lib";
+import { MessageService } from "@/lib";
+
+const messageService = new MessageService("PANEL");
 
 export const useLogs = () => {
     const [logs, setLogs] = useState<number[]>([]);
@@ -16,9 +18,9 @@ export const useLogs = () => {
     }, []);
 
     useEffect(() => {
-        messageService.listen("PANEL", (data) => {
+        messageService.listen((data) => {
             if (data.type === "LOG") {
-                const log = data.message as ILog;
+                const log = data.data as ILog;
                 const logId = log.id;
 
                 if (logId === undefined) {
@@ -43,7 +45,7 @@ export const useLogs = () => {
                     [logId]: { ...logsMap[logId], ...log },
                 }));
             } else if (data.type === "LOG_MOCK_STATUS") {
-                const log = data.message as ILog;
+                const log = data.data as ILog;
                 const logId = log.id;
                 if (logId === undefined) {
                     return;

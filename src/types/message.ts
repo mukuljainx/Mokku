@@ -1,6 +1,12 @@
 import { ILog } from "./mock";
 
-export type Process = "HOOK" | "CONTENT" | "PANEL" | "SERVICE_WORKER" | "ALL";
+export type Process =
+    | "HOOK"
+    | "CONTENT"
+    | "PANEL"
+    | "SERVICE_WORKER"
+    | "APP_SCRIPT"
+    | "APP";
 
 export type APP_MESSAGE_TYPE =
     | "APP_CONNECTED"
@@ -8,19 +14,19 @@ export type APP_MESSAGE_TYPE =
     | "MIGRATE_MOCKS"
     | "ADD_EDIT_MOCK";
 
-export interface IEventMessage {
-    to: Process;
-    from: Process;
-    extensionName: "MOKKU";
-    id?: number;
-    type?:
-        | "LOG"
-        | "NOTIFICATION"
-        | "INIT"
-        | "CHECK_MOCK"
-        | "LOG_MOCK_STATUS"
-        | "MOKKU_ACTIVATED"
-        | APP_MESSAGE_TYPE;
-    message: ILog | Record<string, any> | string | number;
-    origin?: Process;
+export type Tunnel = "WINDOW" | "RUNTIME";
+
+export type MessageType = {
+    HOOK: "CHECK_MOCK" | "LOG";
+    CONTENT: "LOG" | "CHECK_MOCK" | "MOKKU_ACTIVATED";
+    PANEL: "LOG_MOCK_STATUS" | "LOG" | "INIT";
+    SERVICE_WORKER: "CHECK_MOCK";
+    APP_SCRIPT: APP_MESSAGE_TYPE;
+    APP: APP_MESSAGE_TYPE;
+};
+
+export interface IMessage<T extends Process, U = unknown> {
+    type: MessageType[T];
+    data?: U;
+    messageId?: number;
 }

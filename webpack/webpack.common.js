@@ -8,8 +8,8 @@ module.exports = {
     entry: {
         background: path.join(__dirname, scripts + "serviceWorker.ts"),
         content_script: path.join(__dirname, scripts + "content.ts"),
-        app: path.join(__dirname, scripts + "app.ts"),
-        inject: path.join(__dirname, scripts + "inject.ts"),
+        app_script: path.join(__dirname, scripts + "app_script.ts"),
+        hook: path.join(__dirname, scripts + "hook.ts"),
         devtool: path.join(__dirname, srcDir + "devtool.ts"),
         panel: path.join(__dirname, srcDir + "panel/index.tsx"),
     },

@@ -22,7 +22,7 @@
         },
         {
             "matches": ["http://localhost:5173/*"],
-            "js": ["js/app.js"],
+            "js": ["js/app_script.js"],
             "run_at": "document_idle"
         }
     ],
@@ -34,7 +34,7 @@
     "host_permissions": ["<all_urls>"],
     "web_accessible_resources": [
         {
-            "resources": ["js/inject.js"],
+            "resources": ["js/hook.js"],
             "matches": ["<all_urls>"]
         }
     ],

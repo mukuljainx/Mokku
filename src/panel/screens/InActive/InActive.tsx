@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
-import { messageService } from "@/lib";
+import { MessageService } from "@/lib";
 import React from "react";
+
+const messageService = new MessageService("PANEL");
 
 export const InActive = ({
     storeKey,
@@ -15,12 +17,8 @@ export const InActive = ({
             chrome.tabs.update(tab.id, { url: tab.url });
             location.reload();
         });
-        messageService.send({
-            to: "CONTENT",
-            from: "PANEL",
+        messageService.send("CONTENT", {
             type: "MOKKU_ACTIVATED",
-            extensionName: "MOKKU",
-            message: {},
         });
     };
 

@@ -26,7 +26,7 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
                 }
 
                 // if tempActive is undefined, check if it's localhost
-                if (isLocalhost) {
+                if (isLocalhost || tempActive) {
                     setActive(true);
                 }
                 setLoading(false);

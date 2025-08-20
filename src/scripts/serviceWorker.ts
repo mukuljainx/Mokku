@@ -1,4 +1,4 @@
-import { APP_MESSAGE_TYPE, IEventMessage, ILog, IMockResponse } from "@/types";
+import { APP_MESSAGE_TYPE, ILog, IMessage, IMockResponse } from "@/types";
 import { db, type DynamicUrlEntry } from "@/services";
 import { parseJSONIfPossible } from "@/lib/parseJson";
 import { getStore } from "@/services/oldDb";
@@ -45,17 +45,21 @@ function findMatchingDynamicUrl(
 
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "mokku-content-script") {
-        port.onMessage.addListener(async (data: IEventMessage) => {
+        port.onMessage.addListener(async (data: IMessage<"SERVICE_WORKER">) => {
+            // REQUEST_CHECKPOINT_3: service worker received message from content script
             if (data.type === "CHECK_MOCK") {
-                const log = data.message as ILog;
+                const log = data.data as ILog;
                 let mock: IMockResponse | undefined = undefined;
                 const request = log.request as ILog["request"];
 
                 if (!request) {
                     return port.postMessage({
-                        mockResponse: null,
-                        id: data.id,
-                        request: request,
+                        data: {
+                            mockResponse: null,
+                            request: request,
+                        },
+
+                        messageId: data.messageId,
                     });
                 }
 
@@ -123,18 +127,24 @@ chrome.runtime.onConnect.addListener((port) => {
                     }
                 }
 
+                // REQUEST_CHECKPOINT_4: service worker informs content script about mock
                 if (mock) {
                     port.postMessage({
-                        mockResponse: mock,
-                        id: data.id,
-                        request: request,
+                        data: {
+                            mockResponse: mock,
+                            request: request,
+                        },
+                        messageId: data.messageId,
                     });
                 } else {
+                    console.log(81144, "No mock found for request:", request);
                     //todo: inform the panel
                     port.postMessage({
-                        mockResponse: null,
-                        id: data.id,
-                        request: request,
+                        data: {
+                            request: request,
+                            mockResponse: null,
+                        },
+                        messageId: data.messageId,
                     });
                 }
             }
@@ -149,18 +159,22 @@ chrome.runtime.onMessageExternal.addListener((request, sender) => {
     const tabId = sender.tab?.id;
     const type = request.type as APP_MESSAGE_TYPE;
 
-    if(type === 'APP_CONNECTED' ) {
+    sendMessageToApp(tabId, {
+        // @ts-ignore
+        type: "MIGRATE_MOCKS_XXXX",
+        data: [],
+    });
+
+    if (type === "APP_CONNECTED") {
         // check if there are mocks in oldDb
-        getStore().then(({store}) => {
-            if(store.mocks.length >0){
+        getStore().then(({ store }) => {
+            if (store.mocks.length > 0) {
                 sendMessageToApp(tabId, {
                     type: "MIGRATE_MOCKS",
                     data: store.mocks,
                 });
             }
-        })
-            
-
+        });
     }
 
     if (type === "NEW_MOCK") {
@@ -172,5 +186,4 @@ chrome.runtime.onMessageExternal.addListener((request, sender) => {
     return true;
 });
 
-
-console.log(911,db.getAllMocks());
+console.log(911, db.getAllMocks());

@@ -45,7 +45,7 @@ export interface ILog {
 export interface IMockResponse {
     localId?: number;
     method: IMethod;
-    createdOn: number;
+    createdAt: number;
     url: string;
     status: number;
     response?: string;
@@ -58,7 +58,7 @@ export interface IMockResponse {
     function?: string;
     dynamic?: boolean;
     active: boolean;
-    description: string;
+    description?: string;
     responseBodyType?: "json" | "text" | "xml" | "html" | "binary";
 }
 

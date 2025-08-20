@@ -1,83 +1,96 @@
 import { runFunction } from "./functionExecutor";
 import inject from "./injectToDom";
-import { IEventMessage, IMockResponse } from "@/types";
-import { messageService } from "@/lib";
+import { ILog, IMessage, IMockResponse } from "@/types";
+import { MessageService } from "@/lib";
+
+const messageService = new MessageService("CONTENT");
 
 const port = chrome.runtime.connect({ name: "mokku-content-script" });
 
 export const contentScriptV2 = () => {
     const init = () => {
-        port.onMessage.addListener(async (message) => {
-            // messaged received from service worker
-            const mock = message?.mockResponse as IMockResponse;
-            const request = message?.request;
+        port.onMessage.addListener(
+            async (
+                message: IMessage<
+                    "CONTENT",
+                    {
+                        mockResponse: IMockResponse | null;
+                        request: ILog["request"];
+                    }
+                >,
+            ) => {
+                // messaged received from service worker
+                const mock = message?.data.mockResponse as IMockResponse;
+                const request = message?.data.request;
 
-            if (!mock) {
-                messageService.send({
-                    from: "CONTENT",
-                    to: "HOOK",
-                    extensionName: "MOKKU",
-                    message,
-                    id: message.id,
-                });
-            } else {
-                if (
-                    mock.responseType === "FUNCTION" &&
-                    mock.function &&
-                    mock.active
-                ) {
-                    const result = await runFunction(
-                        mock.function,
-                        request.queryParams,
-                        request.body,
-                    );
-                    mock.response = result as string;
+                if (!mock) {
+                    // REQUEST_CHECKPOINT_5_1: sending mock response to hook
+                    messageService.send("HOOK", {
+                        data: message,
+                        messageId: message.messageId,
+                        type: "CHECK_MOCK",
+                    });
+                } else {
+                    if (
+                        mock.responseType === "FUNCTION" &&
+                        mock.function &&
+                        mock.active
+                    ) {
+                        const result = await runFunction(
+                            mock.function,
+                            request.queryParams,
+                            request.body,
+                        );
+                        mock.response = result as string;
+                    }
+
+                    // REQUEST_CHECKPOINT_5_2: sending mock response to hook
+                    messageService.send("HOOK", {
+                        data: message,
+                        messageId: message.messageId,
+                        type: "LOG",
+                    });
+
+                    messageService.send("PANEL", {
+                        type: "LOG_MOCK_STATUS",
+                        data: {
+                            isMocked: true,
+                            id: message.messageId,
+                            projectId: mock.projectId,
+                            mockId: mock.id,
+                        },
+                        messageId: message.messageId,
+                    });
                 }
+            },
+        );
 
-                messageService.send({
-                    from: "CONTENT",
-                    to: "HOOK",
-                    extensionName: "MOKKU",
-                    message,
-                    id: message.id,
-                });
-
-                messageService.send({
-                    from: "CONTENT",
-                    to: "PANEL",
-                    extensionName: "MOKKU",
-                    type: "LOG_MOCK_STATUS",
-                    message: {
-                        isMocked: true,
-                        id: message.id,
-                        projectId: mock.projectId,
-                        mockId: mock.id,
-                    },
-                    id: message.id,
-                });
-            }
-        });
-
-        messageService.listen("CONTENT", (data: IEventMessage) => {
-            if (data.type === "CHECK_MOCK") {
-                port.postMessage(data);
-            }
-
-            if (data.type === "LOG") {
-                messageService.send({
-                    ...data,
-                    from: "CONTENT",
-                    to: "PANEL",
-                });
-            }
-        });
-
-        messageService.listen("PANEL", (data: IEventMessage) => {
+        messageService.listen((data: IMessage<"CONTENT">) => {
             if (data.type === "MOKKU_ACTIVATED") {
                 inject();
                 init();
             }
+            if (data.type === "CHECK_MOCK") {
+                // REQUEST_CHECKPOINT_2: Content received mock check request from hook
+                // Forward the message to the service worker
+                port.postMessage(data);
+            }
+
+            if (data.type === "LOG") {
+                messageService.send("PANEL", {
+                    type: "LOG",
+                    data: data.data,
+                    messageId: data.messageId,
+                });
+            }
         });
+
+        // messageService.listen("PANEL", (data: IEventMessage) => {
+        //     if (data.type === "MOKKU_ACTIVATED") {
+        //         inject();
+        //         init();
+        //     }
+        // });
     };
 
     const host = location.host;
@@ -97,12 +110,9 @@ export const contentScriptV2 = () => {
                 init();
             }
             // tell the panel about the new injection (host might have changed)
-            messageService.send({
-                message: host,
+            messageService.send("PANEL", {
+                data: host,
                 type: "INIT",
-                from: "CONTENT",
-                to: "PANEL",
-                extensionName: "MOKKU",
             });
         },
     );

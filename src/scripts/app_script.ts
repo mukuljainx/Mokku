@@ -1,17 +1,16 @@
-import { messageService } from "@/lib";
+import { MessageService } from "@/lib";
 import { getStore, setIsMigrated } from "@/services/oldDb";
 import { APP_MESSAGE_TYPE } from "@/types";
+
+const messageService = new MessageService("APP_SCRIPT");
 
 // this sends request to web app using window context!
 const sentMessageToApp = (request: {
     data: unknown;
     type: APP_MESSAGE_TYPE;
 }) => {
-    messageService.send({
-        from: "CONTENT",
-        to: "HOOK",
-        extensionName: "MOKKU",
-        message: request.data,
+    messageService.send("APP", {
+        data: request.data,
         type: request.type,
     });
 };

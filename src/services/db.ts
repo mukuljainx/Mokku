@@ -92,6 +92,10 @@ const addMock = async (
     return localDb.mocks.add(storedMock);
 };
 
+const _deleteAll = async (): Promise<void> => {
+    await localDb.mocks.clear();
+};
+
 export const db = {
     getDynamicUrlPatterns,
     findStaticMock,
@@ -99,4 +103,5 @@ export const db = {
     addMock,
     getAllMocks,
     findGraphQLMock,
+    _deleteAll,
 };

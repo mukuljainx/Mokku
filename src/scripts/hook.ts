@@ -1,8 +1,7 @@
 import xhook from "xhook";
-import qs from "query-string";
 
-import { IEventMessage, IMockResponse, ILog, IMethod } from "@/types";
-import { messageService } from "@/lib";
+import { IMockResponse, ILog, IMethod, MessageType, IMessage } from "@/types";
+import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
 import { IdFactory } from "@/lib/idFactory";
 import { getLogRequest, getLogResponse } from "./requestHelper";
@@ -11,9 +10,11 @@ const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();
 const logIdFactory = new IdFactory();
 
-messageService.listen("HOOK", (data) => {
-    if (data.id) {
-        messageBus.dispatch(data.id, data.message);
+const messageService = new MessageService("HOOK");
+
+messageService.listen((data) => {
+    if (data.messageId) {
+        messageBus.dispatch(data.messageId, data.messageId);
     }
 });
 
@@ -24,25 +25,22 @@ messageService.listen("HOOK", (data) => {
  * @returns A promise that resolves with the response message if ackRequired is true, otherwise undefined.
  */
 const postMessage = (
-    message: IEventMessage["message"],
-    type: IEventMessage["type"],
+    message: ILog,
+    type: MessageType["HOOK"],
     ackRequired: boolean,
 ): Promise<any> | undefined => {
     // Ensure message is serializable
     const safeMessage = JSON.parse(JSON.stringify(message));
     const messageId = ackRequired ? messageIdFactory.getId() : undefined;
 
-    const messageObject: IEventMessage = {
-        id: messageId,
-        message: safeMessage,
-        to: "CONTENT",
-        from: "HOOK",
-        extensionName: "MOKKU",
+    const messageObject = {
+        messageId: messageId,
+        data: safeMessage,
         type,
     };
 
     try {
-        messageService.send(messageObject);
+        messageService.send("CONTENT", messageObject);
 
         if (messageId !== undefined) {
             return new Promise((resolve) => {
@@ -68,12 +66,18 @@ xhook.before(function (request, callback) {
         request: getLogRequest(request),
     };
 
+    console.log(811, logEntry);
+
+    // REQUEST_CHECKPOINT_1: Before actual request
+
     // Send initial log (fire and forget)
     postMessage(logEntry, "LOG", false);
 
     // Handle mock check in a Promise chain
     postMessage(logEntry, "CHECK_MOCK", true)
         ?.then((mockServiceResponse) => {
+            // REQUEST_CHECKPOINT_6: received mock response from service worker through hook
+            console.log(811, mockServiceResponse);
             if (mockServiceResponse?.mockResponse) {
                 const mock = mockServiceResponse.mockResponse as IMockResponse;
                 console.error("Mokku Inject: Mock response found:", mock);
