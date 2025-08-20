@@ -7,7 +7,7 @@ const scripts = "../src/scripts/";
 module.exports = {
     entry: {
         background: path.join(__dirname, scripts + "serviceWorker.ts"),
-        content_script: path.join(__dirname, scripts + "content.ts"),
+        content_script: path.join(__dirname, scripts + "content/index.ts"),
         app_script: path.join(__dirname, scripts + "app_script.ts"),
         hook: path.join(__dirname, scripts + "hook.ts"),
         devtool: path.join(__dirname, srcDir + "devtool.ts"),

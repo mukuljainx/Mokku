@@ -1,15 +1,15 @@
-import { runFunction } from "./functionExecutor";
-import inject from "./injectToDom";
+import { runFunction } from "../functionExecutor";
+import inject from "../injectToDom";
 import { ILog, IMessage, IMockResponse } from "@/types";
 import { MessageService } from "@/lib";
+import { createServiceWorkerMessenger } from "./serviceWorkerMessenger";
 
 const messageService = new MessageService("CONTENT");
 
-const port = chrome.runtime.connect({ name: "mokku-content-script" });
-
 export const contentScriptV2 = () => {
     const init = () => {
-        port.onMessage.addListener(
+        const serviceWorkerMessenger = createServiceWorkerMessenger();
+        serviceWorkerMessenger.onMessage.addListener(
             async (
                 message: IMessage<
                     "CONTENT",
@@ -73,7 +73,7 @@ export const contentScriptV2 = () => {
             if (data.type === "CHECK_MOCK") {
                 // REQUEST_CHECKPOINT_2: Content received mock check request from hook
                 // Forward the message to the service worker
-                port.postMessage(data);
+                serviceWorkerMessenger.postMessage(data);
             }
 
             if (data.type === "LOG") {
