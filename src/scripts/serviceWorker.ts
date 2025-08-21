@@ -1,4 +1,4 @@
-import { APP_MESSAGE_TYPE, ILog, IMessage, IMockResponse } from "@/types";
+import { APP_MESSAGE_TYPE, ILog, IMessage, IMock } from "@/types";
 import { db, type DynamicUrlEntry } from "@/services";
 import { parseJSONIfPossible } from "@/lib/parseJson";
 import { getStore } from "@/services/oldDb";
@@ -49,7 +49,7 @@ chrome.runtime.onConnect.addListener((port) => {
             // REQUEST_CHECKPOINT_3: service worker received message from content script
             if (data.type === "CHECK_MOCK") {
                 const log = data.data as ILog;
-                let mock: IMockResponse | undefined = undefined;
+                let mock: IMock | undefined = undefined;
                 const request = log.request as ILog["request"];
 
                 if (!request) {

@@ -1,6 +1,6 @@
 import { runFunction } from "../functionExecutor";
 import inject from "../injectToDom";
-import { ILog, IMessage, IMockResponse } from "@/types";
+import { ILog, IMessage, IMock } from "@/types";
 import { MessageService } from "@/lib";
 import { createServiceWorkerMessenger } from "./serviceWorkerMessenger";
 
@@ -14,13 +14,13 @@ export const contentScriptV2 = () => {
                 message: IMessage<
                     "CONTENT",
                     {
-                        mockResponse: IMockResponse | null;
+                        mockResponse: IMock | null;
                         request: ILog["request"];
                     }
                 >,
             ) => {
                 // messaged received from service worker
-                const mock = message?.data.mockResponse as IMockResponse;
+                const mock = message?.data.mockResponse as IMock;
                 const request = message?.data.request;
 
                 if (!mock) {

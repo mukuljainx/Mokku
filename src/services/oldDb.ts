@@ -1,4 +1,4 @@
-import { IDynamicURLMap, IMockResponse, IStore, IURLMap } from "@/types";
+import { IMockResponse_Deprecated, IStore } from "@/types";
 
 const storeName = "mokku.extension.main.db";
 
@@ -12,6 +12,7 @@ export const getDefaultStore = (): IStore => ({
         promoted: false,
     },
     isMigrated: false,
+    id: 0,
 });
 
 export const getStore = (name = storeName) => {
@@ -30,7 +31,7 @@ export const getStore = (name = storeName) => {
 
 export const addMocks = (
     oldStore: IStore,
-    dirtyNewMock: IMockResponse | IMockResponse[],
+    dirtyNewMock: IMockResponse_Deprecated | IMockResponse_Deprecated[],
 ) => {
     const store = { ...oldStore };
 

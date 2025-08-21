@@ -1,14 +1,9 @@
 import Dexie, { EntityTable } from "dexie";
 import { IMock, IMethod } from "@/types";
 
-interface StoredMock extends IMock {
+export interface StoredMock extends IMock {
     dynamicKey: number;
     activeKey: number; // 1 for active, 0 for inactive
-}
-
-export interface DynamicUrlEntry {
-    localId: number;
-    urlPattern: string; // The URL pattern stored for dynamic matching
 }
 
 export const localDb = new Dexie("MokkuConnectorDB") as Dexie & {

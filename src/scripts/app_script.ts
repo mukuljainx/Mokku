@@ -27,6 +27,12 @@ window.addEventListener("message", (event) => {
     if (event.data.type === "MIGRATE_MOCKS_DONE") {
         setIsMigrated();
     }
+
+    /**
+     * CURD for db
+     * Create, Update, Read, Delete
+     * table
+     */
 });
 
 setTimeout(() => {

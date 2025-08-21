@@ -1,6 +1,6 @@
 import xhook from "xhook";
 
-import { IMockResponse, ILog, IMethod, MessageType, IMessage } from "@/types";
+import { IMock, ILog, IMethod, MessageType, IMessage } from "@/types";
 import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
 import { IdFactory } from "@/lib/idFactory";
@@ -77,9 +77,8 @@ xhook.before(function (request, callback) {
     postMessage(logEntry, "CHECK_MOCK", true)
         ?.then((mockServiceResponse) => {
             // REQUEST_CHECKPOINT_6: received mock response from service worker through hook
-            console.log(811, mockServiceResponse);
             if (mockServiceResponse?.mockResponse) {
-                const mock = mockServiceResponse.mockResponse as IMockResponse;
+                const mock = mockServiceResponse.mockResponse as IMock;
                 console.error("Mokku Inject: Mock response found:", mock);
 
                 const headers = mock.headers
