@@ -1,14 +1,15 @@
 import { APP_MESSAGE_TYPE, ILog, IMessage, IMock } from "@/types";
-import { db, type DynamicUrlEntry } from "@/services";
+import { type DynamicUrlEntry } from "@/services";
 import { parseJSONIfPossible } from "@/lib/parseJson";
 import { getStore } from "@/services/oldDb";
 import { sendMessageToApp } from "@/services/app";
+import { mocksDb } from "@/services/db/mocksDb";
 
 let dynamicUrlPatterns: DynamicUrlEntry[] = [];
 
 async function initializeDynamicUrls() {
     try {
-        dynamicUrlPatterns = await db.getDynamicUrlPatterns();
+        dynamicUrlPatterns = await mocksDb.getDynamicUrlPatterns();
         console.log(
             "Mokku: Dynamic URL patterns loaded:",
             dynamicUrlPatterns.length,
@@ -74,10 +75,10 @@ chrome.runtime.onConnect.addListener((port) => {
                             json.operationName &&
                             typeof json.operationName === "string"
                         ) {
-                            mock = await db.findGraphQLMock({
+                            mock = await mocksDb.findGraphQLMocks({
                                 url: request.url,
                                 operationName: json.operationName,
-                            });
+                            })[0];
                         }
                     }
                 }
@@ -85,10 +86,10 @@ chrome.runtime.onConnect.addListener((port) => {
                 // if no mock or mock is inactive
                 // 2. check for static
                 if (!mock || !mock.active) {
-                    const staticMock = await db.findStaticMock(
+                    const staticMock = await mocksDb.findStaticMocks(
                         request.url,
                         request.method,
-                    );
+                    )[0];
 
                     // either we didn't had the mock
                     // if we had the mock it was inactive
@@ -99,10 +100,10 @@ chrome.runtime.onConnect.addListener((port) => {
                 // 3. check with pathname
                 if (!mock || !mock.active) {
                     const pathname = new URL(request.url).pathname;
-                    const pathnameMock = await db.findStaticMock(
+                    const pathnameMock = await mocksDb.findStaticMocks(
                         pathname,
                         request.method,
-                    );
+                    )[0];
 
                     if (!mock || pathnameMock?.active) {
                         mock = pathnameMock;
@@ -117,7 +118,7 @@ chrome.runtime.onConnect.addListener((port) => {
                     );
 
                     if (dynamicMatch) {
-                        const dynamicMock = await db.findMockById(
+                        const dynamicMock = await mocksDb.findMockById(
                             dynamicMatch.localId,
                         );
 
@@ -152,38 +153,38 @@ chrome.runtime.onConnect.addListener((port) => {
     }
 });
 
-chrome.runtime.onMessageExternal.addListener((request, sender) => {
-    console.log("Received message from:", sender.url);
-    console.log("Message:", request);
+// chrome.runtime.onMessageExternal.addListener((request, sender) => {
+//     console.log("Received message from:", sender.url);
+//     console.log("Message:", request);
 
-    const tabId = sender.tab?.id;
-    const type = request.type as APP_MESSAGE_TYPE;
+//     const tabId = sender.tab?.id;
+//     const type = request.type as APP_MESSAGE_TYPE;
 
-    sendMessageToApp(tabId, {
-        // @ts-ignore
-        type: "MIGRATE_MOCKS_XXXX",
-        data: [],
-    });
+//     sendMessageToApp(tabId, {
+//         // @ts-ignore
+//         type: "MIGRATE_MOCKS_XXXX",
+//         data: [],
+//     });
 
-    if (type === "APP_CONNECTED") {
-        // check if there are mocks in oldDb
-        getStore().then(({ store }) => {
-            if (store.mocks.length > 0) {
-                sendMessageToApp(tabId, {
-                    type: "MIGRATE_MOCKS",
-                    data: store.mocks,
-                });
-            }
-        });
-    }
+//     if (type === "APP_CONNECTED") {
+//         // check if there are mocks in oldDb
+//         getStore().then(({ store }) => {
+//             if (store.mocks.length > 0) {
+//                 sendMessageToApp(tabId, {
+//                     type: "MIGRATE_MOCKS",
+//                     data: store.mocks,
+//                 });
+//             }
+//         });
+//     }
 
-    if (type === "NEW_MOCK") {
-        db.addMock(request.data);
-    }
+//     if (type === "NEW_MOCK") {
+//         mocksDb.addMock(request.data);
+//     }
 
-    // Return true to indicate that you will be sending a response asynchronously.
-    // This is important if you need to do some work before sending the response.
-    return true;
-});
+//     // Return true to indicate that you will be sending a response asynchronously.
+//     // This is important if you need to do some work before sending the response.
+//     return true;
+// });
 
-console.log(911, db.getAllMocks());
+console.log(911, mocksDb.getAllMocks());

@@ -4,7 +4,7 @@ import { IMock, ILog, IMethod, MessageType, IMessage } from "@/types";
 import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
 import { IdFactory } from "@/lib/idFactory";
-import { getLogRequest, getLogResponse } from "./requestHelper";
+import { getLogRequest, getLogResponse } from "./request-helper";
 
 const messageBus = new MessageBus();
 const messageIdFactory = new IdFactory();

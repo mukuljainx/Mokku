@@ -1,8 +1,8 @@
-import { runFunction } from "../functionExecutor";
-import inject from "../injectToDom";
+import { runFunction } from "../function-executor";
+import inject from "../inject-to-dom";
 import { ILog, IMessage, IMock } from "@/types";
 import { MessageService } from "@/lib";
-import { createServiceWorkerMessenger } from "./serviceWorkerMessenger";
+import { createServiceWorkerMessenger } from "./service-worker-messenger";
 
 const messageService = new MessageService("CONTENT");
 

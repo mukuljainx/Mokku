@@ -1,1 +1,1 @@
-export { db, type DynamicUrlEntry } from "./db";
+export { type DynamicUrlEntry } from "./db";
