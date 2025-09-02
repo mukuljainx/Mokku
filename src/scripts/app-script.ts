@@ -1,6 +1,11 @@
 import { MessageService } from "@/lib";
 import { getStore, setIsMigrated } from "@/services/oldDb";
 import { APP_MESSAGE_TYPE } from "@/types";
+import { createForcedAlivePort } from "./utils/forced-alive-port";
+
+console.log(911, "app-script loaded");
+
+const port = createForcedAlivePort("mokku-content-script");
 
 const messageService = new MessageService("APP_SCRIPT");
 
@@ -28,11 +33,7 @@ window.addEventListener("message", (event) => {
         setIsMigrated();
     }
 
-    /**
-     * CURD for db
-     * Create, Update, Read, Delete
-     * table
-     */
+    port.postMessage(event.data);
 });
 
 setTimeout(() => {

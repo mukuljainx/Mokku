@@ -1,8 +1,6 @@
-import { APP_MESSAGE_TYPE, ILog, IMessage, IMock } from "@/types";
+import { ILog, IMessage, IMock } from "@/types";
 import { type DynamicUrlEntry } from "@/services";
 import { parseJSONIfPossible } from "@/lib/parseJson";
-import { getStore } from "@/services/oldDb";
-import { sendMessageToApp } from "@/services/app";
 import { mocksDb } from "@/services/db/mocksDb";
 
 let dynamicUrlPatterns: DynamicUrlEntry[] = [];
@@ -46,8 +44,7 @@ function findMatchingDynamicUrl(
 
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "mokku-content-script") {
-        port.onMessage.addListener(async (data: IMessage<"SERVICE_WORKER">) => {
-            // REQUEST_CHECKPOINT_3: service worker received message from content script
+        port.onMessage.addListener(async (data: IMessage) => {
             if (data.type === "CHECK_MOCK") {
                 const log = data.data as ILog;
                 let mock: IMock | undefined = undefined;
@@ -153,38 +150,12 @@ chrome.runtime.onConnect.addListener((port) => {
     }
 });
 
-// chrome.runtime.onMessageExternal.addListener((request, sender) => {
-//     console.log("Received message from:", sender.url);
-//     console.log("Message:", request);
-
-//     const tabId = sender.tab?.id;
-//     const type = request.type as APP_MESSAGE_TYPE;
-
-//     sendMessageToApp(tabId, {
-//         // @ts-ignore
-//         type: "MIGRATE_MOCKS_XXXX",
-//         data: [],
-//     });
-
-//     if (type === "APP_CONNECTED") {
-//         // check if there are mocks in oldDb
-//         getStore().then(({ store }) => {
-//             if (store.mocks.length > 0) {
-//                 sendMessageToApp(tabId, {
-//                     type: "MIGRATE_MOCKS",
-//                     data: store.mocks,
-//                 });
-//             }
-//         });
-//     }
-
-//     if (type === "NEW_MOCK") {
-//         mocksDb.addMock(request.data);
-//     }
-
-//     // Return true to indicate that you will be sending a response asynchronously.
-//     // This is important if you need to do some work before sending the response.
-//     return true;
-// });
+chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "mokku-content-script") {
+        port.onMessage.addListener(async (data: IMessage) => {
+            // REQUEST_CHECKPOINT_3: service worker received message from content script
+        });
+    }
+});
 
 console.log(911, mocksDb.getAllMocks());

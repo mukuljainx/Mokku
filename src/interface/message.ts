@@ -9,8 +9,8 @@ export type Process =
     | "PANEL";
 
 export interface IEventMessage {
-    to: Process;
-    from: Process;
+    to?: Process;
+    from?: Process;
     extensionName: "MOKKU";
     id?: number;
     type?: "LOG" | "NOTIFICATION" | "INIT" | "CHECK_MOCK";

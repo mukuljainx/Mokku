@@ -1,5 +1,3 @@
-import { ILog } from "./mock";
-
 export type Process =
     | "HOOK"
     | "CONTENT"
@@ -25,8 +23,15 @@ export type MessageType = {
     APP: APP_MESSAGE_TYPE;
 };
 
-export interface IMessage<T extends Process, U = unknown> {
-    type: MessageType[T];
-    data?: U;
-    messageId?: number;
+export interface IMessage {
+    type: string;
+    data?: unknown;
+    messageId?: number | string;
+    repliedToId?: number | string;
+    extensionName?: "MOKKU";
+    _mokku?: {
+        // for debugging purposes
+        destination: Process;
+        source: Process;
+    };
 }

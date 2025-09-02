@@ -2,7 +2,7 @@ import { IMessage, Process, Tunnel } from "@/types";
 
 const listen = <T extends Process>(
     entity: T,
-    callback: (props: IMessage<T>, sender?: any, sendResponse?: any) => void,
+    callback: (props: IMessage, sender?: any, sendResponse?: any) => void,
 ) => {
     const service = {
         runtime: () => {
@@ -100,15 +100,13 @@ export class MessageService<T extends Process> {
         this.currentProcess = currentProcess;
     }
 
-    send(
-        destination: AllowedDestinations<T>,
-        message: IMessage<AllowedDestinations<T>>,
-    ) {
+    send(destination: AllowedDestinations<T>, message: IMessage) {
         // Ensure message is serializable
         const safeMessage = JSON.parse(JSON.stringify(message));
         safeMessage._mokku = {
             destination,
         };
+        safeMessage.extensionName = "MOKKU";
 
         const pathKey = `${this.currentProcess}.${destination}`;
         const tunnel = tunnelMap[pathKey];
@@ -116,11 +114,7 @@ export class MessageService<T extends Process> {
     }
 
     listen(
-        callback: (
-            props: IMessage<T>,
-            sender?: any,
-            sendResponse?: any,
-        ) => void,
+        callback: (props: IMessage, sender?: any, sendResponse?: any) => void,
     ) {
         return listen(this.currentProcess, callback);
     }

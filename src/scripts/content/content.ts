@@ -1,71 +1,65 @@
 import { runFunction } from "../function-executor";
-import inject from "../inject-to-dom";
+import inject from "../utils/inject-to-dom";
 import { ILog, IMessage, IMock } from "@/types";
 import { MessageService } from "@/lib";
-import { createServiceWorkerMessenger } from "./service-worker-messenger";
+import { createForcedAlivePort } from "../utils/forced-alive-port";
 
 const messageService = new MessageService("CONTENT");
+const port = createForcedAlivePort("mokku-content-script");
 
 export const contentScriptV2 = () => {
     const init = () => {
-        const serviceWorkerMessenger = createServiceWorkerMessenger();
-        serviceWorkerMessenger.onMessage.addListener(
-            async (
-                message: IMessage<
-                    "CONTENT",
-                    {
-                        mockResponse: IMock | null;
-                        request: ILog["request"];
-                    }
-                >,
-            ) => {
-                // messaged received from service worker
-                const mock = message?.data.mockResponse as IMock;
-                const request = message?.data.request;
+        port.onMessage.addListener(async (message) => {
+            // messaged received from service worker
+            const data = message?.data as {
+                mockResponse: IMock | null;
+                request: ILog["request"];
+            };
+            const mock = data.mockResponse as IMock;
+            const request = data.request;
 
-                if (!mock) {
-                    // REQUEST_CHECKPOINT_5_1: sending mock response to hook
-                    messageService.send("HOOK", {
-                        data: message,
-                        messageId: message.messageId,
-                        type: "CHECK_MOCK",
-                    });
-                } else {
-                    if (
-                        mock.responseType === "FUNCTION" &&
-                        mock.function &&
-                        mock.active
-                    ) {
-                        const result = await runFunction(
-                            mock.function,
-                            request.queryParams,
-                            request.body,
-                        );
-                        mock.response = result as string;
-                    }
-
-                    // REQUEST_CHECKPOINT_5_2: sending mock response to hook
-                    messageService.send("HOOK", {
-                        data: message,
-                        messageId: message.messageId,
-                        type: "LOG",
-                    });
-
-                    messageService.send("PANEL", {
-                        type: "LOG_MOCK_STATUS",
-                        data: {
-                            isMocked: true,
-                            id: message.messageId,
-                            projectId: mock.projectId,
-                            mockId: mock.id,
-                        },
-                        messageId: message.messageId,
-                    });
+            if (!mock) {
+                // REQUEST_CHECKPOINT_5_1: sending mock response to hook
+                messageService.send("HOOK", {
+                    data: message,
+                    messageId: message.messageId,
+                    type: "CHECK_MOCK",
+                });
+            } else {
+                if (
+                    mock.responseType === "FUNCTION" &&
+                    mock.function &&
+                    mock.active
+                ) {
+                    const result = await runFunction(
+                        mock.function,
+                        request.queryParams,
+                        request.body,
+                    );
+                    mock.response = result as string;
                 }
-            },
-        );
 
-        messageService.listen((data: IMessage<"CONTENT">) => {
+                // REQUEST_CHECKPOINT_5_2: sending mock response to hook
+                messageService.send("HOOK", {
+                    data: message,
+                    messageId: message.messageId,
+                    type: "LOG",
+                });
+
+                messageService.send("PANEL", {
+                    type: "LOG_MOCK_STATUS",
+                    data: {
+                        isMocked: true,
+                        id: message.messageId,
+                        projectId: mock.projectId,
+                        mockId: mock.id,
+                    },
+                    messageId: message.messageId,
+                });
+            }
+        });
+
+        messageService.listen((data: IMessage) => {
             if (data.type === "MOKKU_ACTIVATED") {
                 inject();
                 init();
@@ -73,7 +67,7 @@ export const contentScriptV2 = () => {
             if (data.type === "CHECK_MOCK") {
                 // REQUEST_CHECKPOINT_2: Content received mock check request from hook
                 // Forward the message to the service worker
-                serviceWorkerMessenger.postMessage(data);
+                port.postMessage(data);
             }
 
             if (data.type === "LOG") {
@@ -84,13 +78,6 @@ export const contentScriptV2 = () => {
                 });
             }
         });
-
-        // messageService.listen("PANEL", (data: IEventMessage) => {
-        //     if (data.type === "MOKKU_ACTIVATED") {
-        //         inject();
-        //         init();
-        //     }
-        // });
     };
 
     const host = location.host;

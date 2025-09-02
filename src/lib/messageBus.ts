@@ -1,12 +1,12 @@
 export class MessageBus {
     _defaultListner: (data: any) => void;
-    _collector: Record<number, (args: unknown) => unknown> = {};
+    _collector: Record<number | string, (args: unknown) => unknown> = {};
     constructor() {
         this._defaultListner = () => {};
         this._collector = {};
     }
 
-    dispatch(id: number, eventData: any) {
+    dispatch(id: number | string, eventData: any) {
         if (this._collector[id]) {
             this._collector[id](eventData);
             delete this._collector[id];
