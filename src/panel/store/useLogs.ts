@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ILog } from "@/types";
 import { MessageService } from "@/lib";
+import { useAppStore } from "./useAppStore";
 
 const messageService = new MessageService("PANEL");
 
@@ -9,6 +10,7 @@ export const useLogs = () => {
     const [baseTime, setBaseTime] = useState<number>();
     const [logsMap, setLogsMap] = useState<Record<number, ILog>>({});
     const idSetRef = useRef(new Set<number>());
+    const { tab } = useAppStore();
 
     const clearData = useCallback(() => {
         setLogs([]);
@@ -18,7 +20,14 @@ export const useLogs = () => {
     }, []);
 
     useEffect(() => {
-        messageService.listen((data) => {
+        messageService.listen((data, sender) => {
+            const senderTab = sender?.tab as chrome.tabs.Tab;
+            console.log("Mokku Panel: Message received", data);
+
+            if (senderTab.id !== tab.id) {
+                return;
+            }
+
             if (data.type === "LOG") {
                 const log = data.data as ILog;
                 const logId = log.id;

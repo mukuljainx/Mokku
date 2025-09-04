@@ -1,5 +1,3 @@
-import xhook from "xhook";
-
 import { IMock, ILog, IMethod, MessageType, IMessage } from "@/types";
 import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
@@ -17,6 +15,20 @@ messageService.listen((data) => {
         messageBus.dispatch(data.messageId, data.messageId);
     }
 });
+
+let xhook;
+try {
+    /**
+     * xhook tries to change api's on windows for mocking purpose
+     * it is not allowed in YouTube and some other sites for ads protection
+     * hence, we are wrapping it in try catch
+     * so we can inform user that mokku cannot work on this site
+     */
+    xhook = require("xhook").default;
+} catch (error) {
+    // todo(deeoanshu): inform user through panel that mokku cannot work on this site
+    console.error("Mokku Inject: xhook is not available:", error);
+}
 
 /**
  * Promisify post message from window to window
