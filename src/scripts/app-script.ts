@@ -3,7 +3,7 @@ import { getStore, setIsMigrated } from "@/services/oldDb";
 import { APP_MESSAGE_TYPE } from "@/types";
 import { createForcedAlivePort } from "./utils/forced-alive-port";
 
-console.log(911, "app-script loaded");
+console.log("Mokku app_script: init");
 
 const port = createForcedAlivePort("mokku-content-script");
 
@@ -32,6 +32,8 @@ window.addEventListener("message", (event) => {
     if (event.data.type === "MIGRATE_MOCKS_DONE") {
         setIsMigrated();
     }
+
+    console.log("Mokku app_script: received message from web app", event.data);
 
     port.postMessage(event.data);
 });
