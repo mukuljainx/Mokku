@@ -61,22 +61,25 @@ const tunnelMap = {
 const sendMessage = (tunnel: Tunnel, message) => {
     message.extensionName = "MOKKU";
     switch (tunnel) {
-        case "WINDOW":
+        case "WINDOW": {
             window.postMessage(message, "*");
             break;
-        case "RUNTIME":
+        }
+        case "RUNTIME": {
             chrome.runtime.sendMessage(message);
             break;
+        }
         // case "TAB":
         //     if (type.tabId) {
         //         chrome.tabs.sendMessage(type.tabId, { type });
         //     }
         //     break;
-        default:
+        default: {
             console.error(
                 `Mokku MessageService: No path defined for ${tunnel}`,
             );
             break;
+        }
     }
 };
 

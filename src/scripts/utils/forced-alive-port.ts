@@ -2,9 +2,7 @@ export const createForcedAlivePort = (name: string) => {
     const port = chrome.runtime.connect({ name });
 
     port.onDisconnect.addListener(() => {
-        console.warn(
-            "Mokku Inject: Content script disconnected from service worker.",
-        );
+        console.log("Mokku Inject: Port disconnected. Host: ", location.host);
     });
 
     const portKeepAliveInterval = setInterval(() => {

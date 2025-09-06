@@ -11,6 +11,7 @@ const logIdFactory = new IdFactory();
 const messageService = new MessageService("HOOK");
 
 messageService.listen((data) => {
+    console.log("Mokku Inject: Received message from panel/content", data);
     if (data.messageId) {
         messageBus.dispatch(data.messageId, data.messageId);
     }
@@ -67,6 +68,7 @@ const postMessage = (
 };
 
 xhook.before(function (request, callback) {
+    console.log(810, "Mokku Inject: xhook.before called", request);
     if (!request.mokku) {
         request.mokku = {
             id: logIdFactory.getId(),

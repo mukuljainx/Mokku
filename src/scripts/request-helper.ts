@@ -28,7 +28,7 @@ const parseUrlAndQuery = (
     ) {
         requestUrlStr = requestUrlInput.url;
     } else {
-        requestUrlStr = requestUrlInput as string;
+        requestUrlStr = new Request(requestUrlInput as string).url;
     }
 
     const separator = requestUrlStr.indexOf("?");

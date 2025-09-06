@@ -16,7 +16,7 @@ const init = () => {
         };
         const mock = data.mockResponse as IMock;
         const request = data.request;
-
+        console.log("Mokku Inject: Received message from SW", message);
         if (!mock) {
             // REQUEST_CHECKPOINT_5_1: sending mock response to hook
             messageService.send("HOOK", {
@@ -66,6 +66,7 @@ const init = () => {
         if (data.type === "CHECK_MOCK") {
             // REQUEST_CHECKPOINT_2: Content received mock check request from hook
             // Forward the message to the service worker
+            console.log("Mokku Inject: Forwarding CHECK_MOCK to SW", data);
             port.postMessage(data);
         }
 

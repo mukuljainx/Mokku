@@ -46,104 +46,134 @@ chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "mokku-content-script") {
         port.onMessage.addListener(async (data: IMessage) => {
             if (data.type === "CHECK_MOCK") {
+                console.log("Mokku SW: received CHECK_MOCK", data);
                 const log = data.data as ILog;
                 let mock: IMock | undefined = undefined;
                 const request = log.request as ILog["request"];
+                try {
+                    // REQUEST_CHECKPOINT_3: service worker received message from content script
 
-                if (!request) {
-                    return port.postMessage({
-                        data: {
-                            mockResponse: null,
-                            request: request,
-                        },
+                    if (!request) {
+                        return port.postMessage({
+                            type: "MOCK_CHECKED",
+                            data: {
+                                mockResponse: null,
+                                request: request,
+                            },
 
-                        messageId: data.messageId,
-                    });
-                }
-
-                /**
-                 * 1. check for graphql mock
-                 */
-                if (request?.method === "POST") {
-                    const { json, parsed } = parseJSONIfPossible(request.body);
-
-                    if (parsed) {
-                        if (
-                            json.operationName &&
-                            typeof json.operationName === "string"
-                        ) {
-                            mock = await mocksDb.findGraphQLMocks({
-                                url: request.url,
-                                operationName: json.operationName,
-                            })[0];
-                        }
+                            messageId: data.messageId,
+                        });
                     }
-                }
 
-                // if no mock or mock is inactive
-                // 2. check for static
-                if (!mock || !mock.active) {
-                    const staticMock = await mocksDb.findStaticMocks(
-                        request.url,
-                        request.method,
-                    )[0];
-
-                    // either we didn't had the mock
-                    // if we had the mock it was inactive
-                    if (!mock || staticMock?.active) {
-                        mock = staticMock;
-                    }
-                }
-                // 3. check with pathname
-                if (!mock || !mock.active) {
-                    const pathname = new URL(request.url).pathname;
-                    const pathnameMock = await mocksDb.findStaticMocks(
-                        pathname,
-                        request.method,
-                    )[0];
-
-                    if (!mock || pathnameMock?.active) {
-                        mock = pathnameMock;
-                    }
-                }
-
-                // 4. check with dynamic mocks
-                if (!mock || !mock.active) {
-                    const dynamicMatch = findMatchingDynamicUrl(
-                        request.url,
-                        // request.method,
-                    );
-
-                    if (dynamicMatch) {
-                        const dynamicMock = await mocksDb.findMockById(
-                            dynamicMatch.localId,
+                    /**
+                     * 1. check for graphql mock
+                     */
+                    if (request?.method === "POST") {
+                        const { json, parsed } = parseJSONIfPossible(
+                            request.body,
                         );
 
-                        if (!mock || dynamicMock?.active) {
-                            mock = dynamicMock;
+                        if (parsed) {
+                            if (
+                                json.operationName &&
+                                typeof json.operationName === "string"
+                            ) {
+                                mock = await mocksDb.findGraphQLMocks({
+                                    url: request.url,
+                                    operationName: json.operationName,
+                                })[0];
+                            }
                         }
                     }
-                }
 
-                // REQUEST_CHECKPOINT_4: service worker informs content script about mock
-                if (mock) {
+                    // if no mock or mock is inactive
+                    // 2. check for static
+                    if (!mock || !mock.active) {
+                        const staticMock = await mocksDb.findStaticMocks(
+                            request.url,
+                            request.method,
+                        )[0];
+
+                        // either we didn't had the mock
+                        // if we had the mock it was inactive
+                        if (!mock || staticMock?.active) {
+                            mock = staticMock;
+                        }
+                    }
+                    // 3. check with pathname
+                    if (!mock || !mock.active) {
+                        const pathname = new URL(request.fullUrl).pathname;
+                        const pathnameMock = await mocksDb.findStaticMocks(
+                            pathname,
+                            request.method,
+                        )[0];
+
+                        if (!mock || pathnameMock?.active) {
+                            mock = pathnameMock;
+                        }
+                    }
+
+                    // 4. check with dynamic mocks
+                    if (!mock || !mock.active) {
+                        const dynamicMatch = findMatchingDynamicUrl(
+                            request.url,
+                            // request.method,
+                        );
+
+                        if (dynamicMatch) {
+                            const dynamicMock = await mocksDb.findMockById(
+                                dynamicMatch.localId,
+                            );
+
+                            if (!mock || dynamicMock?.active) {
+                                mock = dynamicMock;
+                            }
+                        }
+                    }
+                    // REQUEST_CHECKPOINT_4: service worker informs content script about mock
+                    console.log(
+                        "Mokku SW: Found mock for request:",
+                        request,
+                        mock,
+                    );
+                    if (mock) {
+                        port.postMessage({
+                            type: "MOCK_CHECKED",
+                            data: {
+                                mockResponse: mock,
+                                request: request,
+                            },
+                            messageId: data.messageId,
+                        });
+                    } else {
+                        console.log(
+                            81144,
+                            "No mock found for request:",
+                            request,
+                        );
+                        //todo: inform the panel
+                        port.postMessage({
+                            type: "MOCK_CHECKED",
+                            data: {
+                                request: request,
+                                mockResponse: null,
+                            },
+                            messageId: data.messageId,
+                        });
+                    }
+                } catch (err) {
+                    console.error("Mokku SW: Error processing CHECK_MOCK", err);
                     port.postMessage({
+                        type: "MOCK_CHECKED",
                         data: {
-                            mockResponse: mock,
-                            request: request,
-                        },
-                        messageId: data.messageId,
-                    });
-                } else {
-                    console.log(81144, "No mock found for request:", request);
-                    //todo: inform the panel
-                    port.postMessage({
-                        data: {
-                            request: request,
                             mockResponse: null,
+                            request: request,
                         },
                         messageId: data.messageId,
-                    });
+                    } as IMessage);
+                    port.postMessage({
+                        type: "MOCK_CHECK_ERROR",
+                    } as IMessage);
                 }
             }
         });

@@ -1,8 +1,10 @@
 export type IMethod = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 export type Headers = Array<{ name: string; value: string }>;
 type SyncStatus = "PENDING" | "SYNCING" | "SYNCED" | "FAILED";
+
 export interface ILog {
     request?: {
+        fullUrl: string;
         url: string;
         method: IMethod;
         body?: string;

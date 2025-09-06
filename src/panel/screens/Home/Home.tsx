@@ -9,6 +9,7 @@ const mock: ILog[] = [
         request: {
             time: 0,
             url: "http://demo5488429.mockable.io/a",
+            fullUrl: "http://demo5488429.mockable.io/a",
             method: "GET",
             headers: [
                 {
@@ -38,6 +39,7 @@ const mock: ILog[] = [
         request: {
             time: 0,
             url: "http://demo5488429.mockable.io/a",
+            fullUrl: "http://demo5488429.mockable.io/a",
             method: "POST",
             headers: [
                 {
@@ -67,6 +69,7 @@ const mock: ILog[] = [
         request: {
             time: 0,
             url: "http://demo5488429.mockable.io/a",
+            fullUrl: "http://demo5488429.mockable.io/a",
             method: "PATCH",
             headers: [
                 {
@@ -96,6 +99,7 @@ const mock: ILog[] = [
         request: {
             time: 0,
             url: "http://demo5488429.mockable.io/a",
+            fullUrl: "http://demo5488429.mockable.io/a",
             method: "DELETE",
             headers: [
                 {
@@ -124,6 +128,7 @@ const mock: ILog[] = [
         id: 4,
         isMocked: true,
         request: {
+            fullUrl: "http://demo5488429.mockable.io/a",
             time: 0,
             url: "http://demo5488429.mockable.io/a",
             method: "DELETE",
@@ -155,10 +160,10 @@ const mock: ILog[] = [
 export const Home = () => {
     const { logs, logsMap, clearData, baseTime } = useLogs();
 
-    const data = React.useMemo(() => logs.map((id) => logsMap[id]), [
-        logs,
-        logsMap,
-    ]);
+    const data = React.useMemo(
+        () => logs.map((id) => logsMap[id]),
+        [logs, logsMap],
+    );
 
     return <LogsTable baseTime={baseTime} data={data} clearData={clearData} />;
 };
