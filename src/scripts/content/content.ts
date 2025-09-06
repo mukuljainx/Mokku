@@ -11,6 +11,8 @@ const init = () => {
     port.onMessage.addListener(async (message) => {
         // messaged received from service worker
 
+        console.log("Mokku Content: Received message from SW", message);
+
         switch (message.type) {
             case "MOCK_CHECKED": {
                 const data = message?.data as {
@@ -19,7 +21,7 @@ const init = () => {
                 };
                 const mock = data.mockResponse as IMock;
                 const request = data.log.request;
-                console.log("Mokku Inject: Received message from SW", message);
+
                 if (!mock) {
                     // REQUEST_CHECKPOINT_5_1: sending mock response to hook
                     messageService.send("HOOK", {

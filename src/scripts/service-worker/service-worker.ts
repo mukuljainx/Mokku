@@ -1,6 +1,6 @@
 import { IMessage } from "@/types";
-import { type DynamicUrlEntry } from "@/services";
 import { mockHandler, mockHandlerInit } from "./mock-handler";
+import { projectHandler } from "./project-handler";
 
 // Initialize on service worker startup
 chrome.runtime.onStartup.addListener(() => {
@@ -20,11 +20,37 @@ chrome.runtime.onConnect.addListener((port) => {
             const portPostMessage = (message: IMessage) =>
                 port.postMessage(message);
 
+            console.log(
+                "Mokku SW: received message from content script",
+                message,
+            );
+
             const operations = {
                 ...mockHandler,
+                ...projectHandler,
             };
 
-            operations[message.type]?.(message, portPostMessage);
+            try {
+                await operations[message.type]?.(message, portPostMessage);
+            } catch (err) {
+                console.log("Mokku SW: Error handling message", err, message);
+                portPostMessage({
+                    type: message.type,
+                    data: {
+                        isError: true,
+                        error: {
+                            message: "Something went wrong",
+                            status: 500,
+                            error: err,
+                        },
+                    },
+                    id: message.id,
+                    _mokku: {
+                        source: "SERVICE_WORKER",
+                        destination: message._mokku.source,
+                    },
+                } as IMessage);
+            }
         });
     }
 });
