@@ -10,51 +10,73 @@ const port = createForcedAlivePort("mokku-content-script");
 const init = () => {
     port.onMessage.addListener(async (message) => {
         // messaged received from service worker
-        const data = message?.data as {
-            mockResponse: IMock | null;
-            request: ILog["request"];
-        };
-        const mock = data.mockResponse as IMock;
-        const request = data.request;
-        console.log("Mokku Inject: Received message from SW", message);
-        if (!mock) {
-            // REQUEST_CHECKPOINT_5_1: sending mock response to hook
-            messageService.send("HOOK", {
-                data: message,
-                messageId: message.messageId,
-                type: "CHECK_MOCK",
-            });
-        } else {
-            if (
-                mock.responseType === "FUNCTION" &&
-                mock.function &&
-                mock.active
-            ) {
-                const result = await runFunction(
-                    mock.function,
-                    request.queryParams,
-                    request.body,
-                );
-                mock.response = result as string;
+
+        switch (message.type) {
+            case "MOCK_CHECKED": {
+                const data = message?.data as {
+                    mockResponse: IMock | null;
+                    log: ILog;
+                };
+                const mock = data.mockResponse as IMock;
+                const request = data.log.request;
+                console.log("Mokku Inject: Received message from SW", message);
+                if (!mock) {
+                    // REQUEST_CHECKPOINT_5_1: sending mock response to hook
+                    messageService.send("HOOK", {
+                        data: message,
+                        messageId: message.messageId,
+                        type: "CHECK_MOCK",
+                    });
+                } else {
+                    if (
+                        mock.responseType === "FUNCTION" &&
+                        mock.function &&
+                        mock.active
+                    ) {
+                        const result = await runFunction(
+                            mock.function,
+                            request.queryParams,
+                            request.body,
+                        );
+                        mock.response = result as string;
+                    }
+
+                    // REQUEST_CHECKPOINT_5_2: sending mock response to hook
+                    messageService.send("HOOK", {
+                        data: message,
+                        messageId: message.messageId,
+                        type: "LOG",
+                    });
+
+                    messageService.send("PANEL", {
+                        type: "LOG_MOCK_STATUS",
+                        data: {
+                            isMocked: true,
+                            log: data.log,
+                            projectId: mock.projectId,
+                            mockId: mock.id,
+                        },
+                        messageId: message.messageId,
+                    });
+                }
+                break;
             }
-
-            // REQUEST_CHECKPOINT_5_2: sending mock response to hook
-            messageService.send("HOOK", {
-                data: message,
-                messageId: message.messageId,
-                type: "LOG",
-            });
-
-            messageService.send("PANEL", {
-                type: "LOG_MOCK_STATUS",
-                data: {
-                    isMocked: true,
-                    id: message.messageId,
-                    projectId: mock.projectId,
-                    mockId: mock.id,
-                },
-                messageId: message.messageId,
-            });
+            case "MOCK_CHECK_ERROR": {
+                messageService.send("PANEL", {
+                    type: "LOG_MOCK_STATUS",
+                    data: {
+                        log: message.data.log,
+                        isError: true,
+                        id: message.messageId,
+                    },
+                    messageId: message.messageId,
+                });
+                console.error("Mokku Inject: Error checking mock", message);
+                break;
+            }
+            default: {
+                break;
+            }
         }
     });
 

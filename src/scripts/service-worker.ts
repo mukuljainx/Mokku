@@ -58,7 +58,7 @@ chrome.runtime.onConnect.addListener((port) => {
                             type: "MOCK_CHECKED",
                             data: {
                                 mockResponse: null,
-                                request: request,
+                                log,
                             },
 
                             messageId: data.messageId,
@@ -141,21 +141,20 @@ chrome.runtime.onConnect.addListener((port) => {
                             type: "MOCK_CHECKED",
                             data: {
                                 mockResponse: mock,
-                                request: request,
+                                log,
                             },
                             messageId: data.messageId,
                         });
                     } else {
                         console.log(
-                            81144,
-                            "No mock found for request:",
+                            "Mokku SW: No mock found for request:",
                             request,
                         );
                         //todo: inform the panel
                         port.postMessage({
                             type: "MOCK_CHECKED",
                             data: {
-                                request: request,
+                                log,
                                 mockResponse: null,
                             },
                             messageId: data.messageId,
@@ -167,12 +166,13 @@ chrome.runtime.onConnect.addListener((port) => {
                         type: "MOCK_CHECKED",
                         data: {
                             mockResponse: null,
-                            request: request,
+                            log,
                         },
                         messageId: data.messageId,
                     } as IMessage);
                     port.postMessage({
                         type: "MOCK_CHECK_ERROR",
+                        log,
                     } as IMessage);
                 }
             }

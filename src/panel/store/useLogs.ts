@@ -54,6 +54,7 @@ export const useLogs = () => {
                     [logId]: { ...logsMap[logId], ...log },
                 }));
             } else if (data.type === "LOG_MOCK_STATUS") {
+                console.log("Mokku Panel: LOG_MOCK_STATUS received", data);
                 const log = data.data as ILog;
                 const logId = log.id;
                 if (logId === undefined) {

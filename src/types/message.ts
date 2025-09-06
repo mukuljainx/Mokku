@@ -27,7 +27,7 @@ export interface IMessage {
     type: string;
     data?: unknown;
     messageId?: number | string;
-    repliedToId?: number | string;
+    // repliedToId?: number | string;
     extensionName?: "MOKKU";
     _mokku?: {
         // for debugging purposes
