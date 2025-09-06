@@ -44,24 +44,26 @@ function findMatchingDynamicUrl(
 
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "mokku-content-script") {
-        port.onMessage.addListener(async (data: IMessage) => {
-            if (data.type === "CHECK_MOCK") {
-                console.log("Mokku SW: received CHECK_MOCK", data);
-                const log = data.data as ILog;
+        port.onMessage.addListener(async (message: IMessage) => {
+            const portPostMessage = (message: IMessage) =>
+                port.postMessage(message);
+
+            if (message.type === "CHECK_MOCK") {
+                console.log("Mokku SW: received CHECK_MOCK", message);
+                const log = message.data as ILog;
                 let mock: IMock | undefined = undefined;
                 const request = log.request as ILog["request"];
                 try {
                     // REQUEST_CHECKPOINT_3: service worker received message from content script
 
                     if (!request) {
-                        return port.postMessage({
+                        return portPostMessage({
                             type: "MOCK_CHECKED",
                             data: {
                                 mockResponse: null,
                                 log,
                             },
-
-                            messageId: data.messageId,
+                            id: message.id,
                         });
                     }
 
@@ -137,13 +139,13 @@ chrome.runtime.onConnect.addListener((port) => {
                         mock,
                     );
                     if (mock) {
-                        port.postMessage({
+                        portPostMessage({
                             type: "MOCK_CHECKED",
                             data: {
                                 mockResponse: mock,
                                 log,
                             },
-                            messageId: data.messageId,
+                            id: message.id,
                         });
                     } else {
                         console.log(
@@ -151,26 +153,26 @@ chrome.runtime.onConnect.addListener((port) => {
                             request,
                         );
                         //todo: inform the panel
-                        port.postMessage({
+                        portPostMessage({
                             type: "MOCK_CHECKED",
                             data: {
                                 log,
                                 mockResponse: null,
                             },
-                            messageId: data.messageId,
+                            id: message.id,
                         });
                     }
                 } catch (err) {
                     console.error("Mokku SW: Error processing CHECK_MOCK", err);
-                    port.postMessage({
+                    portPostMessage({
                         type: "MOCK_CHECKED",
                         data: {
                             mockResponse: null,
                             log,
                         },
-                        messageId: data.messageId,
+                        id: message.id,
                     } as IMessage);
-                    port.postMessage({
+                    portPostMessage({
                         type: "MOCK_CHECK_ERROR",
                         log,
                     } as IMessage);

@@ -24,7 +24,7 @@ const init = () => {
                     // REQUEST_CHECKPOINT_5_1: sending mock response to hook
                     messageService.send("HOOK", {
                         data: message,
-                        messageId: message.messageId,
+                        id: message.id,
                         type: "CHECK_MOCK",
                     });
                 } else {
@@ -44,7 +44,7 @@ const init = () => {
                     // REQUEST_CHECKPOINT_5_2: sending mock response to hook
                     messageService.send("HOOK", {
                         data: message,
-                        messageId: message.messageId,
+                        id: message.id,
                         type: "LOG",
                     });
 
@@ -56,7 +56,7 @@ const init = () => {
                             projectId: mock.projectId,
                             mockId: mock.id,
                         },
-                        messageId: message.messageId,
+                        id: message.id,
                     });
                 }
                 break;
@@ -67,9 +67,9 @@ const init = () => {
                     data: {
                         log: message.data.log,
                         isError: true,
-                        id: message.messageId,
+                        id: message.id,
                     },
-                    messageId: message.messageId,
+                    id: message.id,
                 });
                 console.error("Mokku Inject: Error checking mock", message);
                 break;
@@ -96,7 +96,7 @@ const init = () => {
             messageService.send("PANEL", {
                 type: "LOG",
                 data: data.data,
-                messageId: data.messageId,
+                id: data.id,
             });
         }
     });

@@ -26,7 +26,7 @@ export type MessageType = {
 export interface IMessage {
     type: string;
     data?: unknown;
-    messageId?: number | string;
+    id?: number | string;
     // repliedToId?: number | string;
     extensionName?: "MOKKU";
     _mokku?: {
