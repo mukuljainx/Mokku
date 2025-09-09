@@ -1,6 +1,7 @@
 import { IMessage } from "@/types";
 import { mockHandler, mockHandlerInit } from "./mock-handler";
 import { projectHandler } from "./project-handler";
+import { orgHandler } from "./org-handler";
 
 // Initialize on service worker startup
 chrome.runtime.onStartup.addListener(() => {
@@ -28,6 +29,7 @@ chrome.runtime.onConnect.addListener((port) => {
             const operations = {
                 ...mockHandler,
                 ...projectHandler,
+                ...orgHandler,
             };
 
             try {

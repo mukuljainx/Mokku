@@ -1,7 +1,11 @@
 import { parseJSONIfPossible } from "@/lib";
-import { DynamicUrlEntry } from "@/services";
 import { mocksDb } from "@/services/db/mocksDb";
 import { ILog, IMessage, IMock } from "@/types";
+
+export interface DynamicUrlEntry {
+    localId: number;
+    urlPattern: string; // The URL pattern stored for dynamic matching
+}
 
 let dynamicUrlPatterns: DynamicUrlEntry[] = [];
 
