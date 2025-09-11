@@ -1,4 +1,4 @@
-import { IMock, ILog, IMethod, MessageType, IMessage } from "@/types";
+import { IMock, ILog, MessageType, MESSAGE_TYPE } from "@/types";
 import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
 import { IdFactory } from "@/lib/idFactory";
@@ -17,20 +17,6 @@ messageService.listen((data) => {
     }
 });
 
-let xhook;
-try {
-    /**
-     * xhook tries to change api's on windows for mocking purpose
-     * it is not allowed in YouTube and some other sites for ads protection
-     * hence, we are wrapping it in try catch
-     * so we can inform user that mokku cannot work on this site
-     */
-    xhook = require("xhook").default;
-} catch (error) {
-    // todo(deeoanshu): inform user through panel that mokku cannot work on this site
-    console.error("Mokku Inject: xhook is not available:", error);
-}
-
 /**
  * Promisify post message from window to window
  * ackRequired, if false, no id will be assigned hence, no method will be added in message
@@ -40,7 +26,7 @@ try {
 const postMessage = (
     message: ILog,
     type: MessageType["HOOK"],
-    ackRequired: boolean,
+    ackRequired: boolean
 ): Promise<any> | undefined => {
     // Ensure message is serializable
     const safeMessage = JSON.parse(JSON.stringify(message));
@@ -67,6 +53,30 @@ const postMessage = (
     return undefined;
 };
 
+let xhook;
+try {
+    /**
+     * xhook tries to change api's on windows for mocking purpose
+     * it is not allowed in YouTube and some other sites for ads protection
+     * hence, we are wrapping it in try catch
+     * so we can inform user that mokku cannot work on this site
+     */
+    xhook = require("xhook").default;
+} catch (error) {
+    console.error("Mokku Inject: xhook is not available:", error);
+
+    // Inform user through panel that mokku cannot work on this site
+    const errorMessage = {
+        id: messageIdFactory.getId(),
+        error: error.message || "xhook is not available on this site",
+        site: location.hostname,
+        reason: "This site blocks API mocking for security/ad protection",
+        origin: "XHOOK",
+    };
+
+    postMessage(errorMessage, MESSAGE_TYPE.ERROR, false);
+}
+
 xhook.before(function (request, callback) {
     console.log(810, "Mokku Inject: xhook.before called", request);
     if (!request.mokku) {
@@ -85,10 +95,10 @@ xhook.before(function (request, callback) {
     // REQUEST_CHECKPOINT_1: Before actual request
 
     // Send initial log (fire and forget)
-    postMessage(logEntry, "LOG", false);
+    postMessage(logEntry, MESSAGE_TYPE.LOG, false);
 
     // Handle mock check in a Promise chain
-    postMessage(logEntry, "CHECK_MOCK", true)
+    postMessage(logEntry, MESSAGE_TYPE.CHECK_MOCK, true)
         ?.then((mockServiceResponse) => {
             // REQUEST_CHECKPOINT_6: received mock response from service worker through hook
             if (mockServiceResponse?.mockResponse) {
@@ -101,7 +111,7 @@ xhook.before(function (request, callback) {
                               final[header.name] = header.value;
                               return final;
                           },
-                          {},
+                          {}
                       )
                     : { "content-type": "application/json; charset=UTF-8" }; // Default headers
 
@@ -133,7 +143,7 @@ xhook.before(function (request, callback) {
 xhook.after(async function (request, originalResponse) {
     if (!request.mokku) {
         console.warn(
-            "Mokku Inject: Request does not have mokku data, skipping after hook.",
+            "Mokku Inject: Request does not have mokku data, skipping after hook."
         );
         return;
     }
@@ -145,5 +155,5 @@ xhook.after(async function (request, originalResponse) {
         response: responseLog,
     };
 
-    postMessage(logEntry, "LOG", false);
+    postMessage(logEntry, MESSAGE_TYPE.LOG, false);
 });
