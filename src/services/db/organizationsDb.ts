@@ -1,8 +1,18 @@
 import { IOrganization, IOrganizationCreate } from "@/types";
 import { localDb } from ".";
+import Dexie from "dexie";
 
-const getOrganizations = async (): Promise<IOrganization[]> => {
-    return await localDb.organizations.toArray();
+const getOrganizations = async (
+    query: Partial<IOrganization>,
+): Promise<IOrganization[]> => {
+    let collection = localDb.organizations as unknown as Dexie.Collection<
+        IOrganization,
+        number
+    >;
+    for (const [key, value] of Object.entries(query)) {
+        collection = collection.and((org) => (org as any)[key] === value);
+    }
+    return await collection.toArray();
 };
 
 const getOrganizationById = async (

@@ -1,8 +1,20 @@
 import { IProject } from "@/types";
 import { localDb } from ".";
+import Dexie from "dexie";
 
-const getProjects = async (): Promise<IProject[]> => {
-    return await localDb.projects.toArray();
+const getProjects = async (
+    query: Partial<IProject> = {},
+): Promise<IProject[]> => {
+    let collection = localDb.projects as unknown as Dexie.Collection<
+        IProject,
+        number
+    >;
+    for (const [key, value] of Object.entries(query)) {
+        collection = collection.and(
+            (project) => (project as any)[key] === value,
+        );
+    }
+    return await collection.toArray();
 };
 
 const getProjectById = async (

@@ -1,7 +1,7 @@
 import { IMessage } from "@/types";
 import { mockHandler, mockHandlerInit } from "./mock-handler";
 import { projectHandler } from "./project-handler";
-import { orgHandler } from "./org-handler";
+import { organizationHandler } from "./organization-handler";
 
 // Initialize on service worker startup
 chrome.runtime.onStartup.addListener(() => {
@@ -13,11 +13,22 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Mokku: Extension installed/updated.");
     mockHandlerInit();
+    organizationHandler.init?.();
 });
+
+const operations = {
+    ...mockHandler,
+    ...projectHandler,
+    ...organizationHandler,
+};
 
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "mokku-content-script") {
-        port.onMessage.addListener(async (message: IMessage) => {
+        port.onMessage.addListener(async (message: IMessage | "PING") => {
+            if (message === "PING") {
+                return;
+            }
+
             const portPostMessage = (message: IMessage) =>
                 port.postMessage(message);
 
@@ -26,11 +37,27 @@ chrome.runtime.onConnect.addListener((port) => {
                 message,
             );
 
-            const operations = {
-                ...mockHandler,
-                ...projectHandler,
-                ...orgHandler,
-            };
+            if (operations[message.type] === undefined) {
+                console.log("Mokku SW: No handler for message", message);
+
+                portPostMessage({
+                    type: message.type,
+                    data: {
+                        isError: true,
+                        error: {
+                            message: "Operation not supported",
+                            status: 404,
+                        },
+                    },
+                    id: message.id,
+                    _mokku: {
+                        source: "SERVICE_WORKER",
+                        destination: message._mokku.source,
+                    },
+                } as IMessage);
+
+                return;
+            }
 
             try {
                 await operations[message.type]?.(message, portPostMessage);

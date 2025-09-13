@@ -10,10 +10,10 @@ export interface IOrganization {
     lastOpened?: number;
     localId: number;
     isLocal?: boolean;
-    syncStatus: SyncStatus;
+    syncStatus?: SyncStatus;
 }
 
 export type IOrganizationCreate = Pick<
     IOrganization,
-    "name" | "slug" | "description" | "isLocal" | "syncStatus"
+    "name" | "slug" | "description" | "isLocal"
 >;

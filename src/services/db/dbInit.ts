@@ -52,6 +52,7 @@ localDb.organizations.hook("creating", function (primKey, obj, trans) {
     obj.createdAt = Date.now();
     if (!obj.updatedAt) {
         obj.updatedAt = Date.now();
+        obj.syncStatus = "PENDING";
     }
 });
 

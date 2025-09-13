@@ -5,4 +5,6 @@ export type OperationHandler = (
     postMessage: (message: IMessage) => void,
 ) => void;
 
-export type OperationHandlers = Record<string, OperationHandler>;
+export type OperationHandlers = Record<string, OperationHandler> & {
+    init?: () => Promise<void>;
+};
