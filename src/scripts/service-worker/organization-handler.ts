@@ -42,15 +42,15 @@ export const organizationHandler: OperationHandlers = {
     ORGANIZATION_GET: async (message, postMessage) => {
         const { slug, id } = message.data as { slug: string; id: number };
 
-        const organization = await organizationsDb.getOrganizations({
+        const organizations = await organizationsDb.getOrganizations({
             slug,
             id,
-        })[0];
+        });
 
-        if (organization) {
+        if (organizations[0]) {
             postMessage({
                 type: "ORGANIZATION_GET",
-                data: organization,
+                data: organizations[0],
                 id: message.id,
             });
         } else {

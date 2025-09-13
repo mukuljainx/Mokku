@@ -1,18 +1,14 @@
 import { IOrganization, IOrganizationCreate } from "@/types";
 import { localDb } from ".";
 import Dexie from "dexie";
+import { filterArrayByQuery } from "@/scripts/utils/filter-array-by-query";
 
 const getOrganizations = async (
     query: Partial<IOrganization>,
 ): Promise<IOrganization[]> => {
-    let collection = localDb.organizations as unknown as Dexie.Collection<
-        IOrganization,
-        number
-    >;
-    for (const [key, value] of Object.entries(query)) {
-        collection = collection.and((org) => (org as any)[key] === value);
-    }
-    return await collection.toArray();
+    const allOrganizations = await localDb.organizations.toArray();
+    const f = filterArrayByQuery(allOrganizations, query);
+    return f;
 };
 
 const getOrganizationById = async (
