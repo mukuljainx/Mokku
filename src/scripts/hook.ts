@@ -1,4 +1,4 @@
-import { IMock, ILog, MessageType, MESSAGE_TYPE } from "@/types";
+import { IMock, ILog, MessageType, MESSAGE_TYPE, IErrorData } from "@/types";
 import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
 import { IdFactory } from "@/lib/idFactory";
@@ -24,7 +24,7 @@ messageService.listen((data) => {
  * @returns A promise that resolves with the response message if ackRequired is true, otherwise undefined.
  */
 const postMessage = (
-    message: ILog,
+    message: ILog | IErrorData,
     type: MessageType["HOOK"],
     ackRequired: boolean
 ): Promise<any> | undefined => {
@@ -67,7 +67,6 @@ try {
 
     // Inform user through panel that mokku cannot work on this site
     const errorMessage = {
-        id: messageIdFactory.getId(),
         error: error.message || "xhook is not available on this site",
         site: location.hostname,
         reason: "This site blocks API mocking for security/ad protection",

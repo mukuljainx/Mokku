@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useLogs } from "@/panel/store/useLogs";
-import { useError } from "@/panel/store/useError";
 import { LogsTable } from "@/panel/screens/LogsTable";
 import { ErrorAlert } from "@/components/ui/errorAlert";
-
 import { ILog } from "@/types";
+import { useGlobalListener } from "../../hooks/useGlobalListener";
+import { useAppStore } from "../../store/useAppStore";
 
 const mock: ILog[] = [
     {
@@ -161,8 +161,9 @@ const mock: ILog[] = [
 ];
 
 export const Home = () => {
+    useGlobalListener();
     const { logs, logsMap, clearData, baseTime } = useLogs();
-    const { error } = useError();
+    const { error } = useAppStore();
 
     const data = React.useMemo(
         () => logs.map((id) => logsMap[id]),
@@ -171,14 +172,17 @@ export const Home = () => {
 
     return (
         <div className="flex flex-col h-full">
-            {error && <ErrorAlert errorData={error} />}
-            <div className="flex-1">
-                <LogsTable
-                    baseTime={baseTime}
-                    data={data}
-                    clearData={clearData}
-                />
-            </div>
+            {error ? (
+                <ErrorAlert errorData={error} />
+            ) : (
+                <div className="flex-1">
+                    <LogsTable
+                        baseTime={baseTime}
+                        data={data}
+                        clearData={clearData}
+                    />
+                </div>
+            )}
         </div>
     );
 };
