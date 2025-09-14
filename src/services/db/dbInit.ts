@@ -1,5 +1,5 @@
 import Dexie, { EntityTable } from "dexie";
-import { IMock, IProject } from "@/types";
+import { IMock, IProject, IOrganization } from "@/types";
 
 export interface StoredMock extends IMock {
     dynamicKey: number;
@@ -12,13 +12,52 @@ export const localDb = new Dexie("MokkuConnectorDB") as Dexie & {
         "localId" // Primary key is 'localId'
     >;
     projects: EntityTable<IProject, "localId">;
+    organizations: EntityTable<IOrganization, "localId">;
 };
 
 // Schema declaration:
-localDb.version(1).stores({
+localDb.version(2).stores({
     // 'localId' is the auto-incrementing primary key.
     // '[url+dynamicKey+method]' for specific mock lookups.
     // 'dynamicKey' as a simple index for queries like where({ dynamic: true }).
     mocks: "++localId, [url+dynamicKey+method], dynamicKey",
-    projects: "++localId, name, lastOpened",
+    projects: "++localId, name, lastOpened, slug",
+    organizations: "++localId, name, slug",
 });
+
+// Add hooks to automatically set timestamps
+localDb.mocks.hook("creating", function (primKey, obj, trans) {
+    obj.createdAt = Date.now();
+    if (!obj.updatedAt) {
+        obj.updatedAt = Date.now();
+    }
+});
+
+localDb.mocks.hook("updating", function (modifications) {
+    (modifications as any).updatedAt = Date.now();
+});
+
+localDb.projects.hook("creating", function (primKey, obj, trans) {
+    obj.createdAt = Date.now();
+    if (!obj.updatedAt) {
+        obj.updatedAt = Date.now();
+    }
+});
+
+localDb.projects.hook("updating", function (modifications) {
+    (modifications as any).updatedAt = Date.now();
+});
+
+localDb.organizations.hook("creating", function (primKey, obj, trans) {
+    obj.createdAt = Date.now();
+    if (!obj.updatedAt) {
+        obj.updatedAt = Date.now();
+        obj.syncStatus = "PENDING";
+    }
+});
+
+localDb.organizations.hook("updating", function (modifications) {
+    (modifications as any).updatedAt = Date.now();
+});
+
+console.log("Mokku DB: Initializing database", localDb);

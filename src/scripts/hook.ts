@@ -10,10 +10,10 @@ const logIdFactory = new IdFactory();
 
 const messageService = new MessageService("HOOK");
 
-messageService.listen((data) => {
-    console.log("Mokku Inject: Received message from panel/content", data);
-    if (data.messageId) {
-        messageBus.dispatch(data.messageId, data.messageId);
+messageService.listen((message) => {
+    console.log("Mokku Inject: Received message from panel/content", message);
+    if (message.id) {
+        messageBus.dispatch(message.id, message.id);
     }
 });
 
@@ -33,7 +33,7 @@ const postMessage = (
     const messageId = ackRequired ? messageIdFactory.getId() : undefined;
 
     const messageObject = {
-        messageId: messageId,
+        id: messageId,
         data: safeMessage,
         type,
     };

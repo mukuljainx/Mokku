@@ -38,7 +38,7 @@ export type MessageType = {
 export interface IMessage<T = unknown> {
     type: string;
     data?: T;
-    messageId?: number | string;
+    id?: number | string;
     // repliedToId?: number | string;
     extensionName?: "MOKKU";
     _mokku?: {

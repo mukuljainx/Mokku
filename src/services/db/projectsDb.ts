@@ -1,8 +1,13 @@
 import { IProject } from "@/types";
 import { localDb } from ".";
+import Dexie from "dexie";
+import { filterArrayByQuery } from "@/scripts/utils/filter-array-by-query";
 
-const getProjects = async (): Promise<IProject[]> => {
-    return await localDb.projects.toArray();
+const getProjects = async (
+    query: Partial<IProject> = {},
+): Promise<IProject[]> => {
+    const allProjects = await localDb.projects.toArray();
+    return filterArrayByQuery(allProjects, query);
 };
 
 const getProjectById = async (
