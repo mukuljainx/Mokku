@@ -94,6 +94,7 @@ export const mockHandler = {
                     mock = staticMock;
                 }
             }
+
             // 3. check with pathname
             if (!mock || !mock.active) {
                 const pathname = new URL(request.fullUrl).pathname;

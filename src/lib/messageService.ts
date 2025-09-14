@@ -41,6 +41,9 @@ const listen = <T extends Process>(
         case "SERVICE_WORKER": {
             return [service["runtime"]()];
         }
+        case "APP_SCRIPT": {
+            return [service["window"](), service["runtime"]()];
+        }
     }
 };
 

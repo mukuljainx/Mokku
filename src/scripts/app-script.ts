@@ -20,14 +20,8 @@ chrome.runtime.onMessage.addListener(function (request, _, sendResponse) {
     sendResponse(true);
 });
 
-window.addEventListener("message", (event) => {
-    if (event.source !== window) return;
-
-    const message = event.data as IMessage;
-
-    if (message._mokku?.destination !== "APP_SCRIPT") return; // to avoid loopback
-
-    console.log("Mokku app_script: received message from web app", event.data);
+messageService.listen((message) => {
+    console.log("Mokku app_script: received message from web app", message);
 
     port.postMessage({
         ...message,
