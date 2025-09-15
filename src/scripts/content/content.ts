@@ -1,6 +1,6 @@
 import { runFunction } from "../function-executor";
 import inject from "../utils/inject-to-dom";
-import { ILog, IMessage, IMock } from "@/types";
+import { ILog, IMessage, IMock, MESSAGE_TYPE } from "@/types";
 import { MessageService } from "@/lib";
 import { createForcedAlivePort } from "../utils/forced-alive-port";
 
@@ -99,6 +99,15 @@ const init = () => {
                 type: "LOG",
                 data: data.data,
                 id: data.id,
+            });
+        }
+
+        if (data.type === MESSAGE_TYPE.ERROR) {
+            // Forward xhook error to panel for user notification
+            messageService.send("PANEL", {
+                type: MESSAGE_TYPE.ERROR,
+                data: data.data,
+                messageId: data.messageId,
             });
         }
     });

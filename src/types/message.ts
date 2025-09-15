@@ -14,18 +14,30 @@ export type APP_MESSAGE_TYPE =
 
 export type Tunnel = "WINDOW" | "RUNTIME";
 
+export enum MESSAGE_TYPE {
+    LOG = "LOG",
+    CHECK_MOCK = "CHECK_MOCK",
+    MOKKU_ACTIVATED = "MOKKU_ACTIVATED",
+    LOG_MOCK_STATUS = "LOG_MOCK_STATUS",
+    INIT = "INIT",
+    ERROR = "ERROR",
+}
+
 export type MessageType = {
-    HOOK: "CHECK_MOCK" | "LOG";
-    CONTENT: "LOG" | "CHECK_MOCK" | "MOKKU_ACTIVATED";
-    PANEL: "LOG_MOCK_STATUS" | "LOG" | "INIT";
-    SERVICE_WORKER: "CHECK_MOCK";
+    HOOK: MESSAGE_TYPE.CHECK_MOCK | MESSAGE_TYPE.LOG | MESSAGE_TYPE.ERROR;
+    CONTENT:
+        | MESSAGE_TYPE.LOG
+        | MESSAGE_TYPE.CHECK_MOCK
+        | MESSAGE_TYPE.MOKKU_ACTIVATED;
+    PANEL: MESSAGE_TYPE.LOG_MOCK_STATUS | MESSAGE_TYPE.LOG | MESSAGE_TYPE.INIT;
+    SERVICE_WORKER: MESSAGE_TYPE.CHECK_MOCK;
     APP_SCRIPT: APP_MESSAGE_TYPE;
     APP: APP_MESSAGE_TYPE;
 };
 
-export interface IMessage {
+export interface IMessage<T = unknown> {
     type: string;
-    data?: unknown;
+    data?: T;
     id?: number | string;
     // repliedToId?: number | string;
     extensionName?: "MOKKU";
