@@ -1,4 +1,4 @@
-import { IProject } from "@/types";
+import { IProject, IProjectCreate } from "@/types";
 import { localDb } from ".";
 import Dexie from "dexie";
 import { filterArrayByQuery } from "@/scripts/utils/filter-array-by-query";
@@ -16,10 +16,10 @@ const getProjectById = async (
     return await localDb.projects.get(localId);
 };
 
-const addProject = async (
-    projectData: Omit<IProject, "localId">,
+const createProject = async (
+    data: IProjectCreate,
 ): Promise<number | undefined> => {
-    return await localDb.projects.add(projectData);
+    return await localDb.projects.add(data);
 };
 
 const updateProject = async (
@@ -36,7 +36,7 @@ const deleteProject = async (localId: number): Promise<void> => {
 export const projectsDb = {
     getProjects,
     getProjectById,
-    addProject,
+    createProject,
     updateProject,
     deleteProject,
 };

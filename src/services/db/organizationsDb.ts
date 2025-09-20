@@ -7,8 +7,7 @@ const getOrganizations = async (
     query: Partial<IOrganization>,
 ): Promise<IOrganization[]> => {
     const allOrganizations = await localDb.organizations.toArray();
-    const f = filterArrayByQuery(allOrganizations, query);
-    return f;
+    return filterArrayByQuery(allOrganizations, query);
 };
 
 const getOrganizationById = async (
