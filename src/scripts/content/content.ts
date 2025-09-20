@@ -38,7 +38,7 @@ const init = () => {
                         const result = await runFunction(
                             mock.function,
                             request.queryParams,
-                            request.body,
+                            request.body
                         );
                         mock.response = result as string;
                     }
@@ -107,7 +107,7 @@ const init = () => {
             messageService.send("PANEL", {
                 type: MESSAGE_TYPE.ERROR,
                 data: data.data,
-                messageId: data.messageId,
+                id: data.id,
             });
         }
     });
