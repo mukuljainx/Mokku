@@ -12,15 +12,9 @@ export interface IProject {
     isLocal?: boolean;
     syncStatus?: SyncStatus;
     organizationId?: number;
-    localOrganizationId?: number;
 }
 
 export type IProjectCreate = Pick<
     IProject,
-    | "name"
-    | "slug"
-    | "description"
-    | "isLocal"
-    | "organizationId"
-    | "localOrganizationId"
+    "name" | "slug" | "description" | "isLocal" | "organizationId"
 >;

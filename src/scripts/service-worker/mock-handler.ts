@@ -1,167 +1,79 @@
-import { parseJSONIfPossible } from "@/lib";
 import { mocksDb } from "@/services/db/mocksDb";
-import { ILog, IMessage, IMock } from "@/types";
+import { OperationHandlers } from "./type";
+import { IMock, IMockCreate, IProjectCreate } from "@/types";
+import { postBodyValidator } from "../utils/post-body-validator";
 
-export interface DynamicUrlEntry {
-    localId: number;
-    urlPattern: string; // The URL pattern stored for dynamic matching
-}
-
-let dynamicUrlPatterns: DynamicUrlEntry[] = [];
-
-async function initializeDynamicUrls() {
-    try {
-        dynamicUrlPatterns = await mocksDb.getDynamicUrlPatterns();
-        console.log(
-            "Mokku: Dynamic URL patterns loaded:",
-            dynamicUrlPatterns.length,
+export const mockHandler: OperationHandlers = {
+    MOCK_GET_ALL: async (message, postMessage) => {
+        const mocks = await mocksDb.getMocks(
+            message.data as Parameters<typeof mocksDb.getMocks>[0]
         );
-    } catch (error) {
-        console.error("Mokku: Error loading dynamic URL patterns:", error);
-    }
-}
+        postMessage({
+            type: "MOCK_GET_ALL",
+            data: mocks,
+            id: message.id,
+        });
+    },
+    // PROJECT_GET: async (message, postMessage) => {
+    //     const { slug, id } = message.data as { slug: string; id: number };
 
-function findMatchingDynamicUrl(
-    url: string,
-    // method: string,
-): DynamicUrlEntry | undefined {
-    // This is a very basic matcher.
-    // For more complex patterns (e.g., /users/:id), you'd need a robust path-to-regexp like library.
-    return dynamicUrlPatterns.find((entry) => {
-        // Simple exact match for now, or implement your pattern matching logic here
-        // Example for wildcard: entry.urlPattern.replace('*', '.*') and use regex
-        return entry.urlPattern === url;
-    });
-}
+    //     const project = await projectsDb.getProjects({
+    //         slug,
+    //         id,
+    //     });
 
-export const mockHandlerInit = () => {
-    initializeDynamicUrls();
-};
+    //     if (project[0]) {
+    //         postMessage({
+    //             type: "PROJECT_GET",
+    //             data: project[0],
+    //             id: message.id,
+    //         });
+    //     } else {
+    //         postMessage({
+    //             type: "PROJECT_GET",
+    //             data: {
+    //                 isError: true,
+    //                 error: {
+    //                     message: "Project not found",
+    //                     status: 404,
+    //                 },
+    //             },
+    //             id: message.id,
+    //         });
+    //     }
+    // },
+    MOCK_CREATE: async (message, postMessage) => {
+        const data = message.data as IMock;
 
-export const mockHandler = {
-    CHECK_MOCK: async (
-        message: IMessage,
-        portPostMessage: (message: IMessage) => void,
-    ) => {
-        console.log("Mokku SW: received CHECK_MOCK", message);
-        const log = message.data as ILog;
-        let mock: IMock | undefined = undefined;
-        const request = log.request as ILog["request"];
-        try {
-            // REQUEST_CHECKPOINT_3: service worker received message from content script
+        const missingFields = postBodyValidator(data, [
+            "name",
+            "projectId",
+            "method",
+            "status",
+            "method",
+            "url",
+        ]);
 
-            if (!request) {
-                return portPostMessage({
-                    type: "MOCK_CHECKED",
-                    data: {
-                        mockResponse: null,
-                        log,
-                    },
-                    id: message.id,
-                });
-            }
-
-            /**
-             * 1. check for graphql mock
-             */
-            if (request?.method === "POST") {
-                const { json, parsed } = parseJSONIfPossible(request.body);
-
-                if (parsed) {
-                    if (
-                        json.operationName &&
-                        typeof json.operationName === "string"
-                    ) {
-                        mock = await mocksDb.findGraphQLMocks({
-                            url: request.url,
-                            operationName: json.operationName,
-                        })[0];
-                    }
-                }
-            }
-
-            // if no mock or mock is inactive
-            // 2. check for static
-            if (!mock || !mock.active) {
-                const staticMock = await mocksDb.findStaticMocks(
-                    request.url,
-                    request.method,
-                )[0];
-
-                // either we didn't had the mock
-                // if we had the mock it was inactive
-                if (!mock || staticMock?.active) {
-                    mock = staticMock;
-                }
-            }
-
-            // 3. check with pathname
-            if (!mock || !mock.active) {
-                const pathname = new URL(request.fullUrl).pathname;
-                const pathnameMock = await mocksDb.findStaticMocks(
-                    pathname,
-                    request.method,
-                )[0];
-
-                if (!mock || pathnameMock?.active) {
-                    mock = pathnameMock;
-                }
-            }
-
-            // 4. check with dynamic mocks
-            if (!mock || !mock.active) {
-                const dynamicMatch = findMatchingDynamicUrl(
-                    request.url,
-                    // request.method,
-                );
-
-                if (dynamicMatch) {
-                    const dynamicMock = await mocksDb.findMockById(
-                        dynamicMatch.localId,
-                    );
-
-                    if (!mock || dynamicMock?.active) {
-                        mock = dynamicMock;
-                    }
-                }
-            }
-            // REQUEST_CHECKPOINT_4: service worker informs content script about mock
-            console.log("Mokku SW: Found mock for request:", request, mock);
-            if (mock) {
-                portPostMessage({
-                    type: "MOCK_CHECKED",
-                    data: {
-                        mockResponse: mock,
-                        log,
-                    },
-                    id: message.id,
-                });
-            } else {
-                console.log("Mokku SW: No mock found for request:", request);
-                //todo: inform the panel
-                portPostMessage({
-                    type: "MOCK_CHECKED",
-                    data: {
-                        log,
-                        mockResponse: null,
-                    },
-                    id: message.id,
-                });
-            }
-        } catch (err) {
-            console.error("Mokku SW: Error processing CHECK_MOCK", err);
-            portPostMessage({
-                type: "MOCK_CHECKED",
+        if (missingFields.length > 0) {
+            return postMessage({
+                type: "MOCK_CREATE",
                 data: {
-                    mockResponse: null,
-                    log,
+                    isError: true,
+                    error: {
+                        message: `Missing fields: ${missingFields.join(", ")}`,
+                        status: 400,
+                    },
                 },
                 id: message.id,
-            } as IMessage);
-            portPostMessage({
-                type: "MOCK_CHECK_ERROR",
-                log,
-            } as IMessage);
+            });
         }
+
+        const mock = await mocksDb.createMock(data);
+
+        postMessage({
+            type: "MOCK_CREATE",
+            data: mock,
+            id: message.id,
+        });
     },
 };

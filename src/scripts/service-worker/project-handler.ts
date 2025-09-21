@@ -2,8 +2,6 @@ import { projectsDb } from "@/services/db/projectsDb";
 import { OperationHandlers } from "./type";
 import { IProjectCreate } from "@/types";
 
-console.log(81144, projectsDb.getProjects());
-
 export const projectHandler: OperationHandlers = {
     PROJECTS_GET_ALL: async (message, postMessage) => {
         const projects = await projectsDb.getProjects();
@@ -44,20 +42,7 @@ export const projectHandler: OperationHandlers = {
     PROJECT_CREATE: async (message, postMessage) => {
         const data = message.data as IProjectCreate;
 
-        if (data.isLocal && !data.localOrganizationId) {
-            return postMessage({
-                type: "PROJECT_CREATE",
-                data: {
-                    isError: true,
-                    error: {
-                        message: "Local organization Id is required",
-                        status: 400,
-                    },
-                },
-                id: message.id,
-            });
-        }
-        if (!data.isLocal && !data.organizationId) {
+        if (!data.organizationId) {
             return postMessage({
                 type: "PROJECT_CREATE",
                 data: {
@@ -72,10 +57,10 @@ export const projectHandler: OperationHandlers = {
         }
 
         if (data.isLocal) {
-            const localId = projectsDb.createProject(data);
+            const project = await projectsDb.createProject(data);
             postMessage({
                 type: "PROJECT_CREATE",
-                data: { ...data, localId },
+                data: project,
                 id: message.id,
             });
         }

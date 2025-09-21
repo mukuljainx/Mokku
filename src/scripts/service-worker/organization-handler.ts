@@ -6,15 +6,28 @@ export const organizationHandlerInit = async () => {
     /**
      * if there are no organizations, create a default one for offline use
      */
-    const orgs = await organizationsDb.getOrganizations({});
-    if (orgs.length === 0) {
-        await organizationsDb.createOrganization({
-            name: "Users Organization",
-            slug: "users-organization",
-            description:
-                "This is a default organization created for offline use.",
-            isLocal: true,
-        });
+    try {
+        const orgs = await organizationsDb.getOrganizations({});
+        if (orgs.length === 0) {
+            await organizationsDb.createOrganization({
+                name: "Users Organization",
+                slug: "users-organization",
+                description:
+                    "This is a default organization created for offline use.",
+                isLocal: true,
+            });
+            console.log("Mokku: Default organization created");
+        }
+    } catch (error) {
+        // Check if it's a constraint error for duplicate slug
+        if (
+            error.name === "ConstraintError" &&
+            error.message.includes("slug")
+        ) {
+            console.log("Mokku: Default organization already exists");
+        } else {
+            console.error("Mokku: Error creating default organization:", error);
+        }
     }
 };
 
@@ -22,7 +35,7 @@ export const organizationHandler: OperationHandlers = {
     init: organizationHandlerInit,
     ORGANIZATION_GET_ALL: async (message, postMessage) => {
         const organizations = await organizationsDb.getOrganizations(
-            message.data || {},
+            message.data || {}
         );
         postMessage({
             type: "ORGANIZATION_GET_ALL",
@@ -32,10 +45,10 @@ export const organizationHandler: OperationHandlers = {
     },
     ORGANIZATION_CREATE: async (message, postMessage) => {
         const orgData = message.data as IOrganizationCreate;
-        const localId = await organizationsDb.createOrganization(orgData);
+        const organization = await organizationsDb.createOrganization(orgData);
         postMessage({
             type: "ORGANIZATION_CREATE",
-            data: { ...orgData, localId },
+            data: organization,
             id: message.id,
         });
     },

@@ -1,25 +1,27 @@
 import { IMessage } from "@/types";
-import { mockHandler, mockHandlerInit } from "./mock-handler";
+import { mockCheckHandler } from "./mock-check-handler";
 import { projectHandler } from "./project-handler";
 import { organizationHandler } from "./organization-handler";
+import { mockHandler } from "./mock-handler";
 
 // Initialize on service worker startup
-chrome.runtime.onStartup.addListener(() => {
-    console.log("Mokku: Service worker started on browser startup.");
-    mockHandlerInit();
-});
+// chrome.runtime.onStartup.addListener(() => {
+//     console.log("Mokku: Service worker started on browser startup.");
+//     mockCheckHandler.init();
+// });
 
 // Also initialize when the extension is installed or updated
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Mokku: Extension installed/updated.");
-    mockHandlerInit();
+    mockCheckHandler.init?.();
     organizationHandler.init?.();
 });
 
 const operations = {
-    ...mockHandler,
+    ...mockCheckHandler,
     ...projectHandler,
     ...organizationHandler,
+    ...mockHandler,
 };
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -34,7 +36,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
             console.log(
                 "Mokku SW: received message from content script",
-                message,
+                message
             );
 
             if (operations[message.type] === undefined) {
@@ -62,13 +64,13 @@ chrome.runtime.onConnect.addListener((port) => {
             try {
                 await operations[message.type]?.(message, portPostMessage);
             } catch (err) {
-                console.log("Mokku SW: Error handling message", err, message);
+                console.log("Mokku SW: Error handling message   ", err.message);
                 portPostMessage({
                     type: message.type,
                     data: {
                         isError: true,
                         error: {
-                            message: "Something went wrong",
+                            message: err?.message || "Something went wrong",
                             status: 500,
                             error: err,
                         },

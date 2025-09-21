@@ -16,13 +16,10 @@ export const localDb = new Dexie("MokkuConnectorDB") as Dexie & {
 };
 
 // Schema declaration:
-localDb.version(2).stores({
-    // 'localId' is the auto-incrementing primary key.
-    // '[url+dynamicKey+method]' for specific mock lookups.
-    // 'dynamicKey' as a simple index for queries like where({ dynamic: true }).
+localDb.version(3).stores({
     mocks: "++localId, [url+dynamicKey+method], dynamicKey",
-    projects: "++localId, name, lastOpened, slug",
-    organizations: "++localId, name, slug",
+    projects: "++localId, name, lastOpened, slug&", // '&' makes 'slug' unique
+    organizations: "++localId, name, slug&", // '&' makes 'slug' unique
 });
 
 // Add hooks to automatically set timestamps
@@ -60,4 +57,6 @@ localDb.organizations.hook("updating", function (modifications) {
     (modifications as any).updatedAt = Date.now();
 });
 
-console.log("Mokku DB: Initializing database", localDb);
+export async function deleteAllTables() {
+    localDb.delete();
+}

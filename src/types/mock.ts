@@ -59,4 +59,4 @@ export interface IMock {
     syncStatus: SyncStatus;
 }
 
-export type IMockRaw = Partial<IMock>;
+export type IMockCreate = Partial<IMock>;
