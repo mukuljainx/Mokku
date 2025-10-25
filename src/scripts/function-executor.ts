@@ -7,7 +7,7 @@ const fixedFooter = "}";
 export function runFunction(
     funcString: string,
     queriesString: string,
-    body: any,
+    body: any
 ) {
     return new Promise((resolve, reject) => {
         // Create worker from a Blob URL to embed worker code directly
@@ -98,6 +98,7 @@ export function runFunction(
                     }
                 };
             `;
+
         const blob = new Blob([workerCode], { type: "application/javascript" });
         const worker = new Worker(URL.createObjectURL(blob));
 
@@ -105,7 +106,7 @@ export function runFunction(
             console.log("worker", event);
             if (event.data.success) {
                 console.log(
-                    "Result:\n" + JSON.stringify(event.data.result, null, 2),
+                    "Result:\n" + JSON.stringify(event.data.result, null, 2)
                 );
                 resolve(event.data.result);
             } else {

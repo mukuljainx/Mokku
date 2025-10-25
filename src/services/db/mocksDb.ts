@@ -32,7 +32,8 @@ const findGraphQLMocks = async ({
     operationName: string;
 }): Promise<StoredMock[] | undefined> => {
     const mocks = await localDb.mocks.where({ url, operationName }).toArray();
-    return getSortedMockByActive(mocks);
+    const z = getSortedMockByActive(mocks);
+    return z;
 };
 
 const findStaticMocks = async (
@@ -45,14 +46,15 @@ const findStaticMocks = async (
     const mocks = await localDb.mocks
         .where({ url, dynamicKey: 0, method })
         .toArray();
-    return getSortedMockByActive(mocks);
+    const z = getSortedMockByActive(mocks);
+    return z;
 };
 
 const getAllMocks = async (): Promise<StoredMock[]> => {
     return localDb.mocks.toArray();
 };
 
-const findMockById = async (
+const getMockByLocalId = async (
     localId: number
 ): Promise<StoredMock | undefined> => {
     return localDb.mocks.get(localId);
@@ -60,6 +62,7 @@ const findMockById = async (
 
 const updateMock = async (localId: number, updates: Partial<StoredMock>) => {
     await localDb.mocks.update(localId, updates);
+    return getMockByLocalId(localId);
 };
 
 const createMock = async (mockData: IMock): Promise<IMock> => {
@@ -139,13 +142,24 @@ export const getMocks = async ({
     }
 };
 
+const deleteMockByLocalId = async (localId: number): Promise<void> => {
+    await localDb.mocks.delete(localId);
+};
+
 export const mocksDb = {
     getDynamicUrlPatterns,
     findStaticMocks,
-    findMockById,
+    getMockByLocalId,
     createMock,
     getAllMocks,
     findGraphQLMocks,
     _deleteAll,
     getMocks,
+    updateMock,
+    deleteMockByLocalId,
 };
+
+console.log(
+    "Mokku DB: mocksDb initialized and ready for use.",
+    mocksDb.getAllMocks()
+);

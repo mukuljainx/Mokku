@@ -45,7 +45,7 @@ const init = () => {
 
                     // REQUEST_CHECKPOINT_5_2: sending mock response to hook
                     messageService.send("HOOK", {
-                        data: message,
+                        data: data,
                         id: message.id,
                         type: "LOG",
                     });

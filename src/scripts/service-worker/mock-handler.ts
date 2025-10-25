@@ -14,34 +14,42 @@ export const mockHandler: OperationHandlers = {
             id: message.id,
         });
     },
-    // PROJECT_GET: async (message, postMessage) => {
-    //     const { slug, id } = message.data as { slug: string; id: number };
+    MOCK_GET: async (message, postMessage) => {
+        const { localId } = message.data as { localId: number };
 
-    //     const project = await projectsDb.getProjects({
-    //         slug,
-    //         id,
-    //     });
+        const mock = await mocksDb.getMockByLocalId(localId);
 
-    //     if (project[0]) {
-    //         postMessage({
-    //             type: "PROJECT_GET",
-    //             data: project[0],
-    //             id: message.id,
-    //         });
-    //     } else {
-    //         postMessage({
-    //             type: "PROJECT_GET",
-    //             data: {
-    //                 isError: true,
-    //                 error: {
-    //                     message: "Project not found",
-    //                     status: 404,
-    //                 },
-    //             },
-    //             id: message.id,
-    //         });
-    //     }
-    // },
+        if (mock) {
+            postMessage({
+                type: "MOCK_GET",
+                data: mock,
+                id: message.id,
+            });
+        } else {
+            postMessage({
+                type: "MOCK_GET",
+                data: {
+                    isError: true,
+                    error: {
+                        message: "Mock not found",
+                        status: 404,
+                    },
+                },
+                id: message.id,
+            });
+        }
+    },
+    MOCK_UPDATE: async (message, postMessage) => {
+        const data = message.data as { localId: number; mock: Partial<IMock> };
+
+        const updatedMock = await mocksDb.updateMock(data.localId, data.mock);
+
+        postMessage({
+            type: "MOCK_UPDATE",
+            data: updatedMock,
+            id: message.id,
+        });
+    },
     MOCK_CREATE: async (message, postMessage) => {
         const data = message.data as IMock;
 
@@ -73,6 +81,17 @@ export const mockHandler: OperationHandlers = {
         postMessage({
             type: "MOCK_CREATE",
             data: mock,
+            id: message.id,
+        });
+    },
+    MOCK_DELETE: async (message, postMessage) => {
+        const { localId } = message.data as { localId: number };
+
+        await mocksDb.deleteMockByLocalId(localId);
+
+        postMessage({
+            type: "MOCK_DELETE",
+            data: { success: true },
             id: message.id,
         });
     },

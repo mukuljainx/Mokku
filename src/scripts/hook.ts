@@ -13,7 +13,7 @@ const messageService = new MessageService("HOOK");
 messageService.listen((message) => {
     console.log("Mokku Inject: Received message from panel/content", message);
     if (message.id) {
-        messageBus.dispatch(message.id, message.id);
+        messageBus.dispatch(message.id, message.data);
     }
 });
 
