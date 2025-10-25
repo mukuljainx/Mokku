@@ -1,8 +1,7 @@
-import { IMethod, IMock, IMockCreate } from "@/types";
+import { IMethod, IMock } from "@/types";
 import { localDb } from "./";
 import { StoredMock } from "./dbInit";
 import { filterCollectionByQuery } from "@/scripts/utils";
-import { Collection } from "dexie";
 
 export interface DynamicUrlEntry {
     localId: number;
@@ -61,6 +60,13 @@ const getMockByLocalId = async (
 };
 
 const updateMock = async (localId: number, updates: Partial<StoredMock>) => {
+    // If 'dynamic' or 'active' are being updated, convert to keys
+    if (updates.dynamic !== undefined) {
+        updates.dynamicKey = updates.dynamic ? 1 : 0;
+    }
+    if (updates.active !== undefined) {
+        updates.activeKey = updates.active ? 1 : 0;
+    }
     await localDb.mocks.update(localId, updates);
     return getMockByLocalId(localId);
 };
@@ -103,6 +109,7 @@ export const getMocks = async ({
 }) => {
     try {
         let collection = localDb.mocks.orderBy("localId").reverse();
+        debugger;
 
         collection = filterCollectionByQuery(collection, {
             projectId,
