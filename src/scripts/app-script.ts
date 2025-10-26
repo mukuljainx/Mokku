@@ -5,8 +5,6 @@ import { createForcedAlivePort } from "./utils/forced-alive-port";
 
 console.log("Mokku app_script: init");
 
-const port = createForcedAlivePort("mokku-content-script");
-
 const messageService = new MessageService("APP_SCRIPT");
 
 // this sends request to web app using window context!
@@ -23,25 +21,40 @@ chrome.runtime.onMessage.addListener(function (request, _, sendResponse) {
 messageService.listen((message) => {
     console.log("Mokku app_script: received message from web app", message);
 
-    port.postMessage({
-        ...message,
-        _mokku: {
-            source: "APP_SCRIPT",
-            destination: "SERVICE_WORKER",
-        },
-    } as IMessage);
-});
+    messageService
+        .send("SERVICE_WORKER", message)
+        .then((resp) => {
+            console.log("Mokku app_script: received response from SW", resp);
+            // forward to web app
+            sentMessageToApp({
+                ...resp,
+                _mokku: {
+                    destination: "APP",
+                    source: "APP_SCRIPT",
+                },
+            });
+        })
+        .catch(() => {
+            sentMessageToApp({
+                data: {
+                    isError: true,
+                    error: {
+                        message: "Service Worker not responding",
+                        status: 500,
+                    },
+                },
+                type: message.type,
+                id: message.id,
+            });
+        });
 
-port.onMessage.addListener(async (message) => {
-    console.log("Mokku app_script: Received message from SW", message);
-    // forward to web app
-    sentMessageToApp({
-        ...message,
-        _mokku: {
-            destination: "APP",
-            source: "APP_SCRIPT",
-        },
-    });
+    // port.postMessage({
+    //     ...message,
+    //     _mokku: {
+    //         source: "APP_SCRIPT",
+    //         destination: "SERVICE_WORKER",
+    //     },
+    // } as IMessage);
 });
 
 setTimeout(() => {

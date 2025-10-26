@@ -2,7 +2,7 @@ import { IMessage, Process, Tunnel } from "@/types";
 
 const listen = <T extends Process>(
     entity: T,
-    callback: (props: IMessage, sender?: any, sendResponse?: any) => void,
+    callback: (props: IMessage, sender?: any, sendResponse?: any) => void
 ) => {
     const service = {
         runtime: () => {
@@ -10,6 +10,8 @@ const listen = <T extends Process>(
                 if (message?._mokku?.destination === entity) {
                     callback(message, _sender, sendResponse);
                 }
+
+                return entity === "SERVICE_WORKER";
             };
             chrome.runtime.onMessage.addListener(func);
             return () => chrome.runtime.onMessage.removeListener(func);
@@ -20,7 +22,7 @@ const listen = <T extends Process>(
                 if (event.source !== window) return;
                 const message = event.data;
                 if (message?._mokku?.destination === entity) {
-                    callback(message);
+                    return callback(message);
                 }
             };
             window.addEventListener("message", func);
@@ -59,6 +61,9 @@ const tunnelMap = {
     "SERVICE_WORKER.CONTENT": "RUNTIME",
 
     "APP_SCRIPT.APP": "WINDOW",
+
+    "APP_SCRIPT.SERVICE_WORKER": "RUNTIME",
+    "SERVICE_WORKER.APP_SCRIPT": "RUNTIME",
 } as const;
 
 const sendMessage = (tunnel: Tunnel, message) => {
@@ -69,17 +74,11 @@ const sendMessage = (tunnel: Tunnel, message) => {
             break;
         }
         case "RUNTIME": {
-            chrome.runtime.sendMessage(message);
-            break;
+            return chrome.runtime.sendMessage(message);
         }
-        // case "TAB":
-        //     if (type.tabId) {
-        //         chrome.tabs.sendMessage(type.tabId, { type });
-        //     }
-        //     break;
         default: {
             console.error(
-                `Mokku MessageService: No path defined for ${tunnel}`,
+                `Mokku MessageService: No path defined for ${tunnel}`
             );
             break;
         }
@@ -91,8 +90,8 @@ const serviceMap = {
         HOOK: ["CONTENT"],
         CONTENT: ["PANEL", "SERVICE_WORKER", "HOOK"],
         PANEL: ["CONTENT"],
-        SERVICE_WORKER: [],
-        APP_SCRIPT: ["APP"],
+        SERVICE_WORKER: ["CONTENT", "APP_SCRIPT"],
+        APP_SCRIPT: ["APP", "SERVICE_WORKER"],
         APP: [],
     },
 } as const;
@@ -111,16 +110,17 @@ export class MessageService<T extends Process> {
         const safeMessage = JSON.parse(JSON.stringify(message));
         safeMessage._mokku = {
             destination,
+            source: this.currentProcess,
         };
         safeMessage.extensionName = "MOKKU";
 
         const pathKey = `${this.currentProcess}.${destination}`;
         const tunnel = tunnelMap[pathKey];
-        sendMessage(tunnel, safeMessage);
+        return sendMessage(tunnel, safeMessage);
     }
 
     listen(
-        callback: (props: IMessage, sender?: any, sendResponse?: any) => void,
+        callback: (props: IMessage, sender?: any, sendResponse?: any) => void
     ) {
         return listen(this.currentProcess, callback);
     }

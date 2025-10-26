@@ -39,7 +39,7 @@ export const projectHandler: OperationHandlers = {
     PROJECT_CREATE: async (message, postMessage) => {
         const data = message.data as IProjectCreate;
 
-        if (!data.organizationId) {
+        if (!data.organizationLocalId) {
             return postMessage({
                 type: "PROJECT_CREATE",
                 data: {

@@ -89,8 +89,9 @@ xhook.before(function (request, callback) {
         request: getLogRequest(request),
     };
 
-    // REQUEST_CHECKPOINT_1: Before actual request
+    // headers todo
 
+    // REQUEST_CHECKPOINT_1: Before actual request
     // Send initial log (fire and forget)
     postMessage(logEntry, MESSAGE_TYPE.LOG, false);
 

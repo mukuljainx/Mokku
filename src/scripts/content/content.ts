@@ -5,14 +5,9 @@ import { MessageService } from "@/lib";
 import { createForcedAlivePort } from "../utils/forced-alive-port";
 
 const messageService = new MessageService("CONTENT");
-const port = createForcedAlivePort("mokku-content-script");
 
 const init = () => {
-    port.onMessage.addListener(async (message) => {
-        // messaged received from service worker
-
-        console.log("Mokku Content: Received message from SW", message);
-
+    const handleResponseFromServiceWorker = async (message: IMessage) => {
         switch (message.type) {
             case "MOCK_CHECKED": {
                 const data = message?.data as {
@@ -64,7 +59,7 @@ const init = () => {
                 messageService.send("PANEL", {
                     type: "LOG_MOCK_STATUS",
                     data: {
-                        log: message.data.log,
+                        log: message.data,
                         isError: true,
                         id: message.id,
                     },
@@ -77,7 +72,7 @@ const init = () => {
                 break;
             }
         }
-    });
+    };
 
     messageService.listen((data: IMessage) => {
         if (data.type === "MOKKU_ACTIVATED") {
@@ -88,7 +83,17 @@ const init = () => {
             // REQUEST_CHECKPOINT_2: Content received mock check request from hook
             // Forward the message to the service worker
             console.log("Mokku Inject: Forwarding CHECK_MOCK to SW", data);
-            port.postMessage(data);
+            messageService
+                .send("SERVICE_WORKER", data)
+                .then(handleResponseFromServiceWorker)
+                .catch(() => {
+                    messageService.send("HOOK", {
+                        data: data,
+                        id: data.id,
+                        type: "CHECK_MOCK",
+                    });
+                });
+            // port.postMessage(data);
         }
 
         if (data.type === "LOG") {

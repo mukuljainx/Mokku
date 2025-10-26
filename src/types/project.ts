@@ -17,5 +17,5 @@ export interface IProject {
 
 export type IProjectCreate = Pick<
     IProject,
-    "name" | "slug" | "description" | "isLocal" | "organizationId"
+    "name" | "slug" | "description" | "isLocal" | "organizationLocalId"
 >;
