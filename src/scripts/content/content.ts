@@ -19,7 +19,7 @@ const init = () => {
                     mockResponse: IMock | null;
                     log: ILog;
                 };
-                const mock = data.mockResponse as IMock;
+                const mock = data.mockResponse as IMock | undefined;
                 const request = data.log.request;
 
                 if (!mock) {
@@ -49,18 +49,15 @@ const init = () => {
                         id: message.id,
                         type: "LOG",
                     });
-
-                    messageService.send("PANEL", {
-                        type: "LOG_MOCK_STATUS",
-                        data: {
-                            isMocked: true,
-                            log: data.log,
-                            projectId: mock.projectId,
-                            mockId: mock.id,
-                        },
-                        id: message.id,
-                    });
                 }
+                messageService.send("PANEL", {
+                    type: "LOG_MOCK_STATUS",
+                    data: {
+                        mock,
+                        log: data.log,
+                    },
+                    id: message.id,
+                });
                 break;
             }
             case "MOCK_CHECK_ERROR": {

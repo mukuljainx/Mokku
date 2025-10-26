@@ -33,7 +33,10 @@ export const useLogTableColumns = ({
                 }, 500);
             };
 
-            const projectUrl = urlConstants.getNewMockUrl(log.projectId);
+            const projectUrl = urlConstants.getMockDetailsUrl(
+                log.projectLocalId,
+                log.mockLocalId
+            );
 
             openApp({ onSuccess: sendMockToTab, url: projectUrl });
         });
@@ -68,7 +71,7 @@ export const useLogTableColumns = ({
                 isVisible: columnVisibility["status"],
             },
         ],
-        [columnVisibility],
+        [columnVisibility]
     );
 
     const columns: ColumnDef<ILog, any>[] = React.useMemo(
@@ -195,7 +198,7 @@ export const useLogTableColumns = ({
                 },
             },
         ],
-        [columnConfig, baseTime],
+        [columnConfig, baseTime]
     );
 
     return columns;

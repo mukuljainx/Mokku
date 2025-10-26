@@ -98,21 +98,20 @@ export const getMocks = async ({
     active,
     dynamic,
     search,
-    projectId,
+    projectLocalId,
 }: {
     page: number;
     limit: number;
     active?: boolean;
     dynamic?: boolean;
     search?: string;
-    projectId: string;
+    projectLocalId: number;
 }) => {
     try {
         let collection = localDb.mocks.orderBy("localId").reverse();
-        debugger;
 
         collection = filterCollectionByQuery(collection, {
-            projectId,
+            projectLocalId,
             ...(active !== undefined ? { activeKey: active ? 1 : 0 } : {}),
             ...(dynamic !== undefined ? { dynamicKey: dynamic ? 1 : 0 } : {}),
         }) as typeof collection;

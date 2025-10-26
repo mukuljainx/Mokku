@@ -90,11 +90,8 @@ export const mockCheckHandler: OperationHandlers = {
                     request.method
                 )[0];
 
-                // either we didn't had the mock
-                // if we had the mock it was inactive
-                if (!mock && staticMock?.active) {
-                    mock = staticMock;
-                }
+                // assign whatever we found
+                mock = staticMock;
             }
 
             // 3. check with pathname
@@ -106,9 +103,7 @@ export const mockCheckHandler: OperationHandlers = {
                 );
                 const pathnameMock = all[0];
 
-                if (!mock && pathnameMock?.active) {
-                    mock = pathnameMock;
-                }
+                mock = pathnameMock;
             }
 
             // 4. check with dynamic mocks
@@ -123,9 +118,7 @@ export const mockCheckHandler: OperationHandlers = {
                         dynamicMatch.localId
                     );
 
-                    if (!mock || dynamicMock?.active) {
-                        mock = dynamicMock;
-                    }
+                    mock = dynamicMock;
                 }
             }
             // REQUEST_CHECKPOINT_4: service worker informs content script about mock
@@ -140,8 +133,6 @@ export const mockCheckHandler: OperationHandlers = {
                     id: message.id,
                 });
             } else {
-                console.log("Mokku SW: No mock found for request:", request);
-                //todo: inform the panel
                 portPostMessage({
                     type: "MOCK_CHECKED",
                     data: {

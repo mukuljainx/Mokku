@@ -51,3 +51,8 @@ export const projectsDb = {
     updateProject,
     deleteProject,
 };
+
+console.log(
+    "Mokku Service Worker: projectsDb initialized",
+    projectsDb.getProjects()
+);

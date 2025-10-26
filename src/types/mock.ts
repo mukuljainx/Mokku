@@ -28,6 +28,10 @@ export interface ILog {
     mockId?: string;
     // mock's projectId in in server
     projectId?: string;
+    // project local id
+    projectLocalId?: number;
+    // mock local id
+    mockLocalId?: number;
 }
 
 export interface IMock {
@@ -37,7 +41,7 @@ export interface IMock {
     id: number;
     active: boolean;
     name: string;
-    projectId: number;
+    projectId: string;
     description?: string;
     dynamic?: boolean;
 
@@ -56,6 +60,7 @@ export interface IMock {
     function?: string;
 
     localId: number;
+    projectLocalId: number;
     syncStatus: SyncStatus;
 }
 

@@ -1,6 +1,6 @@
 import { organizationsDb } from "@/services/db";
 import { OperationHandlers } from "./type";
-import { IOrganizationCreate } from "@/types";
+import { IOrganization, IOrganizationCreate } from "@/types";
 
 export const organizationHandlerInit = async () => {
     /**
@@ -53,12 +53,10 @@ export const organizationHandler: OperationHandlers = {
         });
     },
     ORGANIZATION_GET: async (message, postMessage) => {
-        const { slug, id } = message.data as { slug: string; id: number };
+        const partialOrgData = message.data as Partial<IOrganization>;
 
-        const organizations = await organizationsDb.getOrganizations({
-            slug,
-            id,
-        });
+        const organizations =
+            await organizationsDb.getOrganizations(partialOrgData);
 
         if (organizations[0]) {
             postMessage({

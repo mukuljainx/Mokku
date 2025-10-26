@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ILog } from "@/types";
+import { ILog, IMock } from "@/types";
 import { MessageService } from "@/lib";
 import { useAppStore } from "./useAppStore";
 
@@ -54,8 +54,7 @@ export const useLogs = () => {
                     [logId]: { ...logsMap[logId], ...log },
                 }));
             } else if (data.type === "LOG_MOCK_STATUS") {
-                console.log("Mokku Panel: LOG_MOCK_STATUS received", data);
-                const log = data.data as ILog;
+                const { log, mock } = data.data as { log: ILog; mock: IMock };
                 const logId = log.id;
                 if (logId === undefined) {
                     return;
@@ -65,7 +64,9 @@ export const useLogs = () => {
                         ...logsMap,
                         [logId]: {
                             ...logsMap[logId],
-                            isMocked: log.isMocked,
+                            isMocked: mock?.active,
+                            mockLocalId: mock?.localId,
+                            projectLocalId: mock?.projectLocalId,
                         },
                     }));
                 }

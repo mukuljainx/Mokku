@@ -1,6 +1,6 @@
 import { projectsDb } from "@/services/db/projectsDb";
 import { OperationHandlers } from "./type";
-import { IProjectCreate } from "@/types";
+import { IProject, IProjectCreate } from "@/types";
 
 export const projectHandler: OperationHandlers = {
     PROJECTS_GET_ALL: async (message, postMessage) => {
@@ -12,12 +12,9 @@ export const projectHandler: OperationHandlers = {
         });
     },
     PROJECT_GET: async (message, postMessage) => {
-        const { slug, id } = message.data as { slug: string; id: number };
+        const partialProject = message.data as Partial<IProject>;
 
-        const project = await projectsDb.getProjects({
-            slug,
-            id,
-        });
+        const project = await projectsDb.getProjects(partialProject);
 
         if (project[0]) {
             postMessage({

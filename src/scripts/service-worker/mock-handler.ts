@@ -55,7 +55,7 @@ export const mockHandler: OperationHandlers = {
 
         const missingFields = postBodyValidator(data, [
             "name",
-            "projectId",
+            "projectLocalId",
             "method",
             "status",
             "method",

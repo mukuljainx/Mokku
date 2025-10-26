@@ -89,8 +89,6 @@ xhook.before(function (request, callback) {
         request: getLogRequest(request),
     };
 
-    console.log(811, logEntry);
-
     // REQUEST_CHECKPOINT_1: Before actual request
 
     // Send initial log (fire and forget)
@@ -100,7 +98,10 @@ xhook.before(function (request, callback) {
     postMessage(logEntry, MESSAGE_TYPE.CHECK_MOCK, true)
         ?.then((mockServiceResponse) => {
             // REQUEST_CHECKPOINT_6: received mock response from service worker through hook
-            if (mockServiceResponse?.mockResponse) {
+            if (
+                mockServiceResponse?.mockResponse &&
+                mockServiceResponse.mockResponse.active
+            ) {
                 const mock = mockServiceResponse.mockResponse as IMock;
                 console.error("Mokku Inject: Mock response found:", mock);
 
