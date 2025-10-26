@@ -3,6 +3,7 @@ import { mockCheckHandler } from "./mock-check-handler";
 import { projectHandler } from "./project-handler";
 import { organizationHandler } from "./organization-handler";
 import { mockHandler } from "./mock-handler";
+import { headerHandler } from "./headers-handler";
 import { MessageService } from "@/lib";
 
 // Initialize on service worker startup
@@ -16,6 +17,7 @@ chrome.runtime.onInstalled.addListener(() => {
     console.log("Mokku: Extension installed/updated.");
     mockCheckHandler.init?.();
     organizationHandler.init?.();
+    headerHandler.init?.();
 });
 
 const operations = {
@@ -23,6 +25,7 @@ const operations = {
     ...projectHandler,
     ...organizationHandler,
     ...mockHandler,
+    ...headerHandler,
 };
 
 const messageService = new MessageService("SERVICE_WORKER");

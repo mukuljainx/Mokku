@@ -2,7 +2,6 @@ import { runFunction } from "../function-executor";
 import inject from "../utils/inject-to-dom";
 import { ILog, IMessage, IMock, MESSAGE_TYPE } from "@/types";
 import { MessageService } from "@/lib";
-import { createForcedAlivePort } from "../utils/forced-alive-port";
 
 const messageService = new MessageService("CONTENT");
 

@@ -79,7 +79,7 @@ const createMock = async (mockData: IMock): Promise<IMock> => {
     };
 
     const mockId = await localDb.mocks.add(storedMock);
-    await updateMock(mockId, { id: mockId });
+    await updateMock(mockId, { localId: mockId });
 
     return {
         ...storedMock,
