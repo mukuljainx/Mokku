@@ -21,7 +21,6 @@ export interface ILog {
     mockResponse?: IMock;
     id: number;
     // if the API response is mocked
-    isMocked?: boolean;
     // will be used to fetch mock from store
     mockPath?: string;
     // mock's id in in server
@@ -32,6 +31,10 @@ export interface ILog {
     projectLocalId?: number;
     // mock local id
     mockLocalId?: number;
+    //
+    headerLocalId?: number;
+    //
+    status?: "MOCKED" | "HEADERS_MODIFIED";
 }
 
 export interface IMock {

@@ -1,7 +1,7 @@
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { ILog } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { Cpu, Server } from "lucide-react";
+import { Cpu, Heading2, Server } from "lucide-react";
 import React from "react";
 import { SortableHeader } from "./SortableHeader";
 import { Button } from "@/components/ui/button";
@@ -77,17 +77,24 @@ export const useLogTableColumns = ({
     const columns: ColumnDef<ILog, any>[] = React.useMemo(
         () => [
             {
-                accessorKey: "isMocked",
+                accessorKey: "status",
                 id: "mock-status",
                 header: "",
                 cell: (info) => {
+                    const status = info.getValue() as ILog["status"];
                     return (
                         <span className="logs-table-mock-status-cell flex items-center justify-center">
-                            {info.getValue() ? (
+                            {status === "MOCKED" && (
                                 <SimpleTooltip content="Mocked call">
                                     <Cpu className="size-4 text-blue-400" />
                                 </SimpleTooltip>
-                            ) : (
+                            )}
+                            {status === "HEADERS_MODIFIED" && (
+                                <SimpleTooltip content="Headers Modified">
+                                    <Heading2 className="size-4 text-blue-400" />
+                                </SimpleTooltip>
+                            )}
+                            {!status && (
                                 <SimpleTooltip content="Network call">
                                     <Server className="size-4 text-gray-600" />
                                 </SimpleTooltip>
@@ -164,7 +171,7 @@ export const useLogTableColumns = ({
                 cell: (info) => {
                     return (
                         <div className="logs-table-action-cell">
-                            {info.row.original.isMocked ? (
+                            {info.row.original.status === "MOCKED" ? (
                                 <Button
                                     variant="outline"
                                     size="sm"

@@ -1,6 +1,6 @@
 import { parseJSONIfPossible } from "@/lib";
-import { mocksDb } from "@/services/db/mocksDb";
-import { ILog, IMessage, IMock } from "@/types";
+import { headersDb } from "@/services/db";
+import { IHeader, ILog, IMessage } from "@/types";
 import { OperationHandlers } from "./type";
 
 export interface DynamicUrlEntry {
@@ -12,9 +12,9 @@ let dynamicUrlPatterns: DynamicUrlEntry[] = [];
 
 async function initializeDynamicUrls() {
     try {
-        dynamicUrlPatterns = await mocksDb.getDynamicUrlPatterns();
+        dynamicUrlPatterns = await headersDb.getDynamicUrlPatterns();
         console.log(
-            "Mokku: Dynamic URL patterns loaded:",
+            "Mokku: Dynamic URL patterns loaded for headers:",
             dynamicUrlPatterns.length
         );
     } catch (error) {
@@ -35,125 +35,109 @@ function findMatchingDynamicUrl(
     });
 }
 
-export const mockHandlerInit = async () => {
+export const headerHandlerInit = async () => {
     initializeDynamicUrls();
 };
 
-export const mockCheckHandler: OperationHandlers = {
-    init: mockHandlerInit,
-    CHECK_MOCK: async (
+export const headerCheckHandler: OperationHandlers = {
+    init: headerHandlerInit,
+    CHECK_HEADER: async (
         message: IMessage,
         portPostMessage: (message: IMessage) => void
     ) => {
-        console.log("Mokku SW: received CHECK_MOCK", message);
+        console.log("Mokku SW: received CHECK_HEADER", message);
         const log = message.data as ILog;
-        let mock: IMock | undefined = undefined;
+        let header: IHeader | undefined = undefined;
         const request = log.request as ILog["request"];
         try {
             // REQUEST_CHECKPOINT_3: service worker received message from content script
 
             if (!request) {
                 return portPostMessage({
-                    type: "MOCK_CHECKED",
+                    type: "HEADER_CHECKED",
                     data: {
-                        mock: null,
+                        header: null,
                         log,
                     },
                     id: message.id,
                 });
             }
 
-            /**
-             * 1. check for graphql mock
-             */
-            if (request?.method === "POST") {
-                const { json, parsed } = parseJSONIfPossible(request.body);
-
-                if (parsed) {
-                    if (
-                        json.operationName &&
-                        typeof json.operationName === "string"
-                    ) {
-                        mock = await mocksDb.findGraphQLMocks({
-                            url: request.url,
-                            operationName: json.operationName,
-                        })[0];
-                    }
-                }
-            }
-
-            // if no mock or mock is inactive
+            // if no header or header is inactive
             // 2. check for static
-            if (!mock || !mock.active) {
-                const staticMock = await mocksDb.findStaticMocks(
+            if (!header || !header.active) {
+                const staticHeader = await headersDb.findStaticHeaders(
                     request.url,
                     request.method
                 )[0];
 
                 // assign whatever we found
-                mock = staticMock;
+                header = staticHeader;
             }
 
             // 3. check with pathname
-            if (!mock || !mock.active) {
+            if (!header || !header.active) {
                 const pathname = new URL(request.fullUrl).pathname;
-                const all = await mocksDb.findStaticMocks(
+                const all = await headersDb.findStaticHeaders(
                     pathname,
                     request.method
                 );
-                const pathnameMock = all[0];
+                const pathnameHeader = all[0];
 
-                mock = pathnameMock;
+                header = pathnameHeader;
             }
 
-            // 4. check with dynamic mocks
-            if (!mock || !mock.active) {
+            // 4. check with dynamic headers
+            if (!header || !header.active) {
                 const dynamicMatch = findMatchingDynamicUrl(
                     request.url
                     // request.method,
                 );
 
                 if (dynamicMatch) {
-                    const dynamicMock = await mocksDb.getMockByLocalId(
+                    const dynamicHeader = await headersDb.getHeaderByLocalId(
                         dynamicMatch.localId
                     );
 
-                    mock = dynamicMock;
+                    header = dynamicHeader;
                 }
             }
-            // REQUEST_CHECKPOINT_4: service worker informs content script about mock
-            console.log("Mokku SW: Found mock for request:", { request, mock });
-            if (mock) {
+            // REQUEST_CHECKPOINT_4: service worker informs content script about header
+            console.log("Mokku SW: Found header for request:", {
+                request,
+                header,
+            });
+            if (header) {
                 portPostMessage({
-                    type: "MOCK_CHECKED",
+                    type: "HEADER_CHECKED",
                     data: {
-                        mock: mock,
+                        header,
                         log,
                     },
                     id: message.id,
                 });
             } else {
                 portPostMessage({
-                    type: "MOCK_CHECKED",
+                    type: "HEADER_CHECKED",
                     data: {
                         log,
-                        mock: null,
+                        header: null,
                     },
                     id: message.id,
                 });
             }
         } catch (err) {
-            console.error("Mokku SW: Error processing CHECK_MOCK", err);
+            console.error("Mokku SW: Error processing CHECK_HEADER", err);
             portPostMessage({
-                type: "MOCK_CHECKED",
+                type: "HEADER_CHECKED",
                 data: {
-                    mock: null,
+                    header: null,
                     log,
                 },
                 id: message.id,
             } as IMessage);
             portPostMessage({
-                type: "MOCK_CHECK_ERROR",
+                type: "HEADER_CHECKED_ERROR",
                 log,
             } as IMessage);
         }

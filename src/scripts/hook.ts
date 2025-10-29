@@ -1,4 +1,11 @@
-import { IMock, ILog, MessageType, MESSAGE_TYPE, IErrorData } from "@/types";
+import {
+    IMock,
+    ILog,
+    MessageType,
+    MESSAGE_TYPE,
+    IErrorData,
+    IHeader,
+} from "@/types";
 import { MessageService } from "@/lib";
 import { MessageBus } from "@/lib/messageBus";
 import { IdFactory } from "@/lib/idFactory";
@@ -99,12 +106,9 @@ xhook.before(function (request, callback) {
     postMessage(logEntry, MESSAGE_TYPE.CHECK_MOCK, true)
         ?.then((mockServiceResponse) => {
             // REQUEST_CHECKPOINT_6: received mock response from service worker through hook
-            if (
-                mockServiceResponse?.mockResponse &&
-                mockServiceResponse.mockResponse.active
-            ) {
-                const mock = mockServiceResponse.mockResponse as IMock;
-                console.error("Mokku Inject: Mock response found:", mock);
+            if (mockServiceResponse?.mock && mockServiceResponse.mock.active) {
+                const mock = mockServiceResponse.mock as IMock;
+                console.log("Mokku Inject: Mock response found:", mock);
 
                 const headers = mock.headers
                     ? mock.headers.reduce<Record<string, string>>(
@@ -132,7 +136,34 @@ xhook.before(function (request, callback) {
                     callback(finalMockedResponse as xhook.Response);
                 }
             } else {
-                callback(); // No mock, proceed with original request
+                // check for headers here
+                postMessage(logEntry, "CHECK_HEADER", true)
+                    .then(({ header }: { log: ILog; header: IHeader }) => {
+                        try {
+                            if (header) {
+                                // convert header.headers array to object
+                                const headersObject: Record<
+                                    string,
+                                    string | number
+                                > = {};
+
+                                header.headers?.forEach((h) => {
+                                    headersObject[h.name] = h.value;
+                                });
+
+                                request.headers = {
+                                    ...request.headers,
+                                    ...headersObject,
+                                };
+                            }
+                            callback();
+                        } catch (e) {
+                            callback();
+                        }
+                    })
+                    .catch(() => {
+                        callback();
+                    });
             }
         })
         .catch((error) => {

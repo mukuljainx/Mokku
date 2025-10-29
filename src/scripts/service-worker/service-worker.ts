@@ -5,6 +5,7 @@ import { organizationHandler } from "./organization-handler";
 import { mockHandler } from "./mock-handler";
 import { headerHandler } from "./headers-handler";
 import { MessageService } from "@/lib";
+import { headerCheckHandler } from "./headers-check-handler";
 
 // Initialize on service worker startup
 // chrome.runtime.onStartup.addListener(() => {
@@ -22,6 +23,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 const operations = {
     ...mockCheckHandler,
+    ...headerCheckHandler,
     ...projectHandler,
     ...organizationHandler,
     ...mockHandler,

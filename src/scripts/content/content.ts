@@ -1,6 +1,6 @@
 import { runFunction } from "../function-executor";
 import inject from "../utils/inject-to-dom";
-import { ILog, IMessage, IMock, MESSAGE_TYPE } from "@/types";
+import { IHeader, ILog, IMessage, IMock, MESSAGE_TYPE } from "@/types";
 import { MessageService } from "@/lib";
 
 const messageService = new MessageService("CONTENT");
@@ -10,16 +10,16 @@ const init = () => {
         switch (message.type) {
             case "MOCK_CHECKED": {
                 const data = message?.data as {
-                    mockResponse: IMock | null;
+                    mock: IMock | null;
                     log: ILog;
                 };
-                const mock = data.mockResponse as IMock | undefined;
+                const mock = data.mock as IMock | undefined;
                 const request = data.log.request;
 
                 if (!mock) {
                     // REQUEST_CHECKPOINT_5_1: sending mock response to hook
                     messageService.send("HOOK", {
-                        data: message,
+                        data,
                         id: message.id,
                         type: "CHECK_MOCK",
                     });
@@ -39,9 +39,9 @@ const init = () => {
 
                     // REQUEST_CHECKPOINT_5_2: sending mock response to hook
                     messageService.send("HOOK", {
-                        data: data,
+                        data,
                         id: message.id,
-                        type: "LOG",
+                        type: "CHECK_MOCK",
                     });
                 }
                 messageService.send("PANEL", {
@@ -52,6 +52,26 @@ const init = () => {
                     },
                     id: message.id,
                 });
+                break;
+            }
+            case "HEADER_CHECKED": {
+                const data = message?.data as {
+                    header: IHeader | null;
+                    log: ILog;
+                };
+
+                messageService.send("PANEL", {
+                    type: "LOG_HEADER_STATUS",
+                    data,
+                    id: message.id,
+                });
+
+                messageService.send("HOOK", {
+                    data: data,
+                    id: message.id,
+                    type: "CHECK_HEADER",
+                });
+
                 break;
             }
             case "MOCK_CHECK_ERROR": {
@@ -74,42 +94,59 @@ const init = () => {
     };
 
     messageService.listen((data: IMessage) => {
-        if (data.type === "MOKKU_ACTIVATED") {
-            inject();
-            init();
-        }
-        if (data.type === "CHECK_MOCK") {
-            // REQUEST_CHECKPOINT_2: Content received mock check request from hook
-            // Forward the message to the service worker
-            console.log("Mokku Inject: Forwarding CHECK_MOCK to SW", data);
-            messageService
-                .send("SERVICE_WORKER", data)
-                .then(handleResponseFromServiceWorker)
-                .catch(() => {
-                    messageService.send("HOOK", {
-                        data: data,
-                        id: data.id,
-                        type: "CHECK_MOCK",
+        switch (data.type) {
+            case "MOKKU_ACTIVATED": {
+                inject();
+                init();
+                break;
+            }
+            case "CHECK_MOCK": {
+                // REQUEST_CHECKPOINT_2: Content received mock check request from hook
+                // Forward the message to the service worker
+                console.log("Mokku Inject: Forwarding CHECK_MOCK to SW", data);
+                messageService
+                    .send("SERVICE_WORKER", data)
+                    .then(handleResponseFromServiceWorker)
+                    .catch(() => {
+                        messageService.send("HOOK", {
+                            data: data,
+                            id: data.id,
+                            type: "CHECK_MOCK",
+                        });
                     });
+                break;
+            }
+            case "CHECK_HEADER": {
+                messageService
+                    .send("SERVICE_WORKER", data)
+                    .then(handleResponseFromServiceWorker)
+                    .catch(() => {
+                        messageService.send("HOOK", {
+                            data: data,
+                            id: data.id,
+                            type: "CHECK_HEADER",
+                        });
+                    });
+            }
+            case "LOG": {
+                messageService.send("PANEL", {
+                    type: "LOG",
+                    data: data.data,
+                    id: data.id,
                 });
-            // port.postMessage(data);
-        }
-
-        if (data.type === "LOG") {
-            messageService.send("PANEL", {
-                type: "LOG",
-                data: data.data,
-                id: data.id,
-            });
-        }
-
-        if (data.type === MESSAGE_TYPE.ERROR) {
-            // Forward xhook error to panel for user notification
-            messageService.send("PANEL", {
-                type: MESSAGE_TYPE.ERROR,
-                data: data.data,
-                id: data.id,
-            });
+                break;
+            }
+            case MESSAGE_TYPE.ERROR: {
+                // Forward xhook error to panel for user notification
+                messageService.send("PANEL", {
+                    type: MESSAGE_TYPE.ERROR,
+                    data: data.data,
+                    id: data.id,
+                });
+                break;
+            }
+            default:
+                break;
         }
     });
 };

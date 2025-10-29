@@ -129,7 +129,7 @@ const mock: ILog[] = [
     },
     {
         id: 4,
-        isMocked: true,
+        status: "MOCKED",
         request: {
             fullUrl: "http://demo5488429.mockable.io/a",
             time: 0,

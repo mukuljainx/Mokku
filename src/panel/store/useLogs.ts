@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ILog, IMock } from "@/types";
+import { IHeader, ILog, IMock } from "@/types";
 import { MessageService } from "@/lib";
 import { useAppStore } from "./useAppStore";
 
@@ -64,9 +64,32 @@ export const useLogs = () => {
                         ...logsMap,
                         [logId]: {
                             ...logsMap[logId],
-                            isMocked: mock?.active,
+                            status: mock?.active ? "MOCKED" : undefined,
                             mockLocalId: mock?.localId,
                             projectLocalId: mock?.projectLocalId,
+                        },
+                    }));
+                }
+            } else if (data.type === "LOG_HEADER_STATUS") {
+                const { log, header } = data.data as {
+                    log: ILog;
+                    header: IHeader;
+                };
+                const logId = log.id;
+                if (logId === undefined) {
+                    return;
+                }
+                if (idSetRef.current.has(logId)) {
+                    setLogsMap((logsMap) => ({
+                        ...logsMap,
+                        [logId]: {
+                            ...logsMap[logId],
+                            status: header?.active
+                                ? "HEADERS_MODIFIED"
+                                : undefined,
+                            headerLocalId: header?.localId,
+                            isHeaderApplied: header?.active,
+                            projectLocalId: header?.projectLocalId,
                         },
                     }));
                 }

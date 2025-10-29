@@ -24,7 +24,11 @@ export enum MESSAGE_TYPE {
 }
 
 export type MessageType = {
-    HOOK: MESSAGE_TYPE.CHECK_MOCK | MESSAGE_TYPE.LOG | MESSAGE_TYPE.ERROR;
+    HOOK:
+        | MESSAGE_TYPE.CHECK_MOCK
+        | MESSAGE_TYPE.LOG
+        | MESSAGE_TYPE.ERROR
+        | "CHECK_HEADER";
     CONTENT:
         | MESSAGE_TYPE.LOG
         | MESSAGE_TYPE.CHECK_MOCK
