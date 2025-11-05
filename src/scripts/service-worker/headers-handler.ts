@@ -2,6 +2,9 @@ import { headersDb } from "@/services/db";
 import { OperationHandlers } from "./type";
 import { IHeader } from "@/types";
 import { postBodyValidator } from "../utils/post-body-validator";
+import { headerHandlerInit } from "./headers-check-handler";
+import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
+import { updateEntityIfUrlIsDynamic } from "../utils/update-entity-if-url-is-dynamic";
 
 export const headerHandler: OperationHandlers = {
     HEADER_GET_ALL: async (message, postMessage) => {
@@ -45,10 +48,13 @@ export const headerHandler: OperationHandlers = {
             header: Partial<IHeader>;
         };
 
+        updateEntityIfUrlIsDynamic(data);
+
         const updatedHeader = await headersDb.updateHeader(
             data.localId,
             data.header
         );
+        headerHandlerInit();
 
         postMessage({
             type: "HEADER_UPDATE",
@@ -80,7 +86,11 @@ export const headerHandler: OperationHandlers = {
             });
         }
 
+        updateEntityIfUrlIsDynamic(data);
+
         const header = await headersDb.createHeader(data);
+
+        headerHandlerInit();
 
         postMessage({
             type: "HEADER_CREATE",

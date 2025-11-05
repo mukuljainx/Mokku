@@ -1,13 +1,20 @@
 import queryString from "query-string";
 
-const fixedHeader = "function handler(req, res) {";
+const fixedHeader = "function handler(urlParams, searchQuery, body) {";
 const fixedFooter = "}";
 
 // Initialize the worker
 export function runFunction(
     funcString: string,
-    queriesString: string,
-    body: any
+    {
+        urlParams,
+        searchQuery,
+        body,
+    }: {
+        urlParams: Record<string, any>;
+        searchQuery: Record<string, any>;
+        body: Record<string, any>;
+    }
 ) {
     return new Promise((resolve, reject) => {
         // Create worker from a Blob URL to embed worker code directly
@@ -67,7 +74,7 @@ export function runFunction(
                 
                 self.onmessage = function(event) {
                     originalConsole.log('Worker received message:', event.data);
-                    const { queries, body } = event.data;
+                    const { urlParams, searchQuery, body } = event.data;
                     
 
 
@@ -81,7 +88,7 @@ export function runFunction(
                         Function.constructor = undefined; // This would break our own use of new Function if done before it.
                         
                         // 3. Execute the user's function
-                        const result = finalFunction(queries, body);
+                        const result = finalFunction(urlParams, searchQuery, body);
 
                         
                         // 4. Send the result back
@@ -132,8 +139,9 @@ export function runFunction(
         };
 
         worker.postMessage({
-            queries: queryString.parse(queriesString),
-            body: body,
+            urlParams,
+            searchQuery,
+            body,
         });
     });
 }

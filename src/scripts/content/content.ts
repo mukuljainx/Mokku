@@ -1,7 +1,9 @@
 import { runFunction } from "../function-executor";
 import inject from "../utils/inject-to-dom";
 import { IHeader, ILog, IMessage, IMock, MESSAGE_TYPE } from "@/types";
-import { MessageService } from "@/lib";
+import { MessageService, parseJSONIfPossible } from "@/lib";
+import { match as getMatcher } from "path-to-regexp";
+import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
 
 const messageService = new MessageService("CONTENT");
 
@@ -29,12 +31,53 @@ const init = () => {
                         mock.function &&
                         mock.active
                     ) {
-                        const result = await runFunction(
-                            mock.function,
-                            request.queryParams,
-                            request.body
-                        );
-                        mock.response = result as string;
+                        try {
+                            let urlParams: Record<string, any> = {};
+                            if (mock.dynamic) {
+                                // get the url params
+                                const pathname = new URL(request.fullUrl)
+                                    .pathname;
+                                const url = request.url.replace(/\/$/, "");
+                                const urlWithoutProtocol =
+                                    getUrlWithoutProtocol(url);
+                                const mockUrlWithoutProtocol =
+                                    getUrlWithoutProtocol(mock.url);
+
+                                const matcher = getMatcher(
+                                    mockUrlWithoutProtocol,
+                                    {
+                                        decode: window.decodeURIComponent,
+                                    }
+                                );
+                                const matchResult =
+                                    matcher(urlWithoutProtocol) ||
+                                    matcher(pathname);
+                                if (matchResult) {
+                                    urlParams = matchResult.params;
+                                }
+                            }
+
+                            const result = await runFunction(mock.function, {
+                                urlParams,
+                                searchQuery:
+                                    parseJSONIfPossible(request.queryParams)
+                                        .json || {},
+                                body:
+                                    parseJSONIfPossible(request.body).json ||
+                                    {},
+                            });
+                            mock.response = JSON.stringify(result) as string;
+                        } catch (error) {
+                            console.error(
+                                "Mokku Inject: Error executing mock function:",
+                                error
+                            );
+                            messageService.send("HOOK", {
+                                data: { log: data.log },
+                                id: message.id,
+                                type: "CHECK_MOCK",
+                            });
+                        }
                     }
 
                     // REQUEST_CHECKPOINT_5_2: sending mock response to hook

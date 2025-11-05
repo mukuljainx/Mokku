@@ -3,12 +3,7 @@ import { localDb } from "./";
 import { StoredMock } from "./dbInit";
 import { filterCollectionByQuery } from "@/scripts/utils";
 
-export interface DynamicUrlEntry {
-    localId: number;
-    urlPattern: string; // The URL pattern stored for dynamic matching
-}
-
-const getDynamicUrlPatterns = async (): Promise<DynamicUrlEntry[]> => {
+const getDynamicUrlPatterns = async () => {
     const activeDynamicMocks = await localDb.mocks
         .where({ dynamicKey: 1 }) // Uses the 'dynamic' index
         // .filter((mock) => mock.active === true) // Ensure only active mocks are considered
@@ -17,6 +12,7 @@ const getDynamicUrlPatterns = async (): Promise<DynamicUrlEntry[]> => {
     return activeDynamicMocks.map((mock) => ({
         localId: mock.localId!, // localId is guaranteed by Dexie after retrieval
         urlPattern: mock.url,
+        method: mock.method,
     }));
 };
 

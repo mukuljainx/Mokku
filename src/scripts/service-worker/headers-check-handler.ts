@@ -1,42 +1,17 @@
 import { parseJSONIfPossible } from "@/lib";
 import { headersDb } from "@/services/db";
-import { IHeader, ILog, IMessage } from "@/types";
+import { IHeader, ILog, IMessage, IMethod } from "@/types";
 import { OperationHandlers } from "./type";
+import { match as getMatcher } from "path-to-regexp";
+import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
+import { DynamicUrlHandler } from "./dynamic-url-handler";
 
-export interface DynamicUrlEntry {
-    localId: number;
-    urlPattern: string; // The URL pattern stored for dynamic matching
-}
-
-let dynamicUrlPatterns: DynamicUrlEntry[] = [];
-
-async function initializeDynamicUrls() {
-    try {
-        dynamicUrlPatterns = await headersDb.getDynamicUrlPatterns();
-        console.log(
-            "Mokku: Dynamic URL patterns loaded for headers:",
-            dynamicUrlPatterns.length
-        );
-    } catch (error) {
-        console.error("Mokku: Error loading dynamic URL patterns:", error);
-    }
-}
-
-function findMatchingDynamicUrl(
-    url: string
-    // method: string,
-): DynamicUrlEntry | undefined {
-    // This is a very basic matcher.
-    // For more complex patterns (e.g., /users/:id), you'd need a robust path-to-regexp like library.
-    return dynamicUrlPatterns.find((entry) => {
-        // Simple exact match for now, or implement your pattern matching logic here
-        // Example for wildcard: entry.urlPattern.replace('*', '.*') and use regex
-        return entry.urlPattern === url;
-    });
-}
+const headerDynamicUrlHandler = new DynamicUrlHandler(
+    headersDb.getDynamicUrlPatterns.bind(headersDb)
+);
 
 export const headerHandlerInit = async () => {
-    initializeDynamicUrls();
+    headerDynamicUrlHandler.init();
 };
 
 export const headerCheckHandler: OperationHandlers = {
@@ -75,9 +50,10 @@ export const headerCheckHandler: OperationHandlers = {
                 header = staticHeader;
             }
 
+            let pathname = "";
             // 3. check with pathname
             if (!header || !header.active) {
-                const pathname = new URL(request.fullUrl).pathname;
+                pathname = new URL(request.fullUrl).pathname;
                 const all = await headersDb.findStaticHeaders(
                     pathname,
                     request.method
@@ -89,10 +65,12 @@ export const headerCheckHandler: OperationHandlers = {
 
             // 4. check with dynamic headers
             if (!header || !header.active) {
-                const dynamicMatch = findMatchingDynamicUrl(
-                    request.url
-                    // request.method,
-                );
+                const dynamicMatch =
+                    await headerDynamicUrlHandler.findMatchingUrl(
+                        request.url,
+                        pathname,
+                        request.method
+                    );
 
                 if (dynamicMatch) {
                     const dynamicHeader = await headersDb.getHeaderByLocalId(

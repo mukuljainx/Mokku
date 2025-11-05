@@ -1,42 +1,15 @@
 import { parseJSONIfPossible } from "@/lib";
 import { mocksDb } from "@/services/db/mocksDb";
-import { ILog, IMessage, IMock } from "@/types";
+import { ILog, IMessage, IMethod, IMock } from "@/types";
 import { OperationHandlers } from "./type";
+import { DynamicUrlHandler } from "./dynamic-url-handler";
 
-export interface DynamicUrlEntry {
-    localId: number;
-    urlPattern: string; // The URL pattern stored for dynamic matching
-}
-
-let dynamicUrlPatterns: DynamicUrlEntry[] = [];
-
-async function initializeDynamicUrls() {
-    try {
-        dynamicUrlPatterns = await mocksDb.getDynamicUrlPatterns();
-        console.log(
-            "Mokku: Dynamic URL patterns loaded:",
-            dynamicUrlPatterns.length
-        );
-    } catch (error) {
-        console.error("Mokku: Error loading dynamic URL patterns:", error);
-    }
-}
-
-function findMatchingDynamicUrl(
-    url: string
-    // method: string,
-): DynamicUrlEntry | undefined {
-    // This is a very basic matcher.
-    // For more complex patterns (e.g., /users/:id), you'd need a robust path-to-regexp like library.
-    return dynamicUrlPatterns.find((entry) => {
-        // Simple exact match for now, or implement your pattern matching logic here
-        // Example for wildcard: entry.urlPattern.replace('*', '.*') and use regex
-        return entry.urlPattern === url;
-    });
-}
+const mockDynamicUrlHandler = new DynamicUrlHandler(
+    mocksDb.getDynamicUrlPatterns.bind(mocksDb)
+);
 
 export const mockHandlerInit = async () => {
-    initializeDynamicUrls();
+    mockDynamicUrlHandler.init();
 };
 
 export const mockCheckHandler: OperationHandlers = {
@@ -49,6 +22,9 @@ export const mockCheckHandler: OperationHandlers = {
         const log = message.data as ILog;
         let mock: IMock | undefined = undefined;
         const request = log.request as ILog["request"];
+        // removes the trailing slash for uniformity
+        const url =
+            request && request.url ? request.url.replace(/\/$/, "") : "";
         try {
             // REQUEST_CHECKPOINT_3: service worker received message from content script
 
@@ -74,10 +50,11 @@ export const mockCheckHandler: OperationHandlers = {
                         json.operationName &&
                         typeof json.operationName === "string"
                     ) {
-                        mock = await mocksDb.findGraphQLMocks({
-                            url: request.url,
+                        const all = await mocksDb.findGraphQLMocks({
+                            url,
                             operationName: json.operationName,
-                        })[0];
+                        });
+                        mock = all?.[0];
                     }
                 }
             }
@@ -86,7 +63,7 @@ export const mockCheckHandler: OperationHandlers = {
             // 2. check for static
             if (!mock || !mock.active) {
                 const staticMock = await mocksDb.findStaticMocks(
-                    request.url,
+                    url,
                     request.method
                 )[0];
 
@@ -94,24 +71,33 @@ export const mockCheckHandler: OperationHandlers = {
                 mock = staticMock;
             }
 
+            let pathname = "";
             // 3. check with pathname
             if (!mock || !mock.active) {
-                const pathname = new URL(request.fullUrl).pathname;
-                const all = await mocksDb.findStaticMocks(
-                    pathname,
-                    request.method
-                );
-                const pathnameMock = all[0];
+                try {
+                    pathname = new URL(request.fullUrl).pathname;
+                } catch (e) {
+                    // log eventual error but continue
+                }
+                if (pathname) {
+                    const all = await mocksDb.findStaticMocks(
+                        pathname,
+                        request.method
+                    );
+                    const pathnameMock = all[0];
 
-                mock = pathnameMock;
+                    mock = pathnameMock;
+                }
             }
 
             // 4. check with dynamic mocks
             if (!mock || !mock.active) {
-                const dynamicMatch = findMatchingDynamicUrl(
-                    request.url
-                    // request.method,
-                );
+                const dynamicMatch =
+                    await mockDynamicUrlHandler.findMatchingUrl(
+                        url,
+                        pathname,
+                        request.method
+                    );
 
                 if (dynamicMatch) {
                     const dynamicMock = await mocksDb.getMockByLocalId(

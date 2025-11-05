@@ -7,9 +7,10 @@ import { SortableHeader } from "./SortableHeader";
 import { Button } from "@/components/ui/button";
 import { ColumnSelector } from "./ColumnSelector";
 import { StatusBadge } from "./StatusBadge";
-import { urlConstants } from "@/lib";
+import { parseJSONIfPossible, urlConstants } from "@/lib";
 import { TimeRender } from "./TimeRender";
 import { openApp, sendMessageToApp } from "@/services/app";
+import { Badge } from "@/components/ui/badge";
 
 export const useLogTableColumns = ({
     columnVisibility,
@@ -30,7 +31,7 @@ export const useLogTableColumns = ({
                             data: log,
                         });
                     }
-                }, 500);
+                }, 1500);
             };
 
             const projectUrl = urlConstants.getMockDetailsUrl(
@@ -110,21 +111,62 @@ export const useLogTableColumns = ({
                     <SortableHeader column={column} name="Method" />
                 ),
                 cell: (info) => info.getValue(),
+                accessorFn: (row) => {
+                    if (row.request?.method === "POST" && row.request.body) {
+                        const { json } = parseJSONIfPossible(
+                            row.request.body || ""
+                        );
+                        if (
+                            json?.operationName &&
+                            typeof json.operationName === "string"
+                        ) {
+                            return "GraphQL";
+                        }
+                    }
+
+                    return row.request?.method || "";
+                },
             },
             {
                 accessorKey: "request.url",
                 id: "url",
                 header: ({ column }) => (
-                    <SortableHeader column={column} name="URL" />
+                    <SortableHeader column={column} name="URL / Operation" />
                 ),
-                cell: (info) => (
-                    <span
-                        title={info.getValue()}
-                        className="logs-table-url-cell"
-                    >
-                        {info.getValue()}
-                    </span>
-                ),
+                accessorFn: (row) => {
+                    if (row.request?.method === "POST" && row.request.body) {
+                        const { json } = parseJSONIfPossible(
+                            row.request.body || ""
+                        );
+                        if (
+                            json?.operationName &&
+                            typeof json.operationName === "string"
+                        ) {
+                            return {
+                                graphqlOperation: json.operationName,
+                                url: null,
+                            };
+                        }
+                    }
+
+                    return {
+                        graphqlOperation: null,
+                        url: row.request?.url || "",
+                    };
+                },
+                cell: (info) => {
+                    const { graphqlOperation, url } = info.getValue();
+
+                    return (
+                        <span
+                            title={graphqlOperation || url}
+                            className="logs-table-url-cell"
+                        >
+                            {graphqlOperation && graphqlOperation}
+                            {url && url}
+                        </span>
+                    );
+                },
             },
             {
                 accessorKey: "response.status",

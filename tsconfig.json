@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        // "lib": ["es2019", "dom"],
         "baseUrl": "./src",
         "module": "commonjs",
         "target": "es6",

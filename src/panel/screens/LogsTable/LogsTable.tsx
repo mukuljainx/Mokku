@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { LogsTableRows } from "./LogsTableRows";
 import { ILog } from "@/types";
-import { LayoutTemplate, RefreshCcw, Search, Trash2 } from "lucide-react";
+import { LayoutTemplate } from "lucide-react";
 import { LogTableFilter } from "./LogTableFilter";
 
 export const LogsTable = ({
@@ -22,13 +22,13 @@ export const LogsTable = ({
         let result = data;
         if (methodFilter !== "ALL") {
             result = result.filter(
-                (log) => log.request?.method === methodFilter,
+                (log) => log.request?.method === methodFilter
             );
         }
         if (statusFilter !== "ALL") {
             const statusPrefix = statusFilter.slice(0, 1); // e.g., '2' for '2xx'
             result = result.filter((log) =>
-                String(log.response?.status).startsWith(statusPrefix),
+                String(log.response?.status).startsWith(statusPrefix)
             );
         }
         return result;

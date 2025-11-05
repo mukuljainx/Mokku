@@ -13,7 +13,7 @@ export const getHeaders = (headers: Record<string, string>) => {
 };
 
 const parseUrlAndQuery = (
-    requestUrlInput: Request | URL | string,
+    requestUrlInput: Request | URL | string
 ): {
     url: string;
     fullUrl: string;
@@ -114,7 +114,7 @@ const getResponseText = async (originalResponse: any) => {
     } catch (error) {
         console.error(
             "Mokku Inject: Error extracting response text in xhook.after:",
-            error,
+            error
         );
         responseText = "Mokku: Error processing response text.";
     }

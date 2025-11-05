@@ -6,6 +6,7 @@ import { filterCollectionByQuery } from "@/scripts/utils";
 export interface DynamicUrlEntry {
     localId: number;
     urlPattern: string; // The URL pattern stored for dynamic matching
+    method: IMethod;
 }
 
 const getDynamicUrlPatterns = async (): Promise<DynamicUrlEntry[]> => {
@@ -17,6 +18,7 @@ const getDynamicUrlPatterns = async (): Promise<DynamicUrlEntry[]> => {
     return activeDynamicHeaders.map((header) => ({
         localId: header.localId, // localId is guaranteed by Dexie after retrieval
         urlPattern: header.url,
+        method: header.method,
     }));
 };
 
