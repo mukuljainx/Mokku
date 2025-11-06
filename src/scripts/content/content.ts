@@ -15,6 +15,7 @@ const init = () => {
                     mock: IMock | null;
                     log: ILog;
                 };
+
                 const mock = data.mock as IMock | undefined;
                 const request = data.log.request;
 

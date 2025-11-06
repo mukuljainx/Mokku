@@ -60,13 +60,21 @@ export const useLogs = () => {
                     return;
                 }
                 if (idSetRef.current.has(logId)) {
+                    console.log(
+                        "Updating log mock status",
+                        mock?.projectLocalId
+                    );
                     setLogsMap((logsMap) => ({
                         ...logsMap,
                         [logId]: {
                             ...logsMap[logId],
                             status: mock?.active ? "MOCKED" : undefined,
-                            mockLocalId: mock?.localId,
-                            projectLocalId: mock?.projectLocalId,
+                            mockData: mock?.localId
+                                ? {
+                                      localId: mock?.localId,
+                                      projectLocalId: mock?.projectLocalId,
+                                  }
+                                : undefined,
                         },
                     }));
                 }
@@ -75,8 +83,10 @@ export const useLogs = () => {
                     log: ILog;
                     header: IHeader;
                 };
+
                 const logId = log.id;
-                if (logId === undefined) {
+                if (logId === undefined || !header) {
+                    console.log("No logId or header found");
                     return;
                 }
                 if (idSetRef.current.has(logId)) {
@@ -87,15 +97,20 @@ export const useLogs = () => {
                             status: header?.active
                                 ? "HEADERS_MODIFIED"
                                 : undefined,
-                            headerLocalId: header?.localId,
-                            isHeaderApplied: header?.active,
-                            projectLocalId: header?.projectLocalId,
+                            headerData: header?.localId
+                                ? {
+                                      localId: header?.localId,
+                                      projectLocalId: header?.projectLocalId,
+                                  }
+                                : undefined,
                         },
                     }));
                 }
             }
         });
     }, []);
+
+    console.log("LogsMap:", logsMap, logs);
 
     return { logs, logsMap, clearData, baseTime };
 };

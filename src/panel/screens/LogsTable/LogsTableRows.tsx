@@ -38,18 +38,16 @@ export const LogsTableRows = ({
     baseTime,
 }: LogsTableRowsProps) => {
     const [log, setLog] = React.useState<ILog>();
-    const [
-        columnVisibility,
-        setColumnVisibility,
-    ] = React.useState<VisibilityState>({
-        "mock-status": true,
-        method: true,
-        url: true,
-        status: true,
-        action: true,
-        "request-time": false,
-        "response-time": false,
-    });
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({
+            "mock-status": true,
+            method: true,
+            url: true,
+            status: true,
+            action: true,
+            "request-time": false,
+            "response-time": false,
+        });
 
     const toggleColumn = React.useCallback((columnId: string) => {
         setColumnVisibility((prev) => ({
@@ -105,7 +103,7 @@ export const LogsTableRows = ({
 
     const openLog = (event: React.MouseEvent) => {
         const index = parseInt(
-            event.currentTarget.getAttribute("data-log-index") || "",
+            event.currentTarget.getAttribute("data-log-index") || ""
         );
         if (index !== null && index !== undefined && !isNaN(index)) {
             setLog(filteredData[index]);
@@ -143,7 +141,7 @@ export const LogsTableRows = ({
                                         ? null
                                         : flexRender(
                                               header.column.columnDef.header,
-                                              header.getContext(),
+                                              header.getContext()
                                           )}
                                 </TableHead>
                             ))}
@@ -185,7 +183,7 @@ export const LogsTableRows = ({
                                     >
                                         {flexRender(
                                             cell.column.columnDef.cell,
-                                            cell.getContext(),
+                                            cell.getContext()
                                         )}
                                     </TableCell>
                                 ))}

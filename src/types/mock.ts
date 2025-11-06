@@ -28,13 +28,18 @@ export interface ILog {
     // mock's projectId in in server
     projectId?: string;
     // project local id
-    projectLocalId?: number;
-    // mock local id
-    mockLocalId?: number;
+
     //
-    headerLocalId?: number;
-    //
-    status?: "MOCKED" | "HEADERS_MODIFIED";
+    status?: "MOCKED" | "HEADERS_MODIFIED" | "XXX";
+
+    headerData?: {
+        localId: number;
+        projectLocalId: number;
+    };
+    mockData?: {
+        localId: number;
+        projectLocalId: number;
+    };
 }
 
 export interface IMock {

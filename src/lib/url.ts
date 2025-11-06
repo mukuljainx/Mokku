@@ -3,8 +3,11 @@ const getOriginUrl = () => "http://localhost:5173";
 const getNewMockUrl = (projectId = "local") =>
     `${getOriginUrl()}/projects/${projectId}/mocks/add-mock?source=MOKKU`;
 
-const getMockDetailsUrl = (projectId?: number, mockId?: number) =>
-    `${getOriginUrl()}/mock-details?source=MOKKU&localMockId=${mockId}&localProjectId=${projectId}`;
+const getMockDetailsUrl = (mockId?: number, projectId?: number) =>
+    `${getOriginUrl()}/mock-details?source=MOKKU&localMockId=${mockId}&localProjectId=${projectId}&type=MOCK`;
+
+const getHeaderDetailsUrl = (headerId?: number, projectId?: number) =>
+    `${getOriginUrl()}/header-details?source=MOKKU&localHeaderId=${headerId}&localProjectId=${projectId}&type=HEADER`;
 
 const getQueryUrl = () => getOriginUrl() + "/*";
 
@@ -16,4 +19,5 @@ export const urlConstants = {
     getQueryUrl,
     getProjectsUrl,
     getMockDetailsUrl,
+    getHeaderDetailsUrl,
 };

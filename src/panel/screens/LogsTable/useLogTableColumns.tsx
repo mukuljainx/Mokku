@@ -11,6 +11,7 @@ import { parseJSONIfPossible, urlConstants } from "@/lib";
 import { TimeRender } from "./TimeRender";
 import { openApp, sendMessageToApp } from "@/services/app";
 import { Badge } from "@/components/ui/badge";
+import { LogActions } from "./LogAction";
 
 export const useLogTableColumns = ({
     columnVisibility,
@@ -21,7 +22,7 @@ export const useLogTableColumns = ({
     toggleColumn: (columnId: string) => void;
     baseTime?: number;
 }) => {
-    const onActionClick = (log: ILog) => {
+    const onActionClick = (type: "MOCK" | "HEADER", log: ILog) => {
         chrome.tabs.query({ url: urlConstants.getQueryUrl() }, (tabs) => {
             const sendMockToTab = (tab?: chrome.tabs.Tab) => {
                 setTimeout(() => {
@@ -34,12 +35,20 @@ export const useLogTableColumns = ({
                 }, 1500);
             };
 
-            const projectUrl = urlConstants.getMockDetailsUrl(
-                log.projectLocalId,
-                log.mockLocalId
-            );
+            let url = "";
+            if (type === "MOCK") {
+                url = urlConstants.getMockDetailsUrl(
+                    log.mockData?.localId,
+                    log.mockData?.projectLocalId
+                );
+            } else {
+                url = urlConstants.getHeaderDetailsUrl(
+                    log.headerData?.localId,
+                    log.headerData?.projectLocalId
+                );
+            }
 
-            openApp({ onSuccess: sendMockToTab, url: projectUrl });
+            openApp({ onSuccess: sendMockToTab, url });
         });
     };
 
@@ -210,44 +219,17 @@ export const useLogTableColumns = ({
                         />
                     </div>
                 ),
-                cell: (info) => {
-                    return (
-                        <div className="logs-table-action-cell">
-                            {info.row.original.status === "MOCKED" ? (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    data-log-index={info.row.index}
-                                    className="px-4"
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                        event.preventDefault();
-                                        onActionClick(info.row.original);
-                                    }}
-                                >
-                                    Edit Mock
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    data-log-index={info.row.index}
-                                    className="px-4"
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                        event.preventDefault();
-                                        onActionClick(info.row.original);
-                                    }}
-                                >
-                                    Add Mock
-                                </Button>
-                            )}
-                        </div>
-                    );
-                },
+
+                cell: (info) => (
+                    <LogActions
+                        log={info.row.original}
+                        index={info.row.index}
+                        onActionClick={onActionClick}
+                    />
+                ),
             },
         ],
-        [columnConfig, baseTime]
+        [columnConfig, baseTime, onActionClick]
     );
 
     return columns;
