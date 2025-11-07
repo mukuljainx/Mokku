@@ -18,7 +18,7 @@ chrome.runtime.onInstalled.addListener(() => {
     console.log("Mokku: Extension installed/updated.");
     mockCheckHandler.init?.();
     organizationHandler.init?.();
-    headerHandler.init?.();
+    headerCheckHandler.init?.();
 });
 
 const operations = {

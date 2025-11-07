@@ -27,11 +27,11 @@ export const SidebarDraggable = ({
         if (!containerRef.current) {
             return;
         }
-        const elementRightEdge = containerRef.current.getBoundingClientRect()
-            .right;
+        const elementRightEdge =
+            containerRef.current.getBoundingClientRect().right;
         const width = Math.max(
             minWidth || minWidth,
-            elementRightEdge - mousePosition,
+            elementRightEdge - mousePosition
         );
         prevWidth = width;
         containerRef.current.style.width = `${width}px`;
@@ -61,7 +61,7 @@ export const SidebarDraggable = ({
             document.body.classList.remove("no-select", "ew-resize");
             draggerRef.current?.removeEventListener(
                 "mousedown",
-                onDraggerMouseDown,
+                onDraggerMouseDown
             );
         };
     }, [minWidth]);

@@ -1,6 +1,6 @@
 .sidebar-draggable-container {
     display: flex;
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     bottom: 100%;
@@ -30,6 +30,7 @@
 .sidebar-draggable-container-content {
     flex-grow: 2;
     overflow-x: hidden;
+    padding-bottom: 1rem;
 }
 
 .no-select {

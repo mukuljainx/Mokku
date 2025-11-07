@@ -3,7 +3,6 @@ import { OperationHandlers } from "./type";
 import { IHeader } from "@/types";
 import { postBodyValidator } from "../utils/post-body-validator";
 import { headerHandlerInit } from "./headers-check-handler";
-import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
 import { updateEntityIfUrlIsDynamic } from "../utils/update-entity-if-url-is-dynamic";
 
 export const headerHandler: OperationHandlers = {
