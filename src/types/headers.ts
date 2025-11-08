@@ -18,7 +18,11 @@ export interface IHeader {
 
 export interface IHeaderCreate {
     name: string;
+    method: IMethod;
     active: boolean;
     headers: Array<{ name: string; value: string }>;
-    projectId?: string;
+    projectLocalId?: number;
+    url: string;
+    dynamic?: boolean;
+    description?: string;
 }

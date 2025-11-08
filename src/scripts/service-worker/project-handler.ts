@@ -1,6 +1,7 @@
 import { projectsDb } from "@/services/db/projectsDb";
 import { OperationHandlers } from "./type";
-import { IProject, IProjectCreate } from "@/types";
+import { IHeader, IMock, IProject, IProjectCreate } from "@/types";
+import Dexie from "dexie";
 
 export const projectHandler: OperationHandlers = {
     PROJECTS_GET_ALL: async (message, postMessage) => {
@@ -8,6 +9,49 @@ export const projectHandler: OperationHandlers = {
         postMessage({
             type: "PROJECTS_GET_ALL",
             data: projects,
+            id: message.id,
+        });
+    },
+    PROJECT_GET_ALL_DATA: async (message, postMessage) => {
+        const data = await projectsDb.getProjectsWithAllData(
+            message.data as {
+                localId: number;
+                mocks?: boolean;
+                headers?: boolean;
+            }
+        );
+        postMessage({
+            type: "PROJECT_GET_ALL_DATA",
+            data: data,
+            id: message.id,
+        });
+    },
+    PROJECT_ADD_BULK_DATA: async (message, postMessage) => {
+        const data = message.data as {
+            localId: number;
+            mocks: IMock[];
+            headers: IHeader[];
+        };
+
+        try {
+            await projectsDb.addBulkDataToProject(data);
+        } catch (error) {
+            const firstError = error.failures[0];
+
+            if (String(firstError).includes("ConstraintError")) {
+                throw new Error(
+                    "Duplicate name found while adding bulk data, please ensure all mock and header names are unique within the project."
+                );
+            } else {
+                throw new Error(
+                    "Error adding bulk data to project: " + firstError
+                );
+            }
+        }
+
+        postMessage({
+            type: "PROJECT_ADD_BULK_DATA",
+            data: {},
             id: message.id,
         });
     },

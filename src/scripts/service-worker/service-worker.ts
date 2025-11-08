@@ -34,7 +34,7 @@ const messageService = new MessageService("SERVICE_WORKER");
 
 messageService.listen(async (message, _, sendResponse) => {
     console.log("Mokku SW: received message from app script", message._mokku);
-    const messageSource = message._mokku.source as "APP_SCRIPT" | "CONTENT";
+
     if (operations[message.type] === undefined) {
         console.log("Mokku SW: No handler for message", message);
 
