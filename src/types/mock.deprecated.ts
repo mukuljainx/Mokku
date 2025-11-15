@@ -59,7 +59,7 @@ export interface IStore {
             active: boolean;
         }
     >;
-    isMigrated: boolean; // Indicates if the store has been migrated to the new schema
+    isMigrated?: boolean; // Indicates if the store has been migrated to the new schema
 }
 
 export type DBNameType = "mokku.extension.main.db";
@@ -75,7 +75,7 @@ export interface IURLMap {
 export interface IDynamicURLMap {
     [urlLength: number]: Array<{
         match: (
-            s: string,
+            s: string
         ) => boolean | { path: string; params: Record<string, string> };
         method: string;
         getterKey: string;

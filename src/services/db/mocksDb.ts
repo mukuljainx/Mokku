@@ -84,6 +84,16 @@ const createMock = async (mockData: IMock): Promise<IMock> => {
     };
 };
 
+const addMocks = async (mocks: IMock[]): Promise<void> => {
+    const storedMocks: StoredMock[] = mocks.map((mock) => ({
+        ...mock,
+        dynamicKey: mock.dynamic ? 1 : 0,
+        activeKey: mock.active ? 1 : 0,
+    }));
+
+    await localDb.mocks.bulkAdd(storedMocks);
+};
+
 const _deleteAll = async (): Promise<void> => {
     await localDb.mocks.clear();
 };
@@ -174,6 +184,7 @@ export const mocksDb = {
     updateMock,
     deleteMockByLocalId,
     getCountByStatus,
+    addMocks,
 };
 
 console.log(

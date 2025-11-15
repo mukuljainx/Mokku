@@ -31,7 +31,7 @@ export const getStore = (name = storeName) => {
 
 export const addMocks = (
     oldStore: IStore,
-    dirtyNewMock: IMockResponse_Deprecated | IMockResponse_Deprecated[],
+    dirtyNewMock: IMockResponse_Deprecated | IMockResponse_Deprecated[]
 ) => {
     const store = { ...oldStore };
 
@@ -50,10 +50,15 @@ export const addMocks = (
 };
 
 export const setIsMigrated = () => {
-    getStore().then(({ store }) => {
+    return getStore().then(({ store }) => {
         const newStore = { ...store, isMigrated: true };
         chrome.storage.local.set({ [storeName]: newStore }, () => {
             console.log("Mokku: Store migration completed");
         });
     });
+};
+
+export const oldDb = {
+    getStore,
+    setIsMigrated,
 };

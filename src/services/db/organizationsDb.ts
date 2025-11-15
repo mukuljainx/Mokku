@@ -15,6 +15,15 @@ const getOrganizationById = async (
     return await localDb.organizations.get(localId);
 };
 
+const getOrganizationBySlug = async (
+    slug: string
+): Promise<IOrganization | undefined> => {
+    return await localDb.organizations
+        .where("slug")
+        .equalsIgnoreCase(slug)
+        .first();
+};
+
 const createOrganization = async (
     organizationData: Omit<IOrganizationCreate, "localId">
 ): Promise<IOrganization> => {
@@ -53,4 +62,5 @@ export const organizationsDb = {
     createOrganization,
     updateOrganization,
     deleteOrganization,
+    getOrganizationBySlug,
 };

@@ -56,16 +56,3 @@ messageService.listen((message) => {
     //     },
     // } as IMessage);
 });
-
-setTimeout(() => {
-    getStore().then(({ store }) => {
-        if (store.mocks.length > 0 && store.isMigrated === false) {
-            sentMessageToApp({
-                type: "MIGRATE_MOCKS",
-                data: store?.mocks || [],
-            });
-        } else if (store.isMigrated === false) {
-            setIsMigrated();
-        }
-    });
-}, 1000);
