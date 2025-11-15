@@ -22,8 +22,8 @@ export const localDb = new Dexie("MokkuConnectorDB") as Dexie & {
 };
 
 // Schema declaration:
-localDb.version(6).stores({
-    mocks: "++localId, [url+dynamicKey+method], dynamicKey, &name, projectLocalId, [url+operationName]",
+localDb.version(7).stores({
+    mocks: "++localId, [url+dynamicKey+method], dynamicKey, &name, projectLocalId, [url+operationName], [activeKey+projectLocalId], [dynamic+projectLocalId]",
     projects: "++localId, name, lastOpened, slug&", // '&' makes 'slug' unique
     organizations: "++localId, name, slug&", // '&' makes 'slug' unique
     headers: "++localId, &name, projectId, dynamicKey, projectLocalId",

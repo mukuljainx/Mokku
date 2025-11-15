@@ -148,6 +148,20 @@ const deleteMockByLocalId = async (localId: number): Promise<void> => {
     await localDb.mocks.delete(localId);
 };
 
+const getCountByStatus = async (projectLocalId: number) => {
+    const [active, dynamic, total] = await Promise.all([
+        localDb.mocks.where({ activeKey: 1, projectLocalId }).count(),
+        localDb.mocks.where({ dynamicKey: 1, projectLocalId }).count(),
+        localDb.mocks.where({ projectLocalId }).count(),
+    ]);
+
+    return {
+        active,
+        dynamic,
+        total,
+    };
+};
+
 export const mocksDb = {
     getDynamicUrlPatterns,
     findStaticMocks,
@@ -159,6 +173,7 @@ export const mocksDb = {
     getMocks,
     updateMock,
     deleteMockByLocalId,
+    getCountByStatus,
 };
 
 console.log(

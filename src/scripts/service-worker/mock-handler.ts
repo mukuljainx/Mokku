@@ -104,4 +104,15 @@ export const mockHandler: OperationHandlers = {
             id: message.id,
         });
     },
+    MOCK_COUNT_BY_STATUS: async (message, postMessage) => {
+        const { projectLocalId } = message.data as { projectLocalId: number };
+
+        const counts = await mocksDb.getCountByStatus(projectLocalId);
+
+        postMessage({
+            type: "MOCK_COUNT_BY_STATUS",
+            data: counts,
+            id: message.id,
+        });
+    },
 };
