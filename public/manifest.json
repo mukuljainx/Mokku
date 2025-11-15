@@ -21,7 +21,7 @@
             "run_at": "document_start"
         },
         {
-            "matches": ["http://localhost:5173/*"],
+            "matches": ["http://localhost:5173/*", "https://mokku.app/*"],
             "js": ["js/app_script.js"],
             "run_at": "document_idle"
         }
@@ -39,6 +39,6 @@
         }
     ],
     "externally_connectable": {
-        "matches": ["http://localhost:5173/*"]
+        "matches": ["http://localhost:5173/*", "https://mokku.app/*"]
     }
 }

@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "rm -rf ./dist && webpack --config webpack/webpack.dev.js --watch",
-        "build": "rm -rf ./dist && webpack --config webpack/webpack.prod.js",
+        "build": "rm -rf ./dist && webpack --config webpack/webpack.prod.js --env production",
         "css": "npx @tailwindcss/cli -i ./src/index.css -o ./src/output.css --watch",
         "clean": "rimraf dist",
         "test": "npx jest",
