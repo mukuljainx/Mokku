@@ -36,6 +36,7 @@ export const projectHandler: OperationHandlers = {
         try {
             await projectsDb.addBulkDataToProject(data);
         } catch (error) {
+            console.error(error);
             const firstError = error.failures[0];
 
             if (String(firstError).includes("ConstraintError")) {
