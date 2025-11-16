@@ -23,10 +23,10 @@ export const localDb = new Dexie("MokkuConnectorDB") as Dexie & {
 
 // Schema declaration:
 localDb.version(7).stores({
-    mocks: "++localId, [url+dynamicKey+method], dynamicKey, &name, projectLocalId, [url+operationName], [activeKey+projectLocalId], [dynamic+projectLocalId]",
+    mocks: "++localId, [url+dynamicKey+method], dynamicKey, projectLocalId, [url+operationName], [activeKey+projectLocalId], [dynamic+projectLocalId]",
     projects: "++localId, name, lastOpened, slug&", // '&' makes 'slug' unique
     organizations: "++localId, name, slug&", // '&' makes 'slug' unique
-    headers: "++localId, &name, projectId, dynamicKey, projectLocalId",
+    headers: "++localId, projectId, dynamicKey, projectLocalId",
 });
 
 // Add hooks to automatically set timestamps
@@ -94,3 +94,5 @@ export async function deleteAllTables() {
         }
     );
 }
+
+globalThis.deleteAllTables = deleteAllTables;

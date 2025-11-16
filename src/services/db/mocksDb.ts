@@ -67,6 +67,12 @@ const updateMock = async (localId: number, updates: Partial<StoredMock>) => {
     return getMockByLocalId(localId);
 };
 
+const deleteMocksByProjectLocalId = async (
+    projectLocalId: number
+): Promise<void> => {
+    await localDb.mocks.where({ projectLocalId }).delete();
+};
+
 const createMock = async (mockData: IMock): Promise<IMock> => {
     const storedMock: StoredMock = {
         ...mockData, // Spread
@@ -79,7 +85,6 @@ const createMock = async (mockData: IMock): Promise<IMock> => {
 
     return {
         ...storedMock,
-        id: mockId,
         localId: mockId,
     };
 };
@@ -185,6 +190,7 @@ export const mocksDb = {
     deleteMockByLocalId,
     getCountByStatus,
     addMocks,
+    deleteMocksByProjectLocalId,
 };
 
 console.log(

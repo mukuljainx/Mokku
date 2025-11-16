@@ -22,6 +22,7 @@ export interface ILog_Deprecated {
 }
 
 export interface IMockResponse_Deprecated {
+    name: string;
     method: IMethod;
     createdOn: number;
     url: string;

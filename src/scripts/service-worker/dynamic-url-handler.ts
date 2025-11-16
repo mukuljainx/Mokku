@@ -38,13 +38,23 @@ export class DynamicUrlHandler {
                 const urlWithoutProtocol = getUrlWithoutProtocol(
                     entry.urlPattern
                 );
-                const x = {
-                    ...entry,
-                    match: getMatcher(urlWithoutProtocol, {
-                        decode: (s: string) => decodeURIComponent(s),
-                    }),
-                };
-                this.dynamicUrlPatternsMap[x.method as IMethod].push(x);
+
+                try {
+                    const x = {
+                        ...entry,
+                        match: getMatcher(urlWithoutProtocol, {
+                            decode: (s: string) => decodeURIComponent(s),
+                        }),
+                    };
+                    this.dynamicUrlPatternsMap[x.method as IMethod].push(x);
+                } catch (error) {
+                    console.error(
+                        "Mokku: Error creating matcher for pattern:",
+                        entry.urlPattern,
+                        error
+                    );
+                    return;
+                }
             });
 
             console.log(

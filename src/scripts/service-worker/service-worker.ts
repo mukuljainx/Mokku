@@ -8,20 +8,20 @@ import { MessageService } from "@/lib";
 import { headerCheckHandler } from "./headers-check-handler";
 import { migrationHandler } from "./migration-handler";
 
-// Initialize on service worker startup
-// chrome.runtime.onStartup.addListener(() => {
-//     console.log("Mokku: Service worker started on browser startup.");
-//     mockCheckHandler.init();
-// });
-
-// Also initialize when the extension is installed or updated
-chrome.runtime.onInstalled.addListener(async () => {
+const init = async () => {
     console.log("Mokku: Extension installed/updated.");
     await organizationHandler.init?.();
     mockCheckHandler.init?.();
     headerCheckHandler.init?.();
     migrationHandler.init?.();
-});
+};
+
+init();
+
+// Also initialize when the extension is installed or updated
+// chrome.runtime.onInstalled.addListener(async () => {
+
+// });
 
 const operations = {
     ...mockCheckHandler,

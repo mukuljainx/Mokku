@@ -36,7 +36,7 @@ const migrateMock = async (
         const headers = [];
 
         if (mock.headers) {
-            for (const [name, value] of Object.entries(mock.headers)) {
+            for (const [_, { name, value }] of Object.entries(mock.headers)) {
                 headers.push({ name, value });
             }
         }
@@ -52,7 +52,7 @@ const migrateMock = async (
             description: mock.description,
             dynamic: mock.dynamic,
             projectLocalId: project.localId,
-            name: `Migrated mock: ${index + 1}`,
+            name: mock.name || `Migrated Mock ${index + 1}`,
             requestType: "REST",
             responseType: "STATIC",
         } as MockCreatePayloadType;
@@ -84,6 +84,10 @@ const init = async () => {
             });
             await migrateMock(mocks, project);
             await oldDb.setIsMigrated();
+
+            console.log("Migration completed");
+        } else {
+            console.log("No mocks to migrate");
         }
     } catch (error) {
         console.error("Unable to migrate mocks: ", error);

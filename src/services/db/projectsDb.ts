@@ -29,7 +29,6 @@ const createProject = async (data: IProjectCreate): Promise<IProject> => {
         await updateProject(projectId, { id: projectId });
         return {
             ...data,
-            id: projectId,
             localId: projectId,
         };
     } catch (error) {
@@ -43,13 +42,25 @@ const createProject = async (data: IProjectCreate): Promise<IProject> => {
 const updateProject = async (
     localId: number,
     updates: Partial<IProject>
-): Promise<number | undefined> => {
-    const updatedCount = await localDb.projects.update(localId, updates);
-    return updatedCount > 0 ? localId : undefined;
+): Promise<IProject> => {
+    await localDb.projects.update(localId, updates);
+    return getProjectById(localId);
 };
 const deleteProject = async (localId: number): Promise<void> => {
-    await localDb.projects.delete(localId);
+    await localDb.transaction(
+        "rw",
+        localDb.mocks,
+        localDb.headers,
+        localDb.projects,
+        async () => {
+            await localDb.mocks.where({ projectLocalId: localId }).delete();
+            await localDb.headers.where({ projectLocalId: localId }).delete();
+            await localDb.projects.delete(localId);
+        }
+    );
 };
+
+deleteProject(7);
 
 const getProjectsWithAllData = async ({
     localId,

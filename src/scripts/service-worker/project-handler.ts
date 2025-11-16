@@ -80,6 +80,15 @@ export const projectHandler: OperationHandlers = {
             });
         }
     },
+    PROJECT_DELETE: async (message, postMessage) => {
+        const data = message.data as { localId: number };
+        await projectsDb.deleteProject(data.localId);
+        postMessage({
+            type: "PROJECT_DELETE",
+            data: {},
+            id: message.id,
+        });
+    },
     PROJECT_CREATE: async (message, postMessage) => {
         const data = message.data as IProjectCreate;
 
@@ -115,6 +124,18 @@ export const projectHandler: OperationHandlers = {
                     status: 400,
                 },
             },
+            id: message.id,
+        });
+    },
+    PROJECT_UPDATE: async (message, postMessage) => {
+        const { localId, project } = message.data as {
+            localId: number;
+            project: Partial<IProject>;
+        };
+        const updatedProject = await projectsDb.updateProject(localId, project);
+        postMessage({
+            type: "PROJECT_UPDATE",
+            data: updatedProject,
             id: message.id,
         });
     },
