@@ -151,28 +151,18 @@ export const useLogTableColumns = ({
                             json?.operationName &&
                             typeof json.operationName === "string"
                         ) {
-                            return {
-                                graphqlOperation: json.operationName,
-                                url: null,
-                            };
+                            return json.operationName;
                         }
                     }
 
-                    return {
-                        graphqlOperation: null,
-                        url: row.request?.url || "",
-                    };
+                    return row.request?.url || "";
                 },
                 cell: (info) => {
-                    const { graphqlOperation, url } = info.getValue();
+                    const value = info.getValue();
 
                     return (
-                        <span
-                            title={graphqlOperation || url}
-                            className="logs-table-url-cell"
-                        >
-                            {graphqlOperation && graphqlOperation}
-                            {url && url}
+                        <span title={value} className="logs-table-url-cell">
+                            {value}
                         </span>
                     );
                 },
