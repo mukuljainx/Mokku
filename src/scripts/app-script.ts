@@ -1,7 +1,5 @@
 import { MessageService } from "@/lib";
-import { getStore, setIsMigrated } from "@/services/oldDb";
-import { APP_MESSAGE_TYPE, IMessage } from "@/types";
-import { createForcedAlivePort } from "./utils/forced-alive-port";
+import { IMessage } from "@/types";
 
 console.log("Mokku app_script: init");
 
@@ -56,3 +54,17 @@ messageService.listen((message) => {
     //     },
     // } as IMessage);
 });
+
+setTimeout(() => {
+    sentMessageToApp({
+        data: {
+            isError: false,
+        },
+        type: "APP_SCRIPT_READY",
+        extensionName: "MOKKU",
+        _mokku: {
+            destination: "APP",
+            source: "APP_SCRIPT",
+        },
+    });
+}, 500);

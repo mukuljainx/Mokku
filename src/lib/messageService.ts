@@ -20,6 +20,7 @@ const listen = <T extends Process>(
             const func = (event: any) => {
                 // We only accept messages from ourselves
                 if (event.source !== window) return;
+
                 const message = event.data;
                 if (message?._mokku?.destination === entity) {
                     return callback(message);

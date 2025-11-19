@@ -1,8 +1,8 @@
 const getOriginUrl = () =>
     process.env.NODE_ENV === "production"
         ? "https://mokku.app"
-        : // : "http://localhost:5173";
-          "https://mokku.app";
+        : "http://localhost:5173";
+//   :"https://mokku.app";
 
 const getNewMockUrl = (projectId = "local") =>
     `${getOriginUrl()}/projects/${projectId}/mocks/add-mock?source=MOKKU`;
