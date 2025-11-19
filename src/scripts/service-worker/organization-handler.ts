@@ -29,6 +29,11 @@ export const organizationHandlerInit = async () => {
             console.error("Mokku: Error creating default organization:", error);
         }
     }
+
+    console.log(
+        "Mokku: Organization handler initialized",
+        organizationsDb.getOrganizations({})
+    );
 };
 
 export const organizationHandler: OperationHandlers = {
