@@ -20,6 +20,10 @@ export const useLogs = () => {
     }, []);
 
     useEffect(() => {
+        clearData();
+    }, [tab]);
+
+    useEffect(() => {
         messageService.listen((data, sender) => {
             const senderTab = sender?.tab as chrome.tabs.Tab;
             console.log("Mokku Panel: Message received", data);

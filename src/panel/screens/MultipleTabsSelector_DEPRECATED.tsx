@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { AppLoader } from "./AppLoader";
+import { AppLoader } from "./AppLoader_DEPRECATED";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -8,7 +8,7 @@ const SELECTED_TAB_KEY = "mokku.temp.multi.tab.selection";
 
 export const MultipleTabsSelector = ({ tabs }: { tabs: chrome.tabs.Tab[] }) => {
     const [selectedTab, setSelectedTab] = useState<chrome.tabs.Tab | undefined>(
-        tabs.length === 1 ? tabs[0] : undefined,
+        tabs.length === 1 ? tabs[0] : undefined
     );
 
     useEffect(() => {
@@ -16,7 +16,7 @@ export const MultipleTabsSelector = ({ tabs }: { tabs: chrome.tabs.Tab[] }) => {
         localStorage.removeItem(SELECTED_TAB_KEY);
         if (tabId && tabs.length > 1) {
             const prevSelectedTabId = tabs.find(
-                (tab) => tab.id === parseInt(tabId),
+                (tab) => tab.id === parseInt(tabId)
             );
             if (prevSelectedTabId) {
                 setSelectedTab(prevSelectedTabId);

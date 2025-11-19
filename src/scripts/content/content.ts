@@ -212,11 +212,11 @@ chrome.storage.local.get([`mokku.extension.active.${host}`], function (result) {
             inject();
             init();
         }
-        // tell the panel about the new injection (host might have changed)
         messageService.send("PANEL", {
             data: host,
-            type: "INIT",
+            type: "RESET",
         });
+        // tell the panel about the new injection (host might have changed)
     } catch (error) {
         console.error(811, "Mokku Inject: Error during initialization:", error);
     }

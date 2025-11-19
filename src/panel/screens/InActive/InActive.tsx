@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { MessageService } from "@/lib";
-import React from "react";
+import React, { useEffect } from "react";
 
 const messageService = new MessageService("PANEL");
 
@@ -21,6 +21,17 @@ export const InActive = ({
             type: "MOKKU_ACTIVATED",
         });
     };
+
+    useEffect(() => {
+        messageService.listen((data, sender) => {
+            const senderTab = sender?.tab as chrome.tabs.Tab;
+            console.log(81144, "INACTIVE", { data, sender });
+
+            if (senderTab.id !== tab.id) {
+                return;
+            }
+        });
+    }, []);
 
     const handleRefresh = () => {
         location.reload();

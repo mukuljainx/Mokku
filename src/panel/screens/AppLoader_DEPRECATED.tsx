@@ -5,8 +5,9 @@ import { Home } from "./Home";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // import { PanelProvider } from "../../mokku-web-app-connector/panel/PanelProvider";
 
+// not being used anywhere at the moment
+// to be deleted
 export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
-    // const [loading, setLoading] = useState(true);
     const [active, setActive] = useState(false);
     const host = getDomain(tab.url) || "invalid";
     const isLocalhost = (tab.url || "").includes("http://localhost");
@@ -19,7 +20,6 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
                 tempActive = true;
             }
             setActive(tempActive);
-            // setLoading(false);
         });
     }, []);
 
@@ -28,17 +28,4 @@ export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
             <Home />
         </TooltipProvider>
     );
-
-    // if (!loading) {
-    //     return (
-    //         <AppProvider
-    //             host={host}
-    //             tab={tab}
-    //             active={active}
-    //             storeKey={storeKey}
-    //         />
-    //     );
-    // }
-
-    // return null;
 };

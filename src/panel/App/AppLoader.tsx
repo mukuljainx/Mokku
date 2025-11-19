@@ -5,42 +5,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { InActive } from "../screens/InActive";
 import { getStoreKey } from "@/services/constants";
 import { useAppStore } from "../store/useAppStore";
+import { useMetaEventsListener } from "../hooks/useMetaEventsListener";
 
 export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
-    const [loading, setLoading] = useState(true);
-    const [active, setActive] = useState(false);
-    const host = getDomain(tab.url) || "invalid";
-    const isLocalhost = (tab.url || "").includes("http://localhost");
+    useMetaEventsListener(tab);
+    const { active, loading, host } = useAppStore();
+
     const storeKey = getStoreKey(host);
-    const setHost = useAppStore((state) => state.setHost);
-    const setTab = useAppStore((state) => state.setTab);
-
-    useEffect(() => {
-        if (!active) {
-            chrome.storage.local.get([storeKey], (result) => {
-                let tempActive = result[storeKey] || false;
-                if (tempActive === false) {
-                    setActive(false);
-                    setLoading(false);
-                    return;
-                }
-
-                // if tempActive is undefined, check if it's localhost
-                if (isLocalhost || tempActive) {
-                    setActive(true);
-                }
-                setLoading(false);
-            });
-        }
-    }, [active]);
-
-    useEffect(() => {
-        setHost(host);
-    }, []);
-
-    useEffect(() => {
-        setTab(tab);
-    }, [tab]);
 
     if (loading) {
         return <div>Loading...</div>;
