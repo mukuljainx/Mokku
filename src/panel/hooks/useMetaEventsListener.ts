@@ -49,12 +49,12 @@ export const useMetaEventsListener = (initialTab: chrome.tabs.Tab) => {
         const destroyer = messageService.listen((data, sender) => {
             const senderTab = sender?.tab as chrome.tabs.Tab;
 
-            if (data.type === "RESET") {
-                initTab(senderTab);
+            if (senderTab.id !== tab.id) {
                 return;
             }
 
-            if (senderTab.id !== tab.id) {
+            if (data.type === "RESET") {
+                initTab(senderTab);
                 return;
             }
 
