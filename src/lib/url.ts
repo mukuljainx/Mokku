@@ -8,10 +8,10 @@ const getNewMockUrl = (projectId = "local") =>
     `${getOriginUrl()}/projects/${projectId}/mocks/add-mock?source=MOKKU`;
 
 const getMockDetailsUrl = (mockId?: number, projectId?: number) =>
-    `${getOriginUrl()}/mock-details?source=MOKKU&localMockId=${mockId}&localProjectId=${projectId}&type=MOCK`;
+    `${getOriginUrl()}/mock-details?source=MOKKU&localMockId=${mockId}&projectLocalId=${projectId}&type=MOCK`;
 
 const getHeaderDetailsUrl = (headerId?: number, projectId?: number) =>
-    `${getOriginUrl()}/header-details?source=MOKKU&localHeaderId=${headerId}&localProjectId=${projectId}&type=HEADER`;
+    `${getOriginUrl()}/header-details?source=MOKKU&localHeaderId=${headerId}&projectLocalId=${projectId}&type=HEADER`;
 
 const getQueryUrl = () => getOriginUrl() + "/*";
 

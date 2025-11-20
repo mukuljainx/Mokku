@@ -7,9 +7,9 @@ import { getStoreKey } from "@/services/constants";
 import { useAppStore } from "../store/useAppStore";
 import { useMetaEventsListener } from "../hooks/useMetaEventsListener";
 
-export const AppLoader = ({ tab }: { tab: chrome.tabs.Tab }) => {
-    useMetaEventsListener(tab);
-    const { active, loading, host } = useAppStore();
+export const AppLoader = ({ tab: initialTab }: { tab: chrome.tabs.Tab }) => {
+    useMetaEventsListener(initialTab);
+    const { active, loading, host, tab } = useAppStore();
 
     const storeKey = getStoreKey(host);
 

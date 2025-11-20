@@ -62,10 +62,11 @@ export const mockCheckHandler: OperationHandlers = {
             // if no mock or mock is inactive
             // 2. check for static
             if (!mock || !mock.active) {
-                const staticMock = await mocksDb.findStaticMocks(
+                const staticMocks = await mocksDb.findStaticMocks(
                     url,
                     request.method
-                )[0];
+                );
+                const staticMock = staticMocks[0];
 
                 // assign whatever we found
                 mock = staticMock;
@@ -109,6 +110,7 @@ export const mockCheckHandler: OperationHandlers = {
             }
             // REQUEST_CHECKPOINT_4: service worker informs content script about mock
             console.log("Mokku SW: Found mock for request:", { request, mock });
+
             if (mock) {
                 portPostMessage({
                     type: "MOCK_CHECKED",

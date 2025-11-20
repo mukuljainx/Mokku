@@ -60,8 +60,6 @@ const deleteProject = async (localId: number): Promise<void> => {
     );
 };
 
-deleteProject(7);
-
 const getProjectsWithAllData = async ({
     localId,
     mocks: exportMocks,
