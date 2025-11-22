@@ -1,16 +1,13 @@
-import { parseJSONIfPossible } from "@/lib";
 import { headersDb } from "@/services/db";
 import { IHeader, ILog, IMessage, IMethod } from "@/types";
-import { OperationHandlers } from "./type";
-import { match as getMatcher } from "path-to-regexp";
-import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
+import { OperationHandlers } from "../type";
 import { DynamicUrlHandler } from "./dynamic-url-handler";
 
 const headerDynamicUrlHandler = new DynamicUrlHandler(
     headersDb.getDynamicUrlPatterns.bind(headersDb)
 );
 
-export const headerHandlerInit = async () => {
+const headerHandlerInit = async () => {
     headerDynamicUrlHandler.init();
 };
 
@@ -18,7 +15,7 @@ export const headerCheckHandler: OperationHandlers = {
     init: headerHandlerInit,
     CHECK_HEADER: async (
         message: IMessage,
-        portPostMessage: (message: IMessage) => void
+        postMessage: (message: IMessage) => void
     ) => {
         console.log("Mokku SW: received CHECK_HEADER", message);
         const log = message.data as ILog;
@@ -28,7 +25,7 @@ export const headerCheckHandler: OperationHandlers = {
             // REQUEST_CHECKPOINT_3: service worker received message from content script
 
             if (!request) {
-                return portPostMessage({
+                return postMessage({
                     type: "HEADER_CHECKED",
                     data: {
                         header: null,
@@ -86,7 +83,7 @@ export const headerCheckHandler: OperationHandlers = {
                 header,
             });
             if (header) {
-                portPostMessage({
+                postMessage({
                     type: "HEADER_CHECKED",
                     data: {
                         header,
@@ -95,7 +92,7 @@ export const headerCheckHandler: OperationHandlers = {
                     id: message.id,
                 });
             } else {
-                portPostMessage({
+                postMessage({
                     type: "HEADER_CHECKED",
                     data: {
                         log,
@@ -106,7 +103,7 @@ export const headerCheckHandler: OperationHandlers = {
             }
         } catch (err) {
             console.error("Mokku SW: Error processing CHECK_HEADER", err);
-            portPostMessage({
+            postMessage({
                 type: "HEADER_CHECKED",
                 data: {
                     header: null,
@@ -114,7 +111,7 @@ export const headerCheckHandler: OperationHandlers = {
                 },
                 id: message.id,
             } as IMessage);
-            portPostMessage({
+            postMessage({
                 type: "HEADER_CHECKED_ERROR",
                 log,
             } as IMessage);

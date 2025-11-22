@@ -1,12 +1,13 @@
 import { IMessage } from "@/types";
-import { mockCheckHandler } from "./mock-check-handler";
-import { projectHandler } from "./project-handler";
-import { organizationHandler } from "./organization-handler";
-import { mockHandler } from "./mock-handler";
-import { headerHandler } from "./headers-handler";
+import { mockCheckHandler, headerCheckHandler } from "./request-checker";
+import {
+    organizationHandler,
+    headerHandler,
+    migrationHandler,
+    mockHandler,
+    projectHandler,
+} from "./operations-handler";
 import { MessageService } from "@/lib";
-import { headerCheckHandler } from "./headers-check-handler";
-import { migrationHandler } from "./migration-handler";
 
 const init = async () => {
     console.log("Mokku: Extension installed/updated.");

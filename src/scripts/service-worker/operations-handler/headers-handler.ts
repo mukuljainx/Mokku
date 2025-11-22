@@ -1,9 +1,9 @@
 import { headersDb } from "@/services/db";
-import { OperationHandlers } from "./type";
+import { OperationHandlers } from "../type";
 import { IHeader } from "@/types";
-import { postBodyValidator } from "../utils/post-body-validator";
-import { headerHandlerInit } from "./headers-check-handler";
-import { updateEntityIfUrlIsDynamic } from "../utils/update-entity-if-url-is-dynamic";
+import { postBodyValidator } from "../../utils/post-body-validator";
+import { updateEntityIfUrlIsDynamic } from "../../utils/update-entity-if-url-is-dynamic";
+import { headerCheckHandler } from "../request-checker/headers-check-handler";
 
 export const headerHandler: OperationHandlers = {
     HEADER_GET_ALL: async (message, postMessage) => {
@@ -53,7 +53,7 @@ export const headerHandler: OperationHandlers = {
             data.localId,
             data.header
         );
-        headerHandlerInit();
+        headerCheckHandler.init?.();
 
         postMessage({
             type: "HEADER_UPDATE",
@@ -89,7 +89,7 @@ export const headerHandler: OperationHandlers = {
 
         const header = await headersDb.createHeader(data);
 
-        headerHandlerInit();
+        headerCheckHandler.init?.();
 
         postMessage({
             type: "HEADER_CREATE",

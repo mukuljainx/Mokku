@@ -24,6 +24,8 @@ messageService.listen((message) => {
     }
 });
 
+console.log("7221 HOOK", performance.now());
+
 /**
  * Promisify post message from window to window
  * ackRequired, if false, no id will be assigned hence, no method will be added in message

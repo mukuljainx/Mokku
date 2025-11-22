@@ -1,5 +1,5 @@
 import { projectsDb } from "@/services/db/projectsDb";
-import { OperationHandlers } from "./type";
+import { OperationHandlers } from "../type";
 import { IHeader, IMock, IProject, IProjectCreate } from "@/types";
 import Dexie from "dexie";
 

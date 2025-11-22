@@ -1,8 +1,8 @@
 import { organizationsDb } from "@/services/db";
-import { OperationHandlers } from "./type";
+import { OperationHandlers } from "../type";
 import { IOrganization, IOrganizationCreate } from "@/types";
 
-export const organizationHandlerInit = async () => {
+const organizationHandlerInit = async () => {
     /**
      * if there are no organizations, create a default one for offline use
      */

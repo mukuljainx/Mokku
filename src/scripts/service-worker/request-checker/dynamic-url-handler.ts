@@ -1,5 +1,5 @@
 import { IMethod } from "@/types";
-import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
+import { getUrlWithoutProtocol } from "../../utils/get-url-without-protocol";
 import { match as getMatcher } from "path-to-regexp";
 
 export interface DynamicUrlEntry {

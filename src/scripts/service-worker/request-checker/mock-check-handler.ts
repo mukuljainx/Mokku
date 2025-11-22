@@ -1,14 +1,14 @@
 import { parseJSONIfPossible } from "@/lib";
 import { mocksDb } from "@/services/db/mocksDb";
 import { ILog, IMessage, IMethod, IMock } from "@/types";
-import { OperationHandlers } from "./type";
+import { OperationHandlers } from "../type";
 import { DynamicUrlHandler } from "./dynamic-url-handler";
 
 const mockDynamicUrlHandler = new DynamicUrlHandler(
     mocksDb.getDynamicUrlPatterns.bind(mocksDb)
 );
 
-export const mockHandlerInit = async () => {
+const mockHandlerInit = async () => {
     mockDynamicUrlHandler.init();
 };
 

@@ -140,7 +140,7 @@ const init = () => {
     messageService.listen((data: IMessage) => {
         switch (data.type) {
             case "MOKKU_ACTIVATED": {
-                inject();
+                // inject();
                 init();
                 break;
             }
@@ -209,7 +209,7 @@ chrome.storage.local.get([`mokku.extension.active.${host}`], function (result) {
     try {
         if (active) {
             // injects script to page's DOM
-            inject();
+            // inject();
             init();
         }
         messageService.send("PANEL", {

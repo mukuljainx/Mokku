@@ -1,8 +1,8 @@
 import { oldDb } from "@/services/oldDb";
-import { OperationHandlers } from "./type";
+import { OperationHandlers } from "../type";
 import { IMock, IMockResponse_Deprecated, IProject } from "@/types";
 import { mocksDb, organizationsDb, projectsDb } from "@/services/db";
-import { updateEntityIfUrlIsDynamic } from "../utils/update-entity-if-url-is-dynamic";
+import { updateEntityIfUrlIsDynamic } from "../../utils/update-entity-if-url-is-dynamic";
 
 const getOldDbMock = async () => {
     try {

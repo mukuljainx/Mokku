@@ -1,10 +1,9 @@
 import { mocksDb } from "@/services/db/mocksDb";
-import { OperationHandlers } from "./type";
+import { OperationHandlers } from "../type";
 import { IMock } from "@/types";
-import { postBodyValidator } from "../utils/post-body-validator";
-import { mockHandlerInit } from "./mock-check-handler";
-import { getUrlWithoutProtocol } from "../utils/get-url-without-protocol";
-import { updateEntityIfUrlIsDynamic } from "../utils/update-entity-if-url-is-dynamic";
+import { postBodyValidator } from "../../utils/post-body-validator";
+import { updateEntityIfUrlIsDynamic } from "../../utils/update-entity-if-url-is-dynamic";
+import { mockCheckHandler } from "../request-checker/mock-check-handler";
 
 export const mockHandler: OperationHandlers = {
     MOCK_GET_ALL: async (message, postMessage) => {
@@ -49,7 +48,7 @@ export const mockHandler: OperationHandlers = {
 
         const updatedMock = await mocksDb.updateMock(data.localId, data.mock);
 
-        mockHandlerInit();
+        mockCheckHandler?.init();
         postMessage({
             type: "MOCK_UPDATE",
             data: updatedMock,
@@ -86,7 +85,7 @@ export const mockHandler: OperationHandlers = {
 
         const mock = await mocksDb.createMock(data);
 
-        mockHandlerInit();
+        mockCheckHandler?.init();
         postMessage({
             type: "MOCK_CREATE",
             data: mock,
