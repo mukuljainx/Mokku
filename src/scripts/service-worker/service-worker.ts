@@ -20,9 +20,14 @@ const init = async () => {
 init();
 
 // Also initialize when the extension is installed or updated
-// chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(async () => {
+    const updatePageUrl = "https://mokku.app/welcome";
 
-// });
+    // Open a new tab with the specified URL
+    chrome.tabs.create({ url: updatePageUrl }, (tab) => {
+        console.log("Update page launched:", updatePageUrl);
+    });
+});
 
 const operations = {
     ...mockCheckHandler,
