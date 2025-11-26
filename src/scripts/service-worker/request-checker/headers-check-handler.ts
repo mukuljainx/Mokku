@@ -2,17 +2,21 @@ import { headersDb } from "@/services/db";
 import { IHeader, ILog, IMessage, IMethod } from "@/types";
 import { OperationHandlers } from "../type";
 import { DynamicUrlHandler } from "./dynamic-url-handler";
+import { modifyHeaderRulesOnWebRequest } from "../webRequestHeaders";
 
 const headerDynamicUrlHandler = new DynamicUrlHandler(
     headersDb.getDynamicUrlPatterns.bind(headersDb)
 );
 
 const headerHandlerInit = async () => {
-    headerDynamicUrlHandler.init();
+    await modifyHeaderRulesOnWebRequest();
+    // headerDynamicUrlHandler.init();
 };
 
 export const headerCheckHandler: OperationHandlers = {
     init: headerHandlerInit,
+    // this is not uses at the moment
+    // we will use this later on as well if needed
     CHECK_HEADER: async (
         message: IMessage,
         postMessage: (message: IMessage) => void

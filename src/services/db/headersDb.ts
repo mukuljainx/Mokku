@@ -10,16 +10,17 @@ export interface DynamicUrlEntry {
 }
 
 const getDynamicUrlPatterns = async (): Promise<DynamicUrlEntry[]> => {
-    const activeDynamicHeaders = await localDb.headers
-        .where({ dynamicKey: 1 }) // Uses the 'dynamic' index
-        // .filter((header) => header.active === true) // Ensure only active headers are considered
-        .toArray();
+    // const activeDynamicHeaders = await localDb.headers
+    //     .where({ dynamicKey: 1 }) // Uses the 'dynamic' index
+    //     // .filter((header) => header.active === true) // Ensure only active headers are considered
+    //     .toArray();
 
-    return activeDynamicHeaders.map((header) => ({
-        localId: header.localId, // localId is guaranteed by Dexie after retrieval
-        urlPattern: header.url,
-        method: header.method,
-    }));
+    // return activeDynamicHeaders.map((header) => ({
+    //     localId: header.localId, // localId is guaranteed by Dexie after retrieval
+    //     urlPattern: header.url,
+    //     method: header.method,
+    // }));
+    return [];
 };
 
 const getSortedByActive = (headers: StoredHeaders[]) =>
@@ -57,6 +58,10 @@ const getAllHeaders = async (): Promise<StoredHeaders[]> => {
     return localDb.headers.toArray();
 };
 
+const getAllActiveHeaders = async (): Promise<StoredHeaders[]> => {
+    return localDb.headers.where({ activeKey: 1 }).toArray();
+};
+
 const getHeaderByLocalId = async (
     localId: number
 ): Promise<StoredHeaders | undefined> => {
@@ -68,9 +73,9 @@ const updateHeader = async (
     updates: Partial<StoredHeaders>
 ) => {
     // If 'dynamic' or 'active' are being updated, convert to keys
-    if (updates.dynamic !== undefined) {
-        updates.dynamicKey = updates.dynamic ? 1 : 0;
-    }
+    // if (updates.dynamic !== undefined) {
+    //     updates.dynamicKey = updates.dynamic ? 1 : 0;
+    // }
     if (updates.active !== undefined) {
         updates.activeKey = updates.active ? 1 : 0;
     }
@@ -81,7 +86,7 @@ const updateHeader = async (
 const createHeader = async (headerData: IHeader): Promise<IHeader> => {
     const StoredHeaders: StoredHeaders = {
         ...headerData, // Spread
-        dynamicKey: headerData.dynamic ? 1 : 0,
+        // dynamicKey: headerData.dynamic ? 1 : 0,
         activeKey: headerData.active ? 1 : 0,
     };
 
@@ -102,14 +107,14 @@ export const getHeaders = async ({
     page,
     limit,
     active,
-    dynamic,
+    // dynamic,
     search,
     projectLocalId,
 }: {
     page: number;
     limit: number;
     active?: boolean;
-    dynamic?: boolean;
+    // dynamic?: boolean;
     search?: string;
     projectLocalId: number;
 }) => {
@@ -119,17 +124,30 @@ export const getHeaders = async ({
         collection = filterCollectionByQuery(collection, {
             projectLocalId,
             ...(active !== undefined ? { activeKey: active ? 1 : 0 } : {}),
-            ...(dynamic !== undefined ? { dynamicKey: dynamic ? 1 : 0 } : {}),
+            // ...(dynamic !== undefined ? { dynamicKey: dynamic ? 1 : 0 } : {}),
         }) as typeof collection;
 
         if (search) {
             const lowerCaseSearch = search.toLowerCase();
-            collection = collection.filter((header) =>
-                Boolean(
-                    header.name?.toLowerCase().includes(lowerCaseSearch) ||
-                        header.url?.toLowerCase().includes(lowerCaseSearch)
-                )
-            );
+
+            // apply search on urlFilter, REGEX, domain
+            collection = collection.filter((header) => {
+                const urlFilter =
+                    header.condition.urlFilter
+                        ?.toLowerCase()
+                        .includes(lowerCaseSearch) ?? false;
+                const regexFilter =
+                    header.condition.regexFilter
+                        ?.toLowerCase()
+                        .includes(lowerCaseSearch) ?? false;
+                const domainMatch = header.condition.initiatorDomains
+                    ? header.condition.initiatorDomains.some((domain) =>
+                          domain.toLowerCase().includes(lowerCaseSearch)
+                      )
+                    : false;
+
+                return urlFilter || regexFilter || domainMatch;
+            });
         }
 
         const filteredHeadersCount = await collection.count();
@@ -140,7 +158,7 @@ export const getHeaders = async ({
             .toArray();
 
         const data = filteredHeaders.map(
-            ({ dynamicKey: _d, activeKey: _a, ...StoredHeaders }) => ({
+            ({ activeKey: _a, ...StoredHeaders }) => ({
                 ...StoredHeaders,
             })
         );
@@ -169,6 +187,7 @@ export const headersDb = {
     getHeaders,
     updateHeader,
     deleteHeaderByLocalId,
+    getAllActiveHeaders,
 };
 
 console.log(

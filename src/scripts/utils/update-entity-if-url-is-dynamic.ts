@@ -1,9 +1,7 @@
 import { IHeader, IMock } from "@/types";
 import { getUrlWithoutProtocol } from "./get-url-without-protocol";
 
-export const updateEntityIfUrlIsDynamic = (
-    entity: Partial<IHeader | IMock>
-) => {
+export const updateEntityIfUrlIsDynamic = (entity: Partial<IMock>) => {
     if (entity.url) {
         // check if mock is dynamic url pattern
         const url = entity.url;

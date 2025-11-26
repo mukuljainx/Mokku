@@ -138,34 +138,7 @@ xhook.before(function (request, callback) {
                     callback(finalMockedResponse as xhook.Response);
                 }
             } else {
-                // check for headers here
-                postMessage(logEntry, "CHECK_HEADER", true)
-                    .then(({ header }: { log: ILog; header: IHeader }) => {
-                        try {
-                            if (header) {
-                                // convert header.headers array to object
-                                const headersObject: Record<
-                                    string,
-                                    string | number
-                                > = {};
-
-                                header.headers?.forEach((h) => {
-                                    headersObject[h.name] = h.value;
-                                });
-
-                                request.headers = {
-                                    ...request.headers,
-                                    ...headersObject,
-                                };
-                            }
-                            callback();
-                        } catch (e) {
-                            callback();
-                        }
-                    })
-                    .catch(() => {
-                        callback();
-                    });
+                callback();
             }
         })
         .catch((error) => {

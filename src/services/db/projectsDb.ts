@@ -126,15 +126,8 @@ const addBulkDataToProject = async ({
     })) as StoredMock[];
 
     const headersWithProjectId = headers.map((header) => ({
-        name: header.name,
-        active: header.active,
-        headers: header.headers,
-        method: header.method,
-        url: header.url,
+        ...header,
         projectLocalId,
-        description: header.description,
-        dynamic: header.dynamic,
-        dynamicKey: header.dynamic ? 1 : 0,
         activeKey: header.active ? 1 : 0,
     })) as StoredHeaders[];
 

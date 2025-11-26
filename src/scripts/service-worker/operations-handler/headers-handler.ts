@@ -2,8 +2,9 @@ import { headersDb } from "@/services/db";
 import { OperationHandlers } from "../type";
 import { IHeader } from "@/types";
 import { postBodyValidator } from "../../utils/post-body-validator";
-import { updateEntityIfUrlIsDynamic } from "../../utils/update-entity-if-url-is-dynamic";
+
 import { headerCheckHandler } from "../request-checker/headers-check-handler";
+import { removeEmptyArray } from "@/scripts/utils/remove-empty-array";
 
 export const headerHandler: OperationHandlers = {
     HEADER_GET_ALL: async (message, postMessage) => {
@@ -47,7 +48,11 @@ export const headerHandler: OperationHandlers = {
             header: Partial<IHeader>;
         };
 
-        updateEntityIfUrlIsDynamic(data);
+        removeEmptyArray(data.header, "condition.initiatorDomains");
+        removeEmptyArray(data.header, "condition.requestMethods");
+        removeEmptyArray(data.header, "condition.resourceTypes");
+
+        // updateEntityIfUrlIsDynamic(data);
 
         const updatedHeader = await headersDb.updateHeader(
             data.localId,
@@ -67,8 +72,8 @@ export const headerHandler: OperationHandlers = {
         const missingFields = postBodyValidator(data, [
             "name",
             "projectLocalId",
-            "method",
-            "url",
+            "condition",
+            "action",
         ]);
 
         if (missingFields.length > 0) {
@@ -85,7 +90,9 @@ export const headerHandler: OperationHandlers = {
             });
         }
 
-        updateEntityIfUrlIsDynamic(data);
+        removeEmptyArray(data, "condition.initiatorDomains");
+        removeEmptyArray(data, "condition.requestMethods");
+        removeEmptyArray(data, "condition.resourceTypes");
 
         const header = await headersDb.createHeader(data);
 
@@ -101,6 +108,8 @@ export const headerHandler: OperationHandlers = {
         const { localId } = message.data as { localId: number };
 
         await headersDb.deleteHeaderByLocalId(localId);
+
+        headerCheckHandler.init?.();
 
         postMessage({
             type: "HEADER_DELETE",

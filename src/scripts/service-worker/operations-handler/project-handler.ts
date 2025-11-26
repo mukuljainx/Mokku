@@ -1,7 +1,6 @@
 import { projectsDb } from "@/services/db/projectsDb";
 import { OperationHandlers } from "../type";
 import { IHeader, IMock, IProject, IProjectCreate } from "@/types";
-import Dexie from "dexie";
 
 export const projectHandler: OperationHandlers = {
     PROJECTS_GET_ALL: async (message, postMessage) => {

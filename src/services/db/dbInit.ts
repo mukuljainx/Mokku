@@ -7,7 +7,7 @@ export interface StoredMock extends IMock {
 }
 
 export interface StoredHeaders extends IHeader {
-    dynamicKey: number;
+    // dynamicKey: number;
     activeKey: number; // 1 for active, 0 for inactive
 }
 
@@ -22,11 +22,11 @@ export const localDb = new Dexie("MokkuConnectorDB") as Dexie & {
 };
 
 // Schema declaration:
-localDb.version(8).stores({
+localDb.version(10).stores({
     mocks: "++localId, [url+dynamicKey+method], dynamicKey, projectLocalId, [url+operationName], [activeKey+projectLocalId], [dynamic+projectLocalId]",
     projects: "++localId, name, lastOpened, slug&", // '&' makes 'slug' unique
     organizations: "++localId, name, slug&", // '&' makes 'slug' unique
-    headers: "++localId, projectId, dynamicKey, projectLocalId",
+    headers: "++localId, projectId, activeKey, projectLocalId",
 });
 
 // Add hooks to automatically set timestamps
