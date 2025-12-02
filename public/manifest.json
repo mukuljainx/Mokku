@@ -3,7 +3,7 @@
     "name": "Mokku",
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtEWBr49S2DyRsUtF1M7f2fcHeG4CbuL2FnhG9RAqtO4VFAYFbdB/n42dNFYZf3+Kexi6dVGWf/kvnW3x7aP2btTH2y2cH2quUh1kcFQEQ1NFjbZIeiiXgohFDCz8dQaeA7JVkgGkleFITuJWEzYkp8vlvpk/ToyWfKwpe0NMYywF7jb6Ihuc6OdCSHzXNlSj2cf8XohA6MeRTxuLX1bB6bTLVb6aHsHYXQdWyQxI4/atEG6ETVp4E5FRuol0M0vmagb5xanM6M0R5Y3E9bsyzpi+yl3+yqqKMq7Osa8KsdN6qkyesuS35CcbdkdRbVk3kOY25X/OgZqUq0gxvHmzowIDAQAB",
     "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "icons": {
         "16": "mokku-16.png",
         "48": "mokku-48.png",
