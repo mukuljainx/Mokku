@@ -18,7 +18,7 @@ export const Home = () => {
             {error ? (
                 <ErrorAlert errorData={error} />
             ) : (
-                <div className="flex-1">
+                <div className="flex-1 min-h-0">
                     <LogsTable
                         baseTime={baseTime}
                         data={data}

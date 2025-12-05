@@ -35,8 +35,8 @@ export const LogsTable = ({
     }, [data, methodFilter, statusFilter]);
 
     return (
-        <div className="logs-table-page-container px-2">
-            <div className="logs-table-main-box">
+        <div className="logs-table-page-container px-2 h-full flex flex-col">
+            <div className="logs-table-main-box flex-1 min-h-0 flex flex-col">
                 {/* Filters */}
                 <LogTableFilter
                     search={search}

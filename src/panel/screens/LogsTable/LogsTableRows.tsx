@@ -113,7 +113,7 @@ export const LogsTableRows = ({
     return (
         <div
             ref={tableContainerRef}
-            className="logs-table-virtualized-container border rounded-sm"
+            className="logs-table-virtualized-container border rounded-sm flex-1 min-h-0 overflow-auto"
         >
             {log && (
                 <SidebarDraggable
