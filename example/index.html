@@ -1,15 +1,64 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Getting Started Extension's Popup</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-    <script src="./index.js"></script>
-  </head>
-  <body>
-    <div>
-      API
-      <button onclick="sendAPI()">API</button>
-    </div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Getting Started Extension's Popup</title>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+  <script src="./index.js"></script>
+</head>
+
+<body>
+  <div>
+    API
+    <button onclick="sendAPI200()">API 200</button>
+    <button onclick="sendAPI200toB()">API /b 200</button>
+    <button onclick="sendAPIWithUrlObject200()">API 200 URL object</button>
+    <button onclick="sendAPIWithRequestObject200()">API 200 Request
+      object</button>
+    <button onclick="fetchAPI200()">API 200 Fetch</button>
+    <button onclick="sendAPI409()">API 409</button>
+    <button onclick="sendAPI404()">API 404</button>
+    <button onclick="queryParam()">API query param</button>
+    <button onclick="postReq()">API post request</button>
+    <button onclick="postReqWithRequest()">API post request with
+      Request</button>
+  </div>
+  <div style="margin-top: 32px">
+    Dynamic: http://demo5468585.mockable.io/patients/empi/:empi/goals/:id [GET]
+    <button onclick="dynamicSendAPI1()">API 1</button>
+    <button onclick="dynamicSendAPI2()">API 2</button>
+  </div>
+  <h2>Result</h2>
+  <h4>Status</h4>
+  <div id="status"></div>
+  <h4>Headers</h4>
+  <div id="headers"></div>
+  <h4>Body</h4>
+  <div id="body"></div>
+
+  <div>
+    Upload
+    <form
+      id="uploadForm"
+      onsubmit="return uploadFile(event)"
+      action='upload_file'
+      role="form"
+      method="post"
+      enctype=multipart/form-data
+    >
+      <input
+        type="file"
+        id="file"
+        name="file"
+      >
+      <input
+        type=submit
+        value=Upload
+      >
+    </form>
+  </div>
+</body>
+
 </html>

@@ -1,18 +1,18 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { IPortMessage } from "../interface/message";
+import { createRoot } from "react-dom/client";
+import "./index.scss";
 
-var x: IPortMessage;
-x;
+import "@/output.css";
+import { MultipleTabsSelector } from "./App/MultipleTabsSelector";
+import { AppLoader } from "./App/AppLoader";
 
-const port = chrome.runtime.connect({ name: "extension:moku" });
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
 
-// background script to content script end
-
-port.onMessage.addListener(function (msg) {});
-
-import App from "./App";
-
-ReactDOM.render(<App />, document.getElementById("root"));
-
-export default App;
+chrome.tabs.get(chrome.devtools.inspectedWindow.tabId, (tab) => {
+    if (tab) {
+        root.render(<AppLoader tab={tab} />);
+    } else {
+        root.render(<div>No tab found</div>);
+    }
+});

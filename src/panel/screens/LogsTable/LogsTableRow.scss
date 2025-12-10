@@ -1,0 +1,54 @@
+.logs-table-element th {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    justify-content: space-between;
+}
+
+.logs-table-element tr {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logs-table-element .cell-status,
+.logs-table-element .cell-method {
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.cell-mock-status {
+    min-width: 40px;
+}
+
+.logs-table-element .cell-action {
+    min-width: 104px;
+    padding: 0 8px;
+}
+
+.logs-table-element .cell-url {
+    flex-grow: 2;
+}
+
+.logs-table-element {
+    .cell-url,
+    .cell-request-time,
+    .cell-response-time {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.logs-table-header-action-group {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.logs-table-element .cell-request-time,
+.logs-table-element .cell-response-time {
+    min-width: 100px;
+    max-width: 100px;
+}

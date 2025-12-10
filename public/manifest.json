@@ -1,33 +1,44 @@
 {
-  "manifest_version": 2,
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
-  "version": "1.0",
-  "devtools_page": "devtool.html",
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": true
-  },
-
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
-  },
-
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["js/vendor.js", "js/content_script.js"],
-      "run_at": "document_end"
+    "manifest_version": 3,
+    "name": "Mokku",
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtEWBr49S2DyRsUtF1M7f2fcHeG4CbuL2FnhG9RAqtO4VFAYFbdB/n42dNFYZf3+Kexi6dVGWf/kvnW3x7aP2btTH2y2cH2quUh1kcFQEQ1NFjbZIeiiXgohFDCz8dQaeA7JVkgGkleFITuJWEzYkp8vlvpk/ToyWfKwpe0NMYywF7jb6Ihuc6OdCSHzXNlSj2cf8XohA6MeRTxuLX1bB6bTLVb6aHsHYXQdWyQxI4/atEG6ETVp4E5FRuol0M0vmagb5xanM6M0R5Y3E9bsyzpi+yl3+yqqKMq7Osa8KsdN6qkyesuS35CcbdkdRbVk3kOY25X/OgZqUq0gxvHmzowIDAQAB",
+    "description": "Adds the API mocker MOKKU to Chrome Developer Tools for seamless integration & testing.",
+    "version": "2.1.3",
+    "icons": {
+        "16": "mokku-16.png",
+        "48": "mokku-48.png",
+        "128": "mokku-128.png",
+        "512": "mokku-512.png"
+    },
+    "action": {
+        "default_icon": "mokku-16.png",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["js/content_script.js"],
+            "run_at": "document_start"
+        },
+        {
+            "matches": ["http://localhost:5173/*", "https://mokku.app/*"],
+            "js": ["js/app_script.js"],
+            "run_at": "document_idle"
+        }
+    ],
+    "devtools_page": "devtool.html",
+    "background": {
+        "service_worker": "js/background.js"
+    },
+    "permissions": ["storage", "activeTab", "tabs", "declarativeNetRequest"],
+    "host_permissions": ["<all_urls>"],
+    "web_accessible_resources": [
+        {
+            "resources": ["js/hook.js"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "externally_connectable": {
+        "matches": ["http://localhost:5173/*", "https://mokku.app/*"]
     }
-  ],
-  "web_accessible_resources": ["js/inject.js"],
-  "background": {
-    "scripts": ["js/background.js"]
-  },
-
-  "permissions": ["storage", "<all_urls>"],
-  "externally_connectable": {
-    "matches": ["https://developer.mozilla.org/en-US/"]
-  }
 }
