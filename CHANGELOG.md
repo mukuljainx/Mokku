@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.1] - 15 December 2025
+
+### Fixed
+
+- Fixed URL when opening dashboard from add mock and no existing page is loaded
+
+## [2.2.0] - 10 December 2025
+
+### Updated
+
+- Bundled mokku.app with extension as dashboard.html page
+
+
 ## [2.1.2] - 26 November 2025
 
 ### Updated
