@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 29 December 2025
+
+### Added
+- Added Dark theme
+- Added theme selectors in settings
+- Added proper URL tester, where you can test against existing mocks or custom test values.
+- Tabs will retain filter state for each tab.
+
+
+## [2.3.0] - 26 December 2025
+
+### Added
+
+- Add App back to Panel: All Curd can be done in Panel only, while Dashboard can be open for full view
+- Added Selection to headers
+- Added dedicated Panel settings
+
+### Fixes
+- Fixed header search
+
+## [2.2.2] - 22 December 2025
+
+### Added
+
+- Added project dropdown in mock form
+- Added bulk operations like delete, active, deactivate and change project to mocks listing
+- Remove redundant headings
+- Improves mock pagination U
+
+### Fixes
+- Mocking status apart from 200
+- Status apart from 200 will be mocked properly
+- Will identify url's in 3 part, protocol, origin and pathname, will check only pathname for dynamic parts.
+- Adds tests for urlParser
+- Highlight side nav option when on the page
+- fix Project search
+- Fix Monaco editor linting
+
 ## [2.2.1] - 15 December 2025
 
 ### Fixed
