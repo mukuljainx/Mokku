@@ -1,0 +1,100 @@
+[
+  {
+    "version": "2.4.0",
+    "date": "29 December 2025",
+    "changes": {
+      "Added": [
+        "Added Dark theme",
+        "Added theme selectors in settings",
+        "Added proper URL tester, where you can test against existing mocks or custom test values.",
+        "Tabs will retain filter state for each tab."
+      ]
+    }
+  },
+  {
+    "version": "2.3.0",
+    "date": "26 December 2025",
+    "changes": {
+      "Added": [
+        "Add App back to Panel: All Curd can be done in Panel only, while Dashboard can be open for full view",
+        "Added Selection to headers",
+        "Added dedicated Panel settings"
+      ],
+      "Fixes": [
+        "Fixed header search"
+      ]
+    }
+  },
+  {
+    "version": "2.2.2",
+    "date": "22 December 2025",
+    "changes": {
+      "Added": [
+        "Added project dropdown in mock form",
+        "Added bulk operations like delete, active, deactivate and change project to mocks listing",
+        "Remove redundant headings",
+        "Improves mock pagination U"
+      ],
+      "Fixes": [
+        "Mocking status apart from 200",
+        "Status apart from 200 will be mocked properly",
+        "Will identify url's in 3 part, protocol, origin and pathname, will check only pathname for dynamic parts.",
+        "Adds tests for urlParser",
+        "Highlight side nav option when on the page",
+        "fix Project search",
+        "Fix Monaco editor linting"
+      ]
+    }
+  },
+  {
+    "version": "2.2.1",
+    "date": "15 December 2025",
+    "changes": {
+      "Fixed": [
+        "Fixed URL when opening dashboard from add mock and no existing page is loaded"
+      ]
+    }
+  },
+  {
+    "version": "2.2.0",
+    "date": "10 December 2025",
+    "changes": {
+      "Updated": [
+        "Bundled mokku.app with extension as dashboard.html page"
+      ]
+    }
+  },
+  {
+    "version": "2.1.2",
+    "date": "26 November 2025",
+    "changes": {
+      "Updated": [
+        "Header: Use declarativeNetRequest for header modification, this ensures we are setting right headers even on page load for all resource type",
+        "Header: Add support for multi method and resource type",
+        "Header: Add support domain filter, url pattern matching or regex"
+      ]
+    }
+  },
+  {
+    "version": "2.1.1",
+    "date": "19 November 2025",
+    "changes": {
+      "Updated": [
+        "Check if Mokku and loaded before starting the app"
+      ]
+    }
+  },
+  {
+    "version": "2.1.0",
+    "date": "17 November 2025",
+    "changes": {
+      "Added": [
+        "GraphQL support",
+        "Dynamic Response via functions",
+        "Create Projects to manage mocks",
+        "Import export",
+        "Added the Monaco editor (VSCode editor)"
+      ]
+    }
+  }
+]

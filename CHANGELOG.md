@@ -2,13 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.4.0] - 29 December 2025
+## [2.4.1] - 29 December 2025
 
 ### Added
 - Added Dark theme
 - Added theme selectors in settings
 - Added proper URL tester, where you can test against existing mocks or custom test values.
 - Tabs will retain filter state for each tab.
+- Added changelog modal
 
 
 ## [2.3.0] - 26 December 2025
