@@ -1,0 +1,102 @@
+{
+  "$ref": "#/definitions/header-file",
+  "definitions": {
+    "header-file": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "type": "number",
+          "const": 1
+        },
+        "localId": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "number"
+        },
+        "filter_type": {
+          "type": "string",
+          "enum": [
+            "regex",
+            "pattern"
+          ]
+        },
+        "action": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "requestHeaders": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "header": {
+                    "type": "string"
+                  },
+                  "operation": {
+                    "type": "string",
+                    "enum": [
+                      "append",
+                      "set",
+                      "remove"
+                    ]
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "header",
+                  "operation"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "responseHeaders": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/header-file/properties/action/properties/requestHeaders/items"
+              }
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": true
+        },
+        "condition": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "name",
+        "action",
+        "condition"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

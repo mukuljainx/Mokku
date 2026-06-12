@@ -1,0 +1,169 @@
+{
+  "$ref": "#/definitions/mock-file",
+  "definitions": {
+    "mock-file": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "type": "number",
+              "const": 1
+            },
+            "localId": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "rest"
+            },
+            "method": {
+              "type": "string",
+              "enum": [
+                "GET",
+                "HEAD",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE",
+                "OPTIONS"
+              ]
+            },
+            "url_pattern": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "dynamic": {
+              "type": "boolean"
+            },
+            "response": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number"
+                },
+                "headers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "body": {},
+                "delay_ms": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            "response_body_type": {
+              "type": "string",
+              "enum": [
+                "json",
+                "text",
+                "xml",
+                "html",
+                "binary"
+              ]
+            },
+            "function_source": {
+              "type": "string"
+            },
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schema_version",
+            "name",
+            "type",
+            "method",
+            "url_pattern",
+            "response"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "type": "number",
+              "const": 1
+            },
+            "localId": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "graphql"
+            },
+            "operation_name": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "dynamic": {
+              "type": "boolean"
+            },
+            "response": {
+              "$ref": "#/definitions/mock-file/anyOf/0/properties/response"
+            },
+            "response_body_type": {
+              "$ref": "#/definitions/mock-file/anyOf/0/properties/response_body_type"
+            },
+            "function_source": {
+              "type": "string"
+            },
+            "metadata": {
+              "$ref": "#/definitions/mock-file/anyOf/0/properties/metadata"
+            }
+          },
+          "required": [
+            "schema_version",
+            "name",
+            "type",
+            "endpoint",
+            "response"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
