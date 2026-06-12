@@ -6,6 +6,9 @@
         {
           "type": "object",
           "properties": {
+            "$schema": {
+              "type": "string"
+            },
             "schema_version": {
               "type": "number",
               "const": 1
@@ -111,6 +114,9 @@
         {
           "type": "object",
           "properties": {
+            "$schema": {
+              "type": "string"
+            },
             "schema_version": {
               "type": "number",
               "const": 1
