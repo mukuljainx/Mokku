@@ -98,7 +98,7 @@
         "docsify-cli": "^4.4.1",
         "file-loader": "^6.2.0",
         "http-server": "^0.12.3",
-        "jest": "^25.1.0",
+        "jest": "^30.2.0",
         "postcss": "^8.5.6",
         "postcss-loader": "^8.1.1",
         "rimraf": "^3.0.2 ",
